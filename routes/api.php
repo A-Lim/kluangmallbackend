@@ -37,7 +37,7 @@ Route::prefix('v1')->group(function () {
             Route::patch('profile/avatar', 'UserController@uploadProfileAvatar');
         });
 
-        /**** UserGroup ****/
+        /**** UserGroups ****/
         Route::namespace('API\v1\UserGroup')->group(function () {
             
             Route::get('usergroups', 'UserGroupController@list');
@@ -60,5 +60,31 @@ Route::prefix('v1')->group(function () {
             Route::get('permissions', 'PermissionController@list');
         });
 
+        /**** Events ****/
+        Route::namespace('API\v1\Event')->group(function () {
+            Route::get('events', 'EventController@list');
+            Route::get('events/{event}', 'EventController@details');
+            Route::post('events', 'EventController@create');
+            Route::patch('events/{event}', 'EventController@update');
+            Route::delete('events/{event}', 'EventController@delete');
+        });
+
+        /**** Promotions ****/
+        Route::namespace('API\v1\Promotion')->group(function () {
+            Route::get('promotions', 'PromotionController@list');
+            Route::get('promotions/{promotion}', 'PromotionController@details');
+            Route::post('promotions', 'PromotionController@create');
+            Route::patch('promotions/{promotion}', 'PromotionController@update');
+            Route::delete('promotions/{promotion}', 'PromotionController@delete');
+        });
+
+        /**** Banners ****/
+        Route::namespace('API\v1\Banner')->group(function () {
+            Route::get('banners', 'BannerController@list');
+            Route::get('banners/{banner}', 'BannerController@details');
+            Route::post('banners', 'BannerController@create');
+            // Route::patch('banners/{banner}', 'PromotionController@update');
+            Route::delete('banners/{banner}', 'BannerController@delete');
+        });
     });
 });

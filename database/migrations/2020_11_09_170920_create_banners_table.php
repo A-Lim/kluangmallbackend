@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEventsImagesTable extends Migration
+class CreateBannersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,13 @@ class CreateEventsImagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('events_images', function (Blueprint $table) {
+        Schema::create('banners', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('event_id')->unsigned();
-            $table->text('path');
+            $table->string('name');
+            $table->text('path')->nullable();
+            $table->string('status', 100);
+            $table->bigInteger('created_by')->unsigned();
             $table->timestamps();
-
-            $table->foreign('event_id')
-                ->references('id')
-                ->on('events')
-                ->onDelete('cascade');
         });
     }
 
@@ -33,6 +30,6 @@ class CreateEventsImagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('events_images');
+        Schema::dropIfExists('banners');
     }
 }

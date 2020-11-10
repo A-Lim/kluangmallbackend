@@ -37,7 +37,7 @@ class UserGroupController extends ApiController {
     public function create(CreateRequest $request) {
         $this->authorize('create', UserGroup::class);
         $userGroup = $this->userGroupRepository->create($request->all());
-        return $this->responseWithMessageAndData(201, $userGroup, 'User group created.');
+        return $this->responseWithMessage(201, 'User group created.');
     }
 
     public function details(UserGroup $userGroup) {

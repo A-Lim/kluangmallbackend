@@ -27,7 +27,7 @@ class ApiLogger {
         return $next($request);
     }
 
-    public function terminate(Request $request, JsonResponse $response) {
+    public function terminate(Request $request, $response) {
         $this->apiLogRepository->create($request, $response);
     }
 }

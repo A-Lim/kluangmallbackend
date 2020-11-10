@@ -24,6 +24,8 @@ class AuthServiceProvider extends ServiceProvider
         'App\SystemSetting' => 'App\Policies\SystemSettingPolicy',
         'App\Workflow' => 'App\Policies\WorkflowPolicy',
         'App\Order' => 'App\Policies\OrderPolicy',
+        'App\Event' => 'App\Policies\EventPolicy',
+        'App\Promotion' => 'App\Policies\PromotionPolicy',
     ];
 
     /**
