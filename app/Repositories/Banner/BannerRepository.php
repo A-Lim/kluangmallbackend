@@ -60,7 +60,7 @@ class BannerRepository implements IBannerRepository {
      * {@inheritdoc}
      */
     public function delete(Banner $banner) {
-        $folderDir = 'public/banners/'.$event->id.'/';
+        $folderDir = 'public/banners/'.$banner->id.'/';
         Storage::deleteDirectory($folderDir);
         $banner->delete();
     }
@@ -72,8 +72,10 @@ class BannerRepository implements IBannerRepository {
         $banner = Banner::create($data);
 
         // upload
-        $saveDirectory = 'public/banners/'.$banner->id;
-        $banner->path = Storage::putFileAs($saveDirectory, $file, $banner->name);
+        $saveDirectory = 'public/banners/'.$banner->id.'/';
+        Storage::putFileAs($saveDirectory, $file, $banner->name);
+
+        $banner->path = Storage::url($saveDirectory.$banner->name);
         $banner->save();
 
         return $banner;

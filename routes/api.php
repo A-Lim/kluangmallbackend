@@ -83,6 +83,8 @@ Route::prefix('v1')->group(function () {
             Route::get('banners', 'BannerController@list');
             Route::get('banners/{banner}', 'BannerController@details');
             Route::post('banners', 'BannerController@create');
+            Route::post('banners/{banner}/activate', 'BannerController@activate');
+            Route::post('banners/{banner}/deactivate', 'BannerController@deactivate');
             // Route::patch('banners/{banner}', 'PromotionController@update');
             Route::delete('banners/{banner}', 'BannerController@delete');
         });
