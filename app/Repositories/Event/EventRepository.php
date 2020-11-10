@@ -38,8 +38,17 @@ class EventRepository implements IEventRepository {
         $data['created_by'] = auth()->id();
         DB::beginTransaction();
         $event = Event::create($data);
-        $event->thumbnail = json_encode($this->saveImage($event, $files['uploadThumbnail'], true));
-        $event->images = json_encode($this->saveImages($event, $files['uploadImages']));
+
+        if (isset($files['uploadThumbnail'])) 
+            $event->thumbnail = json_encode($this->saveImage($event, $files['uploadThumbnail'], true));
+        else 
+            $event->thumbnail = null;
+        
+        if (isset($files['uploadImages']))
+            $event->images = json_encode($this->saveImages($event, $files['uploadImages']));
+        else 
+            $event->images = null;
+        
         $event->save();
         DB::commit();
 

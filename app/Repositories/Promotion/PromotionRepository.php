@@ -38,8 +38,17 @@ class PromotionRepository implements IPromotionRepository {
         $data['created_by'] = auth()->id();
         DB::beginTransaction();
         $promotion = Promotion::create($data);
-        $promotion->thumbnail = json_encode($this->saveImage($promotion, $files['uploadThumbnail'], true));
-        $promotion->images = json_encode($this->saveImages($promotion, $files['uploadImages']));
+
+        if (isset($files['uploadThumbnail']))
+            $promotion->thumbnail = json_encode($this->saveImage($promotion, $files['uploadThumbnail'], true));
+        else
+            $promotion->thumbnail = null;
+        
+        if (isset($files['uploadImages']))
+            $promotion->images = json_encode($this->saveImages($promotion, $files['uploadImages']));
+        else 
+            $promotion->images = null;
+
         $promotion->save();
         DB::commit();
 
