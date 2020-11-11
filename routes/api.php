@@ -88,5 +88,11 @@ Route::prefix('v1')->group(function () {
             // Route::patch('banners/{banner}', 'PromotionController@update');
             Route::delete('banners/{banner}', 'BannerController@delete');
         });
+
+        /**** Page ****/
+        Route::namespace('API\v1\Page')->group(function () {
+            Route::get('page/landing', 'PageController@landing');
+        });
+
     });
 });

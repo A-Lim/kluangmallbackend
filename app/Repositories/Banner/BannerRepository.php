@@ -10,7 +10,12 @@ class BannerRepository implements IBannerRepository {
      * {@inheritdoc}
      */
     public function list($data, $paginate = false) {
-        $query = Banner::buildQuery($data);
+        $query = null;
+        
+        if ($data)
+            $query = Banner::buildQuery($data);
+        else 
+            $query = Banner::query();
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;

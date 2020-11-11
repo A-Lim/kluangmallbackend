@@ -14,7 +14,12 @@ class PromotionRepository implements IPromotionRepository {
      * {@inheritdoc}
      */
     public function list($data, $paginate = false) {
-        $query = Promotion::buildQuery($data);
+        $query = null;
+        
+        if ($data)
+            $query = Promotion::buildQuery($data);
+        else 
+            $query = Promotion::query();
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;

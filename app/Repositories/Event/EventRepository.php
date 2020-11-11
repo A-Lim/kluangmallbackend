@@ -14,7 +14,12 @@ class EventRepository implements IEventRepository {
      * {@inheritdoc}
      */
     public function list($data, $paginate = false) {
-        $query = Event::buildQuery($data);
+        $query = null;
+        
+        if ($data)
+            $query = Event::buildQuery($data);
+        else 
+            $query = Event::query();
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
