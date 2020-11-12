@@ -63,7 +63,7 @@ class LoginController extends ApiController {
             else
                 $permissions = $this->userRepository->permissions($user);
             
-            return $this->responseWithLoginData(200, $tokenResult, $user, $permissions);
+            return $this->responseWithLoginData(200, $tokenResult, $user, $permissions, 0);
         }
 
         // if unsuccessful, increase login attempt count
