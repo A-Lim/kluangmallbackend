@@ -21,6 +21,7 @@ class CreatePromotionsTable extends Migration
             $table->text('images')->nullable();
             $table->date('fromDate');
             $table->date('toDate');
+            $table->text('caption');
             $table->text('content');
             $table->text('externalLink')->nullable();
             $table->string('status', 100);

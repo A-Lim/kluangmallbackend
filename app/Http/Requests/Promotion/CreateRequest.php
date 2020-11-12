@@ -23,6 +23,7 @@ class CreateRequest extends CustomFormRequest {
             'fromDate' => 'required|date_format:d-m-Y',
             'toDate' => 'required|date_format:d-m-Y',
             'uploadImages.*' => 'image|nullable',
+            'caption' => 'required|string',
             'content' => 'required|string',
             'status' => 'required|in:'.implode(',', Promotion::STATUSES)
         ];

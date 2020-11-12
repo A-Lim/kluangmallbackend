@@ -26,6 +26,7 @@ class UpdateRequest extends CustomFormRequest {
             'images.*.name' => 'required',
             'images.*.path' => 'required',
             'uploadImages.*' => 'image|nullable',
+            'caption' => 'required|string',
             'content' => 'required|string',
             'status' => 'required|in:'.implode(',', Promotion::STATUSES)
         ];
