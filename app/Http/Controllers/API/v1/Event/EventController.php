@@ -17,7 +17,7 @@ class EventController extends ApiController {
     private $eventRepository;
 
     public function __construct(IEventRepository $iEventRepository) {
-        $this->middleware('auth:api');
+        // $this->middleware('auth:api');
         $this->eventRepository = $iEventRepository;
     }
 
