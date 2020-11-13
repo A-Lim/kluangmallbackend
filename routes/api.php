@@ -89,6 +89,11 @@ Route::prefix('v1')->group(function () {
             Route::delete('banners/{banner}', 'BannerController@delete');
         });
 
+        /**** Landing ****/
+        Route::namespace('API\v1\Landing')->group(function () {
+            Route::get('landing', 'LandingController@details');
+        });
+
         /**** Page ****/
         Route::namespace('API\v1\Page')->group(function () {
             Route::get('page/landing', 'PageController@landing');

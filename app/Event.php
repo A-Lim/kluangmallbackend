@@ -14,8 +14,8 @@ class Event extends Model {
     protected $fillable = ['title', 'category', 'thumbnail', 'images', 'fromDate', 'toDate', 'caption', 'content', 'externalLink', 'status', 'created_by', 'updated_by'];
     protected $hidden = [];
     protected $casts = [
-        'fromDate' => 'datetime:d-m-Y',
-        'toDate' => 'datetime:d-m-Y',
+        'fromDate' => 'datetime:d M Y',
+        'toDate' => 'datetime:d M Y',
     ];
 
     // list of properties queryable for datatable

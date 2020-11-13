@@ -17,7 +17,7 @@ class PromotionController extends ApiController {
     private $promotionRepository;
 
     public function __construct(IPromotionRepository $iPromotionRepository) {
-        // $this->middleware('auth:api');
+        $this->middleware('auth:api')->except(['list']);
         $this->promotionRepository = $iPromotionRepository;
     }
 
@@ -28,7 +28,7 @@ class PromotionController extends ApiController {
     }
 
     public function details(Promotion $promotion) {
-        $this->authorize('view', $promotion);
+        // $this->authorize('view', $promotion);
         return $this->responseWithData(200, $promotion);
     }
 

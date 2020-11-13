@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\v1\Page;
+namespace App\Http\Controllers\API\v1\Landing;
 
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
@@ -10,7 +10,7 @@ use App\Repositories\Banner\IBannerRepository;
 use App\Repositories\Event\IEventRepository;
 use App\Repositories\Promotion\IPromotionRepository;
 
-class PageController extends ApiController {
+class LandingController extends ApiController {
 
     private $bannerRepository;
     private $eventRepository;
@@ -24,7 +24,7 @@ class PageController extends ApiController {
         $this->promotionRepository = $iPromotionRepository;
     }
 
-    public function landing(Request $request) {
+    public function details(Request $request) {
         $data['banners'] = $this->bannerRepository->list(null, false);
         $data['events'] = $this->eventRepository->list(null, false);
         $data['promotions'] = $this->promotionRepository->list(null, false);
