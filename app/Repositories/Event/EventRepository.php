@@ -66,7 +66,7 @@ class EventRepository implements IEventRepository {
     public function update(Event $event, $data, $files) {
         $imgToBeDeleted = [];
         // existing images
-        $existingImages = json_decode($event->getAttributes()['images'], true);
+        $existingImages = json_decode($event->getAttributes()['images'], true) ?? [];
         // $updatedImages = $existingImages;
 
         if (isset($data['images'])) {
@@ -79,6 +79,7 @@ class EventRepository implements IEventRepository {
                     return $a['name'] > $b['name'] ? 1 : -1;
                 }
             );
+            
         } else {
             // delete all existing
             $imgToBeDeleted = $existingImages;

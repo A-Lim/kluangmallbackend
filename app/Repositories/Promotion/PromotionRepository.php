@@ -66,8 +66,7 @@ class PromotionRepository implements IPromotionRepository {
     public function update(Promotion $promotion, $data, $files) {
         $imgToBeDeleted = [];
         // existing images
-        $existingImages = json_decode($promotion->getAttributes()['images'], true);
-        // $updatedImages = $existingImages;
+        $existingImages = json_decode($promotion->getAttributes()['images'], true) ?? [];
 
         if (isset($data['images'])) {
             // get images that are inside $existingImages but not inside $data['images']
