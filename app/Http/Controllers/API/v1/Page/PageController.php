@@ -18,7 +18,7 @@ class PageController extends ApiController {
 
     public function __construct(IBannerRepository $iBannerRepository,
         IEventRepository $iEventRepository, IPromotionRepository $iPromotionRepository) {
-        $this->middleware('auth:api');
+        // $this->middleware('auth:api');
         $this->bannerRepository = $iBannerRepository;
         $this->eventRepository = $iEventRepository;
         $this->promotionRepository = $iPromotionRepository;

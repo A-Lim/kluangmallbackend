@@ -16,7 +16,7 @@ class CreateEventsTable extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
-            $table->string('category');
+            $table->string('category')->nullable();
             $table->text('thumbnail')->nullable();
             $table->text('images')->nullable();
             $table->date('fromDate');
