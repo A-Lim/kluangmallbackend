@@ -80,6 +80,6 @@ class LoginController extends ApiController {
         // revoke access token
         $accessToken->revoke();
 
-        return $this->responseWithMessage(201, "Successfully logged out.");
+        return $this->responseWithMessage(200, "Successfully logged out.");
     }
 }

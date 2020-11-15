@@ -17,14 +17,17 @@ class CreateRequest extends CustomFormRequest {
 
     public function rules() {
         return [
-            'uploadBanners.*' => 'required|image'
+            'title' => 'required|string',
+            'status' => 'required|in:'.implode(',', Banner::STATUSES),
+            'is_clickable' => 'required|boolean',
+            'image' => 'required|image',
+            'type' => 'required_if:is_clickable,true',
+            'type_if' => 'required_if:is_clickable,true|integer'
         ];
     }
 
     public function messages() {
         return [
-            'uploadBanners.*.required' => 'Banner is required.',
-            'uploadBanners.*.image' => 'Only image is allowed.',
         ];
     }
 }

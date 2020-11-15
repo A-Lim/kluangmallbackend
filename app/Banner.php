@@ -11,12 +11,12 @@ use App\Http\Traits\CustomQuery;
 class Banner extends Model {
     use CustomQuery;
 
-    protected $fillable = ['name', 'path', 'status', 'created_by'];
+    protected $fillable = ['title', 'status', 'is_clickable', 'image', 'type', 'type_id'];
     protected $hidden = [];
     protected $casts = [];
 
     // list of properties queryable for datatable
-    public static $queryable = ['name', 'status'];
+    public static $queryable = ['title', 'status', 'type'];
 
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
@@ -26,7 +26,7 @@ class Banner extends Model {
         self::STATUS_INACTIVE,
     ];
 
-    public function getPathAttribute($value) {
+    public function getImageAttribute($value) {
         return URL::to('/').$value;
     }
 }

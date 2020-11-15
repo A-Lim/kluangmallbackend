@@ -17,7 +17,7 @@ class BannerController extends ApiController {
     private $bannerRepository;
 
     public function __construct(IBannerRepository $iBannerRepository) {
-        $this->middleware('auth:api');
+        $this->middleware('auth:api')->except(['details']);
         $this->bannerRepository = $iBannerRepository;
     }
 
@@ -28,7 +28,7 @@ class BannerController extends ApiController {
     }
 
     public function details(Banner $banner) {
-        $this->authorize('view', $banner);
+        // $this->authorize('view', $banner);
         return $this->responseWithData(200, $banner);
     }
 

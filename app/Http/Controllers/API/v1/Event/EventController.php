@@ -17,7 +17,7 @@ class EventController extends ApiController {
     private $eventRepository;
 
     public function __construct(IEventRepository $iEventRepository) {
-        $this->middleware('auth:api')->except(['list']);
+        $this->middleware('auth:api')->except(['list', 'details']);
         $this->eventRepository = $iEventRepository;
     }
 
