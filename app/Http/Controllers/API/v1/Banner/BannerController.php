@@ -34,22 +34,14 @@ class BannerController extends ApiController {
 
     public function create(CreateRequest $request) {
         // $this->authorize('create', Banner::class);
-        $banner = $this->bannerRepository->create($request->files->all());
-        return $this->responseWithMessageAndData(201, $banner, 'Banner(s) created.');
+        $banner = $this->bannerRepository->create($request->all(), $request->files->all());
+        return $this->responseWithMessageAndData(201, $banner, 'Banner created.');
     }
 
-    public function activate(Banner $banner) {
+    public function update(UpdateRequest $request, Banner $banner) {
         // $this->authorize('update', $banner);
-        $data['status'] = Banner::STATUS_ACTIVE;
-        $banner = $this->bannerRepository->update($banner, $data);
-        return $this->responseWithMessageAndData(200, $banner, 'Banner activated.');
-    }
-
-    public function deactivate(Banner $banner) {
-        // $this->authorize('update', $banner);
-        $data['status'] = Banner::STATUS_INACTIVE;
-        $banner = $this->bannerRepository->update($banner, $data);
-        return $this->responseWithMessageAndData(200, $banner, 'Banner deactivated.');
+        $banner = $this->bannerRepository->update($banner, $request->all(), $request->files->all());
+        return $this->responseWithMessageAndData(200, $banner, 'Banner updated.');
     }
 
     public function delete(Banner $banner) {

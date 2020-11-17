@@ -14,18 +14,20 @@ interface IBannerRepository {
 
     /**
      * Create Banners
+     * @param array $data
      * @param array $files
      * @return [Banner]
      */
-    public function create($files);
+    public function create($data, $files);
 
     /**
      * Update Banner Details
      * @param Banner $banner
      * @param array $data
+     * @param array $files
      * @return Banner
      */
-    public function update(Banner $banner, $data);
+    public function update(Banner $banner, $data, $files);
 
 
     /**

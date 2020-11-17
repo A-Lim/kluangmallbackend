@@ -67,7 +67,6 @@ class EventRepository implements IEventRepository {
         $imgToBeDeleted = [];
         // existing images
         $existingImages = json_decode($event->getAttributes()['images'], true) ?? [];
-        // $updatedImages = $existingImages;
 
         if (isset($data['images'])) {
             // get images that are inside $existingImages but not inside $data['images']

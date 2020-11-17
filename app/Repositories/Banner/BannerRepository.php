@@ -3,6 +3,7 @@ namespace App\Repositories\Banner;
 
 use App\Banner;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class BannerRepository implements IBannerRepository {
 
@@ -35,26 +36,38 @@ class BannerRepository implements IBannerRepository {
     /**
      * {@inheritdoc}
      */
-    public function create($files) {
-        $files = $files['uploadBanners'];
-        $banners = [];
+    public function create($data, $files) {
+        // boolean data is not recognised when being sent at formdata
+        $data['is_clickable'] = $data['is_clickable'] === 'true';
+        $banner = Banner::create($data);
 
-        if (is_array($files)) {
-            foreach ($files as $file) {
-                array_push($banners, $this->saveBanner($file));
-            }
-        } else {
-            array_push($banners, $this->saveBanner($files));
+        if (isset($files['uploadImage'])) {
+            $banner->image = json_encode($this->saveImage($banner, $files['uploadImage']));
         }
-        
 
-        return $banners;
+        $banner->save();
+        return $banner;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function update(Banner $banner, $data) {
+    public function update(Banner $banner, $data, $files) {
+        // boolean data is not recognised when being sent at formdata
+        $data['is_clickable'] = $data['is_clickable'] === 'true';
+
+        if (isset($files['uploadImage'])) {
+            $data['image'] = json_encode($this->saveImage($banner, $files['uploadImage']));
+        } else {
+            // image property without mutator
+            $imageOriginal = json_decode($banner->getAttributes()['image']);
+            if ($imageOriginal != null) {
+                $fullPath = public_path($imageOriginal->path);
+                if (file_exists($fullPath))
+                    unlink($fullPath);
+            }
+            $data['image'] = null;
+        }
         $banner->fill($data);
         $banner->save();
 
@@ -70,19 +83,30 @@ class BannerRepository implements IBannerRepository {
         $banner->delete();
     }
 
-    private function saveBanner($file) {
-        $data['created_by'] = auth()->id();
-        $data['name'] = $file->getClientOriginalName();
-        $data['status'] = Banner::STATUS_ACTIVE;
-        $banner = Banner::create($data);
+    // private function saveBanner($file) {
+    //     $data['created_by'] = auth()->id();
+    //     $data['name'] = $file->getClientOriginalName();
+    //     $data['status'] = Banner::STATUS_ACTIVE;
+    //     $banner = Banner::create($data);
 
-        // upload
+    //     // upload
+    //     $saveDirectory = 'public/banners/'.$banner->id.'/';
+    //     Storage::putFileAs($saveDirectory, $file, $banner->name);
+
+    //     $banner->path = Storage::url($saveDirectory.$banner->name);
+    //     $banner->save();
+
+    //     return $banner;
+    // }
+
+    private function saveImage(Banner $banner, UploadedFile $file) {
         $saveDirectory = 'public/banners/'.$banner->id.'/';
-        Storage::putFileAs($saveDirectory, $file, $banner->name);
 
-        $banner->path = Storage::url($saveDirectory.$banner->name);
-        $banner->save();
+        $fileName = $file->getClientOriginalName();
+        Storage::putFileAs($saveDirectory, $file, $fileName);
 
-        return $banner;
+        $data['name'] = $fileName;
+        $data['path'] = Storage::url($saveDirectory.$fileName);
+        return $data;
     }
 }

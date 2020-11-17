@@ -5,7 +5,7 @@ namespace App\Http\Requests\Banner;
 use App\Banner;
 use App\Http\Requests\CustomFormRequest;
 
-class CreateRequest extends CustomFormRequest {
+class UpdateRequest extends CustomFormRequest {
 
     public function __construct() {
         parent::__construct();
@@ -20,6 +20,7 @@ class CreateRequest extends CustomFormRequest {
             'title' => 'required|string',
             'status' => 'required|in:'.implode(',', Banner::STATUSES),
             'is_clickable' => 'required',
+            'image' => 'nullable',
             'uploadImage' => 'nullable|image',
             'type' => 'required_if:is_clickable,true',
             'type_id' => 'required_if:is_clickable,true|integer'

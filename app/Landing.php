@@ -10,10 +10,12 @@ class Landing extends Model {
     protected $hidden = [];
     protected $casts = [];
 
+    const TYPE_BANNER = 'banner';
     const TYPE_EVENT = 'event';
     const TYPE_PROMOTION = 'promotion';
 
     const TYPES = [
+        self::TYPE_BANNER,
         self::TYPE_EVENT,
         self::TYPE_PROMOTION,
     ];

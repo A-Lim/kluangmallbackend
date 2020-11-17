@@ -27,6 +27,12 @@ class Banner extends Model {
     ];
 
     public function getImageAttribute($value) {
-        return URL::to('/').$value;
+        if ($value != null) {
+            $data = json_decode($value);
+            $thumbNail['name'] = $data->name;
+            $thumbNail['path'] = URL::to('/').$data->path;
+            return $thumbNail;
+        }
+        return $value;
     }
 }
