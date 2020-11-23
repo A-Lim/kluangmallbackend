@@ -33,19 +33,19 @@ class EventController extends ApiController {
     }
 
     public function create(CreateRequest $request) {
-        // $this->authorize('create', Event::class);
+        $this->authorize('create', Event::class);
         $event = $this->eventRepository->create($request->all(), $request->files->all());
         return $this->responseWithMessageAndData(201, $event, 'Event created.');
     }
 
     public function update(UpdateRequest $request, Event $event) {
-        // $this->authorize('update', $event);
+        $this->authorize('update', $event);
         $event = $this->eventRepository->update($event, $request->all(), $request->files->all());
         return $this->responseWithMessageAndData(200, $event, 'Event updated.');
     }
 
     public function delete(Event $event) {
-        // $this->authorize('delete', $event);
+        $this->authorize('delete', $event);
         $this->eventRepository->delete($event);
         return $this->responseWithMessage(200, 'Event deleted.');
     }

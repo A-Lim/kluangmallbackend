@@ -26,11 +26,13 @@ class LandingController extends ApiController {
     }
 
     public function details(Request $request) {
+        // $this->authorize('viewAny', Landing::class);
         $data = $this->landingRepository->list();
         return $this->responseWithData(200, $data);
     }
 
     public function update(Request $request) {
+        $this->authorize('update', null);
         $this->landingRepository->update($request->all());
         return $this->responseWithMessage(200, 'Landing Page updated.');
     }

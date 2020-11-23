@@ -16,7 +16,6 @@ class CreatePromotionsTable extends Migration
         Schema::create('promotions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
-            $table->string('category');
             $table->text('thumbnail')->nullable();
             $table->text('images')->nullable();
             $table->date('fromDate');
@@ -24,7 +23,7 @@ class CreatePromotionsTable extends Migration
             $table->text('caption');
             $table->text('content');
             $table->text('externalLink')->nullable();
-            $table->string('status', 100);
+            $table->string('status', 20);
             $table->bigInteger('created_by')->unsigned();
             $table->bigInteger('updated_by')->unsigned()->nullable();
             $table->timestamps();

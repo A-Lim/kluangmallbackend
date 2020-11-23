@@ -33,19 +33,19 @@ class PromotionController extends ApiController {
     }
 
     public function create(CreateRequest $request) {
-        // $this->authorize('create', Promotion::class);
+        $this->authorize('create', Promotion::class);
         $promotion = $this->promotionRepository->create($request->all(), $request->files->all());
         return $this->responseWithMessageAndData(201, $promotion, 'Promotion created.');
     }
 
     public function update(UpdateRequest $request, Promotion $promotion) {
-        // $this->authorize('update', $promotion);
+        $this->authorize('update', $promotion);
         $promotion = $this->promotionRepository->update($promotion, $request->all(), $request->files->all());
         return $this->responseWithMessageAndData(200, $promotion, 'Promotion updated.');
     }
 
     public function delete(Promotion $promotion) {
-        // $this->authorize('delete', $promotion);
+        $this->authorize('delete', $promotion);
         $this->promotionRepository->delete($promotion);
         return $this->responseWithMessage(200, 'Promotion deleted.');
     }

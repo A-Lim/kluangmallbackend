@@ -11,6 +11,7 @@ class DatabaseSeeder extends Seeder {
             PermissionsTableSeeder::class,
             UserGroupsTableSeeder::class,
             SystemSettingsTableSeeder::class,
+            MerchantCategoriesTableSeeder::class,
         ]);
     }
 }

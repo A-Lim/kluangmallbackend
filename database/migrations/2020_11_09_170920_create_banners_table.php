@@ -20,7 +20,7 @@ class CreateBannersTable extends Migration
             $table->boolean('is_clickable');
             $table->string('type', 20)->nullable();
             $table->bigInteger('type_id')->nullable();
-            $table->string('status', 100);
+            $table->string('status', 20);
             $table->bigInteger('created_by')->unsigned();
             $table->timestamps();
         });

@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\User;
-use App\Promotion;
+use App\Banner;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class PromotionPolicy {
+class BannerPolicy {
     use HandlesAuthorization;
 
     /**
@@ -21,60 +21,60 @@ class PromotionPolicy {
     }
 
     /**
-     * Determine whether the user can view any promotions.
+     * Determine whether the user can view any banners.
      *
-     * @param  \App\Promotion $user
+     * @param  \App\Banner $user
      * @return mixed
      */
     public function viewAny(User $user) {
-        return $user->can('promotions.viewAny') && 
+        return $user->can('banners.viewAny') && 
             ($user->status == 'active' || $user->status == 'inactive');
     }
 
     /**
-     * Determine whether the user can view the promotion.
+     * Determine whether the user can view the banner.
      *
      * @param  \App\User $user
-     * @param  \App\Promotion $promotion
+     * @param  \App\Banner $banner
      * @return mixed
      */
-    public function view(User $user, Promotion $promotion) {
-        return $user->can('promotions.view') &&
+    public function view(User $user, Banner $banner) {
+        return $user->can('banners.view') &&
             ($user->status == 'active' || $user->status == 'inactive');
     }
 
     /**
-     * Determine whether the user can create promotions.
+     * Determine whether the user can create banners.
      *
      * @param  \App\User $user
      * @return mixed
      */
-    public function create(Promotion $promotion) {
-        return $user->can('promotions.create') &&
+    public function create(Banner $banner) {
+        return $user->can('banners.create') &&
             $user->status == 'active';
     }
 
     /**
-     * Determine whether the user can update the promotion.
+     * Determine whether the user can update the banner.
      *
      * @param  \App\User $user
-     * @param  \App\Promotion $promotion
+     * @param  \App\Banner $banner
      * @return mixed
      */
-    public function update(User $user, Promotion $promotion) {
-        return $user->can('promotions.update') && 
+    public function update(User $user, Banner $banner) {
+        return $user->can('banners.update') && 
             $user->status == 'active';
     }
 
     /**
-     * Determine whether the user can delete the promotion.
+     * Determine whether the user can delete the banner.
      *
      * @param  \App\User $user
-     * @param  \App\Promotion $promotion
+     * @param  \App\Banner $banner
      * @return mixed
      */
-    public function delete(User $user, Promotion $promotion) {
-        return $user->can('promotions.delete') && 
+    public function delete(User $user, Banner $banner) {
+        return $user->can('banners.delete') && 
             $user->status == 'active';
     }
 }

@@ -70,7 +70,7 @@ class ForgotPasswordController extends ApiController {
         // redirect them back to where they came from with their error message.
         if ($response == Password::PASSWORD_RESET) {
             $statusCode = 200;
-            $message = 'Password successfully resetted.';
+            $message = 'Password successfully updated.';
         } else {
             $statusCode = 400;
             $message = 'Invalid reset password token.';
@@ -85,9 +85,7 @@ class ForgotPasswordController extends ApiController {
         if (!$user->isOtpTokenValid($request->otp_token))
             return $this->responseWithMessage(400, 'Invalid otp token.');
 
-        $data = $request->only('password');
-        $data['otp_token'] = null;
-        $this->userRepository->update($user, $data);
-        return $this->responseWithMessage(200, 'Password successfully resetted.');
+        $this->userRepository->resetPassword($user, $request->password);
+        return $this->responseWithMessage(200, 'Password successfully updated.');
     }
 }

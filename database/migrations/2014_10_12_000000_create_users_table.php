@@ -17,13 +17,14 @@ class CreateUsersTable extends Migration
             $table->bigIncrements('id');
             $table->string('name')->nullable();
             $table->string('email')->unique();
+            $table->string('phone')->nullable();
             $table->text('avatar')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('otp', 6)->nullable();
             $table->string('otp_token')->nullable();
             $table->dateTime('otp_expiry')->nullable();
-            $table->string('status', 100);
+            $table->string('status', 20);
             $table->rememberToken();
             $table->timestamps();
         });

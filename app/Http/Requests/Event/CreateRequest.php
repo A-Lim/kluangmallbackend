@@ -18,7 +18,6 @@ class CreateRequest extends CustomFormRequest {
     public function rules() {
         return [
             'title' => 'required|string',
-            'category' => 'nullable',
             'uploadThumbnail' => 'image|nullable',
             'fromDate' => 'required|date_format:d M Y',
             'toDate' => 'required|date_format:d M Y',

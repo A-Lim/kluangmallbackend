@@ -5,6 +5,7 @@ use DB;
 use App\User;
 use App\UserGroup;
 use App\Permission;
+use App\Merchant;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\UploadedFile;
@@ -58,6 +59,28 @@ class UserRepository implements IUserRepository {
     /**
      * {@inheritdoc}
      */
+    public function listMerchantUsers(Merchant $merchant, $data, $paginate = false) {
+        $query = null;
+        
+        if ($data)
+            $query = User::buildQuery($data);
+        else 
+            $query = User::query();
+
+        $query->join('merchant_user', 'merchant_user.user_id', '=', 'users.id')
+            ->where('merchant_user.merchant_id', $merchant->id);
+
+        if ($paginate) {
+            $limit = isset($data['limit']) ? $data['limit'] : 10;
+            return $query->paginate($limit);
+        }
+
+        return $query->get();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function find($id) {
         return User::find($id);
     }
@@ -103,8 +126,9 @@ class UserRepository implements IUserRepository {
      * {@inheritdoc}
      */
     public function resetPassword(User $user, $password) {
-        $user->password = $password;
+        $user->password = Hash::make($password);
         $user->setRememberToken(Str::random(60));
+        $user->otp_token = null;
         $user->save();
     }
 

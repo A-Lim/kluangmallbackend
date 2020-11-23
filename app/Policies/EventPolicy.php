@@ -26,7 +26,7 @@ class EventPolicy {
      * @param  \App\Event $user
      * @return mixed
      */
-    public function viewAny(Event $event) {
+    public function viewAny(User $user) {
         return $user->can('events.viewAny') && 
             ($user->status == 'active' || $user->status == 'inactive');
     }

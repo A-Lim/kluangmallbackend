@@ -29,7 +29,7 @@ trait CustomQuery {
         $queryable = $class::$queryable;
 
         foreach ($data as $key => $value) {
-            if (in_array($key, $queryable)) {
+            if (in_array($key, $queryable) && is_string($value)) {
                 $filterData = explode(':', $value);
 
                 if (count($filterData) < 2) {

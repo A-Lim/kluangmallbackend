@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\User;
-use App\Promotion;
+use App\Merchant;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class PromotionPolicy {
+class MerchantPolicy {
     use HandlesAuthorization;
 
     /**
@@ -21,60 +21,60 @@ class PromotionPolicy {
     }
 
     /**
-     * Determine whether the user can view any promotions.
+     * Determine whether the user can view any merchants.
      *
-     * @param  \App\Promotion $user
+     * @param  \App\Merchant $user
      * @return mixed
      */
     public function viewAny(User $user) {
-        return $user->can('promotions.viewAny') && 
+        return $user->can('merchants.viewAny') && 
             ($user->status == 'active' || $user->status == 'inactive');
     }
 
     /**
-     * Determine whether the user can view the promotion.
+     * Determine whether the user can view the merchant.
      *
      * @param  \App\User $user
-     * @param  \App\Promotion $promotion
+     * @param  \App\Merchant $merchant
      * @return mixed
      */
-    public function view(User $user, Promotion $promotion) {
-        return $user->can('promotions.view') &&
+    public function view(User $user, Merchant $merchant) {
+        return $user->can('merchants.view') &&
             ($user->status == 'active' || $user->status == 'inactive');
     }
 
     /**
-     * Determine whether the user can create promotions.
+     * Determine whether the user can create merchants.
      *
      * @param  \App\User $user
      * @return mixed
      */
-    public function create(Promotion $promotion) {
-        return $user->can('promotions.create') &&
+    public function create(Merchant $merchant) {
+        return $user->can('merchants.create') &&
             $user->status == 'active';
     }
 
     /**
-     * Determine whether the user can update the promotion.
+     * Determine whether the user can update the merchant.
      *
      * @param  \App\User $user
-     * @param  \App\Promotion $promotion
+     * @param  \App\Merchant $merchant
      * @return mixed
      */
-    public function update(User $user, Promotion $promotion) {
-        return $user->can('promotions.update') && 
+    public function update(User $user, Merchant $merchant) {
+        return $user->can('merchants.update') && 
             $user->status == 'active';
     }
 
     /**
-     * Determine whether the user can delete the promotion.
+     * Determine whether the user can delete the merchant.
      *
      * @param  \App\User $user
-     * @param  \App\Promotion $promotion
+     * @param  \App\Merchant $merchant
      * @return mixed
      */
-    public function delete(User $user, Promotion $promotion) {
-        return $user->can('promotions.delete') && 
+    public function delete(User $user, Merchant $merchant) {
+        return $user->can('merchants.delete') && 
             $user->status == 'active';
     }
 }

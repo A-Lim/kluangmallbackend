@@ -95,6 +95,19 @@ Route::prefix('v1')->group(function () {
             Route::patch('landing', 'LandingController@update');
         });
 
+        /**** Merchants ****/
+        Route::namespace('API\v1\Merchant')->group(function () {
+            Route::get('merchants', 'MerchantController@list');
+            Route::get('merchants/categories', 'MerchantController@listCategories');
+            Route::get('merchants/{merchant}', 'MerchantController@details');
+            Route::post('merchants', 'MerchantController@create');
+            Route::patch('merchants/{merchant}', 'MerchantController@update');
+            Route::delete('merchants/{merchant}', 'MerchantController@delete');
+
+            Route::get('merchants/{merchant}/users', 'MerchantController@listUsers');
+            Route::post('merchants/{merchant}/users', 'MerchantController@createUsers');
+        });
+
         /**** Page ****/
         Route::namespace('API\v1\Page')->group(function () {
             Route::get('page/landing', 'PageController@landing');

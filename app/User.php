@@ -10,6 +10,8 @@ use Carbon\Carbon;
 use Laravel\Passport\HasApiTokens;
 use App\Notifications\CustomResetPassword;
 use App\Notifications\CustomVerifyEmail;
+use App\Notifications\MerchantWelcome;
+
 use App\Http\Traits\HasUserGroups;
 use App\Http\Traits\CustomQuery;
 use App\Casts\Json;
@@ -35,6 +37,10 @@ class User extends Authenticatable {
         self::STATUS_UNVERIFIED,
         self::STATUS_INACTIVE,
     ];
+
+    public function merchants() {
+        return $this->belongsToMany(Merchant::class, 'merchant_user', 'merchant_id', 'user_id'); 
+    }
 
     /**
      * Model events
@@ -70,6 +76,15 @@ class User extends Authenticatable {
      */
     public function sendEmailVerificationNotification() {
         $this->notify(new CustomVerifyEmail($this->email));
+    }
+
+    /**
+     * Send merchant accou
+     *
+     * @return void
+     */
+    public function sendMerchantWelcomeNotification($token) {
+        $this->notify(new MerchantWelcome($token));
     }
 
     /**

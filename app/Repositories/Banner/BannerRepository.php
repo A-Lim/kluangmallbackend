@@ -57,17 +57,17 @@ class BannerRepository implements IBannerRepository {
         $data['is_clickable'] = $data['is_clickable'] === 'true';
 
         if (isset($files['uploadImage'])) {
+            $this->deleteImage($banner);
             $data['image'] = json_encode($this->saveImage($banner, $files['uploadImage']));
-        } else {
-            // image property without mutator
-            $imageOriginal = json_decode($banner->getAttributes()['image']);
-            if ($imageOriginal != null) {
-                $fullPath = public_path($imageOriginal->path);
-                if (file_exists($fullPath))
-                    unlink($fullPath);
-            }
-            $data['image'] = null;
         }
+
+        if (!isset($data['image'])) {
+            $this->deleteImage($banner);
+            $data['image'] = null;
+        } else {
+            $data['image'] = $banner->getAttributes()['image'];
+        }
+
         $banner->fill($data);
         $banner->save();
 
@@ -83,22 +83,6 @@ class BannerRepository implements IBannerRepository {
         $banner->delete();
     }
 
-    // private function saveBanner($file) {
-    //     $data['created_by'] = auth()->id();
-    //     $data['name'] = $file->getClientOriginalName();
-    //     $data['status'] = Banner::STATUS_ACTIVE;
-    //     $banner = Banner::create($data);
-
-    //     // upload
-    //     $saveDirectory = 'public/banners/'.$banner->id.'/';
-    //     Storage::putFileAs($saveDirectory, $file, $banner->name);
-
-    //     $banner->path = Storage::url($saveDirectory.$banner->name);
-    //     $banner->save();
-
-    //     return $banner;
-    // }
-
     private function saveImage(Banner $banner, UploadedFile $file) {
         $saveDirectory = 'public/banners/'.$banner->id.'/';
 
@@ -108,5 +92,16 @@ class BannerRepository implements IBannerRepository {
         $data['name'] = $fileName;
         $data['path'] = Storage::url($saveDirectory.$fileName);
         return $data;
+    }
+
+    private function deleteImage(Banner $banner) {
+        // image property without mutator
+        $imgOriginal = json_decode($banner->getAttributes()['image']);
+
+        if ($imgOriginal != null) {
+            $fullPath = public_path($imgOriginal->path);
+            if (file_exists($fullPath))
+                unlink($fullPath);
+        }
     }
 }

@@ -1,0 +1,170 @@
+<?php
+namespace App\Repositories\Merchant;
+
+use DB;
+use App\User;
+use App\UserGroup;
+use App\Merchant;
+use App\MerchantCategory;
+
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
+class MerchantRepository implements IMerchantRepository {
+
+    /**
+     * {@inheritdoc}
+     */
+    public function list($data, $paginate = false) {
+        $query = null;
+        
+        if ($data)
+            $query = Merchant::buildQuery($data);
+        else 
+            $query = Merchant::query();
+
+        if ($paginate) {
+            $limit = isset($data['limit']) ? $data['limit'] : 10;
+            return $query->paginate($limit);
+        }
+
+        return $query->get();
+    }
+
+    public function listCategories($data, $paginate = false) {
+        $query = null;
+        
+        if ($data)
+            $query = MerchantCategory::buildQuery($data);
+        else 
+            $query = MerchantCategory::query();
+
+        if (isset($data['name']) && is_array($data['name'])) {
+            $names = implode("','", $data['name']);
+            $query->orderByRaw(DB::raw("FIELD(name,'".$names."') DESC"))
+                ->orderBy('name');
+        } else {
+            $query->orderBy('name');
+        }
+        
+
+        if ($paginate) {
+            $limit = isset($data['limit']) ? $data['limit'] : 10;
+            return $query->paginate($limit);
+        }
+
+        return $query->get();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function create($data, $files) {
+        DB::beginTransaction();
+        $data['created_by'] = auth()->id();
+        $merchant = Merchant::create($data);
+
+        $merchantCategory = MerchantCategory::firstOrCreate(['name' => $data['category']]);
+
+        if (isset($files['uploadLogo'])) {
+            $merchant->logo = json_encode($this->saveImage($merchant, $files['uploadLogo']));
+        }
+
+        $merchant->save();
+        DB::commit();
+
+        return $merchant;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function update(Merchant $merchant, $data, $files) {
+        $data['updated_by'] = auth()->id();
+
+        if (isset($files['uploadLogo'])) {
+            $this->deleteLogo($merchant);
+            $data['logo'] = json_encode($this->saveImage($merchant, $files['uploadLogo']));
+        } 
+        
+        if (!isset($data['logo'])) {
+            $this->deleteLogo($merchant);
+            $data['logo'] = null;
+        } else {
+            $data['logo'] = $merchant->getAttributes()['logo'];
+        }
+
+        $merchant->fill($data);
+        $merchant->save();
+
+        $merchantCategory = MerchantCategory::firstOrCreate(['name' => $data['category']]);
+        return $merchant;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createUsers(Merchant $merchant, $data) {
+        DB::beginTransaction();
+        $insert_data = [];
+        foreach ($data['users'] as $user) {
+            $user_data = $user;
+            $password = Str::random(8);
+            $user_data['password'] = Hash::make($password);
+            $user_data['status'] = 'active';
+            array_push($insert_data, $user_data);
+        }
+
+        User::insert($insert_data);
+
+        $emails = collect($insert_data)->pluck('email');
+        $users = User::whereIn('email', $emails)->get();
+        $merchantgroup = UserGroup::where('code', 'merchant')->first();
+
+        $merchant_user_data = [];
+        foreach ($users as $user) {
+            array_push($merchant_user_data, [
+            'merchant_id' => $merchant->id,
+                'user_id' => $user->id
+            ]);
+        }
+
+        $user_usergroup_data = [];
+        foreach ($users as $user) {
+            array_push($user_usergroup_data, [
+                'usergroup_id' => $merchantgroup->id,
+                'user_id' => $user->id
+            ]);
+        }
+
+        DB::table('merchant_user')->insert($merchant_user_data);
+        DB::table('user_usergroup')->insert($user_usergroup_data);
+        DB::commit();
+        return $users;
+    }
+
+    private function saveImage(Merchant $merchant, UploadedFile $file) {
+        $saveDirectory = 'public/merchants/'.$merchant->id.'/logo/';
+
+        $fileName = $file->getClientOriginalName();
+        Storage::putFileAs($saveDirectory, $file, $fileName);
+
+        $data['name'] = $fileName;
+        $data['path'] = Storage::url($saveDirectory.$fileName);
+        return $data;
+    }
+
+    private function deleteLogo(Merchant $merchant) {
+        // image property without mutator
+        $logoOriginal = json_decode($merchant->getAttributes()['logo']);
+
+        if ($logoOriginal != null) {
+            $fullPath = public_path($logoOriginal->path);
+            if (file_exists($fullPath))
+                unlink($fullPath);
+        }
+        $data['logo'] = null;
+    }
+}

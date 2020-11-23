@@ -16,5 +16,6 @@ class RepositoryServiceProvider extends ServiceProvider {
         $this->app->bind('App\Repositories\Promotion\IPromotionRepository', 'App\Repositories\Promotion\PromotionRepository');
         $this->app->bind('App\Repositories\Banner\IBannerRepository', 'App\Repositories\Banner\BannerRepository');
         $this->app->bind('App\Repositories\Landing\ILandingRepository', 'App\Repositories\Landing\LandingRepository');
+        $this->app->bind('App\Repositories\Merchant\IMerchantRepository', 'App\Repositories\Merchant\MerchantRepository');
     }
 }

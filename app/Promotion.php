@@ -11,7 +11,7 @@ use App\Http\Traits\CustomQuery;
 class Promotion extends Model {
     use CustomQuery;
 
-    protected $fillable = ['title', 'category', 'thumbnail', 'images', 'fromDate', 'toDate', 'caption', 'content', 'externalLink', 'status', 'created_by', 'updated_by'];
+    protected $fillable = ['title', 'thumbnail', 'images', 'fromDate', 'toDate', 'caption', 'content', 'externalLink', 'status', 'created_by', 'updated_by'];
     protected $hidden = [];
     protected $casts = [
         'fromDate' => 'datetime:d M Y',
