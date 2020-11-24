@@ -11,7 +11,7 @@ class Merchant extends Model {
     use CustomQuery;
 
     protected $fillable = ['name', 'logo', 'status', 'location', 'category', 'business_reg_no', 'website', 'email', 'phone', 'description', 'terms_and_conditions', 'privacy_policy', 'created_by', 'updated_by'];
-    protected $hidden = [];
+    protected $hidden = ['created_by', 'updated_by', 'created_at', 'updated_at'];
     protected $casts = [];
 
     // list of properties queryable for datatable

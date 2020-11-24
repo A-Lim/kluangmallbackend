@@ -103,6 +103,7 @@ Route::prefix('v1')->group(function () {
             Route::post('merchants', 'MerchantController@create');
             Route::patch('merchants/{merchant}', 'MerchantController@update');
             Route::delete('merchants/{merchant}', 'MerchantController@delete');
+            Route::delete('merchants/categories/{merchantCategory}', 'MerchantController@deleteMerchantCategory');
 
             Route::get('merchants/{merchant}/users', 'MerchantController@listUsers');
             Route::post('merchants/{merchant}/users', 'MerchantController@createUsers');
@@ -111,6 +112,8 @@ Route::prefix('v1')->group(function () {
         /**** Page ****/
         Route::namespace('API\v1\Page')->group(function () {
             Route::get('page/landing', 'PageController@landing');
+            Route::get('page/shops', 'PageController@shops');
+            Route::get('page/shops/{merchant}', 'PageController@shopDetail');
         });
 
     });

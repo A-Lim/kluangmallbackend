@@ -2,6 +2,7 @@
 namespace App\Repositories\Merchant;
 
 use App\Merchant;
+use App\MerchantCategory;
 
 interface IMerchantRepository {
     /**
@@ -11,6 +12,14 @@ interface IMerchantRepository {
      * @return array [Merchant]
      */
     public function list($data, $paginate = false);
+
+/**
+     * List all merchant categories
+     * @param array $data 
+     * @param bool $paginate
+     * @return array [Merchant]
+     */
+    public function listCategories($data, $paginate = false);
 
     /**
      * Create merchant
@@ -35,4 +44,11 @@ interface IMerchantRepository {
      * @param array $data 
      */
     public function createUsers(Merchant $merchant, $data);
+
+    /**
+     * Delete merchant category
+     * MerchantCategory $merchantCategory
+     * @return null
+     */
+    public function deleteMerchantCategory(MerchantCategory $merchantCategory);
 }

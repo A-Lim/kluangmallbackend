@@ -33,6 +33,19 @@ class MerchantRepository implements IMerchantRepository {
         return $query->get();
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function listSimilar(Merchant $merchant) {
+        return Merchant::where('category', $merchant->category)
+            ->where('id', '<>', $merchant->id)
+            ->limit(10)
+            ->get();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function listCategories($data, $paginate = false) {
         $query = null;
         
@@ -82,6 +95,8 @@ class MerchantRepository implements IMerchantRepository {
      * {@inheritdoc}
      */
     public function update(Merchant $merchant, $data, $files) {
+        DB::beginTransaction();
+
         $data['updated_by'] = auth()->id();
 
         if (isset($files['uploadLogo'])) {
@@ -100,6 +115,14 @@ class MerchantRepository implements IMerchantRepository {
         $merchant->save();
 
         $merchantCategory = MerchantCategory::firstOrCreate(['name' => $data['category']]);
+
+        // deactivate merchant users
+        if ($merchant->status == Merchant::STATUS_INACTIVE) {
+            $users = $merchant->users;
+            User::whereIn('id', $users->pluck('id')->toArray())->update(['status' => User::STATUS_INACTIVE]);
+        }
+
+        DB::commit();
         return $merchant;
     }
 
@@ -143,6 +166,13 @@ class MerchantRepository implements IMerchantRepository {
         DB::table('user_usergroup')->insert($user_usergroup_data);
         DB::commit();
         return $users;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteMerchantCategory(MerchantCategory $merchantCategory) {
+        $merchantCategory->delete();
     }
 
     private function saveImage(Merchant $merchant, UploadedFile $file) {

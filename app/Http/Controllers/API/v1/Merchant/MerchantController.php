@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 
 use App\Merchant;
+use App\MerchantCategory;
 use App\Repositories\Merchant\IMerchantRepository;
 use App\Repositories\User\IUserRepository;
 
@@ -76,5 +77,10 @@ class MerchantController extends ApiController {
         }
 
         return $this->responseWithMessage(200, 'Merchant user(s) created.');
+    }
+
+    public function deleteMerchantCategory(MerchantCategory $merchantCategory) {
+        $this->merchantRepository->deleteMerchantCategory($merchantCategory);
+        return $this->responseWithMessage(200, 'Category deleted.');
     }
 }
