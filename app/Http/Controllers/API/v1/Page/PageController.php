@@ -27,7 +27,7 @@ class PageController extends ApiController {
     }
 
     public function shops(Request $request) {
-        $merchants = $this->merchantRepository->list($request->all(), true);
+        $merchants = $this->merchantRepository->list($request->all(), false);
         return $this->responseWithData(200, $merchants);
     }
 

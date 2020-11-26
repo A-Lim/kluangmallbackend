@@ -2,6 +2,7 @@
 namespace App\Repositories\UserGroup;
 
 use DB;
+use App\User;
 use App\UserGroup;
 use Carbon\Carbon;
 
@@ -17,7 +18,7 @@ class UserGroupRepository implements IUserGroupRepository {
         return UserGroup::where($conditions)->exists();
     }
 
-     /**
+    /**
      * {@inheritdoc}
      */
     public function list($data, $paginate = false) {
@@ -36,12 +37,44 @@ class UserGroupRepository implements IUserGroupRepository {
 
         return $query->get();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function listUsers(UserGroup $userGroup, $data, $paginate = false) {
+        $query = User::buildQuery($data)
+            ->join('user_usergroup', 'user_usergroup.user_id', 'users.id')
+            ->where('user_usergroup.usergroup_id', $userGroup->id);
+
+        if ($paginate) {
+            $limit = isset($data['limit']) ? $data['limit'] : 10;
+            return $query->paginate($limit);
+        }
+
+        return $query->get();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function listNotUsers(UserGroup $userGroup, $data, $paginate = false) {
+        $query = User::buildQuery($data)
+            ->join('user_usergroup', 'user_usergroup.user_id', 'users.id')
+            ->where('user_usergroup.usergroup_id', '<>', $userGroup->id);
+
+        if ($paginate) {
+            $limit = isset($data['limit']) ? $data['limit'] : 10;
+            return $query->paginate($limit);
+        }
+
+        return $query->get();
+    }
     
     /**
      * {@inheritdoc}
      */
     public function find($id) {
-        return UserGroup::with(['users', 'permissions'])->find($id);
+        return UserGroup::with(['permissions'])->find($id);
     }
 
     /**
@@ -63,7 +96,7 @@ class UserGroupRepository implements IUserGroupRepository {
         if (!empty($data['userIds']))
             $userGroup->users()->sync($data['userIds']);
         
-        return UserGroup::with('permissions')->where('id', $userGroup->id)->first();
+        return $userGroup;
     }
 
     /**

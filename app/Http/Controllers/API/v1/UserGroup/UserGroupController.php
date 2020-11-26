@@ -34,10 +34,26 @@ class UserGroupController extends ApiController {
         return $this->responseWithData(200, $userGroups);
     }
 
+    public function listUsers(Request $request, UserGroup $userGroup) {
+        if ($request->type != 'formcontrol')
+            $this->authorize('viewAny', UserGroup::class);
+        
+        $users = $this->userGroupRepository->listUsers($userGroup, $request->all(), true);
+        return $this->responseWithData(200, $users);
+    }
+
+    public function listNotUsers(Request $request, UserGroup $userGroup) {
+        if ($request->type != 'formcontrol')
+            $this->authorize('viewAny', UserGroup::class);
+        
+        $users = $this->userGroupRepository->listNotUsers($userGroup, $request->all(), true);
+        return $this->responseWithData(200, $users);
+    }
+
     public function create(CreateRequest $request) {
         $this->authorize('create', UserGroup::class);
         $userGroup = $this->userGroupRepository->create($request->all());
-        return $this->responseWithMessage(201, 'User group created.');
+        return $this->responseWithMessageAndData(201, $userGroup, 'User group created.');
     }
 
     public function details(UserGroup $userGroup) {

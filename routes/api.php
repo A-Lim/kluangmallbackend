@@ -41,6 +41,9 @@ Route::prefix('v1')->group(function () {
             
             Route::get('usergroups', 'UserGroupController@list');
             Route::get('usergroups/{userGroup}', 'UserGroupController@details');
+            Route::get('usergroups/{userGroup}/users', 'UserGroupController@listUsers');
+            Route::get('usergroups/{userGroup}/notusers', 'UserGroupController@listNotUsers');
+
             Route::post('usergroups', 'UserGroupController@create');
             Route::post('usergroups/exists', 'UserGroupController@exists');
             Route::patch('usergroups/{userGroup}', 'UserGroupController@update');
@@ -83,9 +86,6 @@ Route::prefix('v1')->group(function () {
             Route::get('banners/{banner}', 'BannerController@details');
             Route::post('banners', 'BannerController@create');
             Route::patch('banners/{banner}', 'BannerController@update');
-            // Route::post('banners/{banner}/activate', 'BannerController@activate');
-            // Route::post('banners/{banner}/deactivate', 'BannerController@deactivate');
-            // Route::patch('banners/{banner}', 'PromotionController@update');
             Route::delete('banners/{banner}', 'BannerController@delete');
         });
 

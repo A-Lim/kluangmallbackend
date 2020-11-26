@@ -10,7 +10,7 @@ interface IUserGroupRepository
      */
     public function codeExists($code, $userGroupId = null);
 
-     /**
+    /**
      * List usergroup
      * 
      * @param array $query
@@ -18,6 +18,24 @@ interface IUserGroupRepository
      * @return [UserGroup]
      */
     public function list($query, $paginate = false);
+
+    /**
+     * List users that belong to usergroup
+     * 
+     * @param array $query
+     * @param boolean $paginate = false
+     * @return [User]
+     */
+    public function listUsers(UserGroup $userGroup, $data, $paginate = false);
+
+    /**
+     * List users that does not belong to usergroup
+     * 
+     * @param array $query
+     * @param boolean $paginate = false
+     * @return [User]
+     */
+    public function listNotUsers(UserGroup $userGroup, $data, $paginate = false);
 
     /**
      * Find usergroup from id

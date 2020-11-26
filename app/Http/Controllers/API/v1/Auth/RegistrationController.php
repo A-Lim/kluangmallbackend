@@ -53,7 +53,7 @@ class RegistrationController extends ApiController {
 
         // send email verification email
         if ($verification_type->value == SystemSetting::VTYPE_EMAIL) {
-            $registration_message .= ' An will be sent to verify your account.';
+            $registration_message .= ' An email will be sent to verify your account.';
             event(new Registered($user));
         }
         
