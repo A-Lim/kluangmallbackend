@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\SystemSetting;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\SystemSetting\UpdateRequest;
+use App\Http\Requests\SystemSetting\AppVersionRequest;
 use App\Repositories\SystemSetting\ISystemSettingRepository;
 
 class SystemSettingController extends ApiController {
@@ -14,7 +15,7 @@ class SystemSettingController extends ApiController {
 
     public function __construct(ISystemSettingRepository $iSystemSettingRepository) {
         $this->middleware('auth:api')
-            ->except(['allowPublicRegistration']);
+            ->except(['allowPublicRegistration', 'appVersion']);
         $this->systemSettingRepository = $iSystemSettingRepository;
     }
 
@@ -33,5 +34,10 @@ class SystemSettingController extends ApiController {
     public function allowPublicRegistration(Request $request) {
         $allowed = (bool) $this->systemSettingRepository->findByCode('allow_public_registration')->value;
         return $this->responseWithData(200, $allowed);
+    }
+
+    public function appVersion(AppVersionRequest $request) {
+        $appData = $this->systemSettingRepository->appData($request->all());
+        return $this->responseWithData(200, $appData);
     }
 }

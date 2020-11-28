@@ -5,11 +5,13 @@ namespace App\Http\Controllers\API\v1\UserGroup;
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 
+use App\User;
 use App\UserGroup;
 use App\Repositories\UserGroup\IUserGroupRepository;
 
 use App\Http\Requests\UserGroup\CreateRequest;
 use App\Http\Requests\UserGroup\UpdateRequest;
+use App\Http\Requests\UserGroup\AddUsersRequest;
 use App\Http\Requests\UserGroup\CodeExistsRequest;
 
 class UserGroupController extends ApiController {
@@ -60,6 +62,18 @@ class UserGroupController extends ApiController {
         $this->authorize('view', $userGroup);
         $userGroup = $this->userGroupRepository->find($userGroup->id);
         return $this->responseWithData(200, $userGroup); 
+    }
+
+    public function addUsers(AddUsersRequest $request, UserGroup $userGroup) {
+        $this->authorize('update', $userGroup);
+        $this->userGroupRepository->addUsers($userGroup, $request->all());
+        return $this->responseWithMessage(200, 'Users added.'); 
+    }
+
+    public function removeUser(Request $request, UserGroup $userGroup, User $user) {
+        $this->authorize('update', $userGroup);
+        $this->userGroupRepository->removeUser($userGroup, $user);
+        return $this->responseWithMessage(200, 'User removed.'); 
     }
 
     public function update(UpdateRequest $request, UserGroup $userGroup) {

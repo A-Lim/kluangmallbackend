@@ -59,9 +59,7 @@ class BannerRepository implements IBannerRepository {
         if (isset($files['uploadImage'])) {
             $this->deleteImage($banner);
             $data['image'] = json_encode($this->saveImage($banner, $files['uploadImage']));
-        }
-
-        if (!isset($data['image'])) {
+        } else if (!isset($files['uploadImage']) && !isset($data['image'])) {
             $this->deleteImage($banner);
             $data['image'] = null;
         } else {

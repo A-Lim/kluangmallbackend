@@ -59,8 +59,9 @@ class UserGroupRepository implements IUserGroupRepository {
      */
     public function listNotUsers(UserGroup $userGroup, $data, $paginate = false) {
         $query = User::buildQuery($data)
-            ->join('user_usergroup', 'user_usergroup.user_id', 'users.id')
-            ->where('user_usergroup.usergroup_id', '<>', $userGroup->id);
+            ->select('users.*')
+            ->leftjoin('user_usergroup', 'user_usergroup.user_id', 'users.id')
+            ->whereNotIn('user_usergroup.user_id', $userGroup->users->pluck('id')->toArray());
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
@@ -93,10 +94,23 @@ class UserGroupRepository implements IUserGroupRepository {
         if ($data['is_admin'] == false && !empty($data['permissions'])) 
             $userGroup->givePermissions($data['permissions']);
         
-        if (!empty($data['userIds']))
-            $userGroup->users()->sync($data['userIds']);
+        // if (!empty($data['userIds']))
+        //     $userGroup->users()->sync($data['userIds']);
         
         return $userGroup;
+    }
+
+    public function addUsers(UserGroup $userGroup, $data) {
+        $attachedIds = $userGroup->users()
+            ->whereIn('id', $data['userIds'])
+            ->pluck('id')
+            ->toArray();
+        $newIds = array_diff($data['userIds'], $attachedIds);
+        $userGroup->users()->attach($newIds);
+    }
+
+    public function removeUser(UserGroup $userGroup, User $user) {
+        $userGroup->users()->detach($user->id);
     }
 
     /**

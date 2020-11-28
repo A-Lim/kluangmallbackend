@@ -38,20 +38,25 @@ Route::prefix('v1')->group(function () {
 
         /**** UserGroups ****/
         Route::namespace('API\v1\UserGroup')->group(function () {
-            
+
             Route::get('usergroups', 'UserGroupController@list');
             Route::get('usergroups/{userGroup}', 'UserGroupController@details');
             Route::get('usergroups/{userGroup}/users', 'UserGroupController@listUsers');
             Route::get('usergroups/{userGroup}/notusers', 'UserGroupController@listNotUsers');
-
+            
             Route::post('usergroups', 'UserGroupController@create');
             Route::post('usergroups/exists', 'UserGroupController@exists');
+            Route::post('usergroups/{userGroup}/users', 'UserGroupController@addUsers');
+
             Route::patch('usergroups/{userGroup}', 'UserGroupController@update');
             Route::delete('usergroups/{userGroup}', 'UserGroupController@delete');
+            Route::delete('usergroups/{userGroup}/users/{user}', 'UserGroupController@removeUser');
         });
 
         /**** SystemSettings ****/
         Route::namespace('API\v1\SystemSetting')->group(function () {
+            Route::post('app/version', 'SystemSettingController@appVersion');
+
             Route::get('systemsettings', 'SystemSettingController@list');
             Route::get('systemsettings/allowpublicregistration', 'SystemSettingController@allowPublicRegistration');
             Route::patch('systemsettings', 'SystemSettingController@update');

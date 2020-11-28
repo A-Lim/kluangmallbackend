@@ -34,4 +34,12 @@ interface ISystemSettingRepository {
      * @return void
      */
     public function findByCodes(array $codes);
+
+    /**
+     * Get Mobile App Data (version and update links)
+     * 
+     * @param array data
+     * @return array
+     */
+    public function appData($data);
 }

@@ -38,6 +38,30 @@ class SystemSettingRepository implements ISystemSettingRepository {
     /**
      * {@inheritdoc}
      */
+    public function appData($data) {
+        $systemsettings = null;
+        $result = [];
+        switch ($data['os']) {
+            case 'android':
+                $systemsettings = SystemSetting::whereIn('code', ['android_version', 'android_link'])->get();
+                break;
+            
+            case 'ios':
+                $systemsettings = SystemSetting::
+                    whereIn('code', ['ios_version', 'ios_link'])->get();
+                break;
+        }
+
+        foreach ($systemsettings as $systemsetting) {
+            $result[$systemsetting->name] = $systemsetting->value;
+        }
+
+        return $result;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function update(array $data) {
         // https://github.com/laravel/ideas/issues/575
         // update multiple values based on code
