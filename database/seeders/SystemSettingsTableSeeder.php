@@ -22,6 +22,11 @@ class SystemSettingsTableSeeder extends Seeder {
         $mobileCategory = SystemSettingCategory::create(['name' => 'Mobile']);
         
         $systemsettings = [
+            ['systemsettingcategory_id' => $generalCategory->id, 'name' => 'About Us', 'code' => 'about_us', 'description' => '', 'value' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['systemsettingcategory_id' => $generalCategory->id, 'name' => 'Contact Us', 'code' => '', 'contact_us' => '', 'value' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['systemsettingcategory_id' => $generalCategory->id, 'name' => 'Terms & Conditions', 'code' => 'terms_and_conditions', 'description' => '', 'value' => '', 'created_at' => $now, 'updated_at' => $now],
+            ['systemsettingcategory_id' => $generalCategory->id, 'name' => 'Privacy Policy', 'code' => 'privacy_policy', 'description' => '', 'value' => '', 'created_at' => $now, 'updated_at' => $now],
+
             ['systemsettingcategory_id' => $authCategory->id, 'name' => 'Allow Public Registration', 'code' => 'allow_public_registration', 'description' => 'Allow public users to register to site.', 'value' => true, 'created_at' => $now, 'updated_at' => $now],
             ['systemsettingcategory_id' => $authCategory->id, 'name' => 'Verification Type', 'code' => 'verification_type', 'description' => '', 'value' => 'none', 'created_at' => $now, 'updated_at' => $now],
             ['systemsettingcategory_id' => $authCategory->id, 'name' => 'Default User Group', 'code' => 'default_usergroups', 'description' => '', 'value' => '', 'created_at' => $now, 'updated_at' => $now],

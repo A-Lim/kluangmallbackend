@@ -117,6 +117,10 @@ Route::prefix('v1')->group(function () {
         /**** Page ****/
         Route::namespace('API\v1\Page')->group(function () {
             Route::get('page/landing', 'PageController@landing');
+            Route::get('page/about-us', 'PageController@aboutUs');
+            Route::get('page/contact-us', 'PageController@contactUs');
+            Route::get('page/privacy-policy', 'PageController@privacyPolicy');
+            Route::get('page/terms-and-conditions', 'PageController@termsAndConditions');
             Route::get('page/shops', 'PageController@shops');
             Route::get('page/shops/{merchant}', 'PageController@shopDetail');
         });

@@ -27,6 +27,10 @@ class CreateUsersTable extends Migration
             $table->string('status', 20);
             $table->rememberToken();
             $table->timestamps();
+
+            $table->index('name');
+            $table->index('phone');
+            $table->index('status');
         });
     }
 

@@ -18,7 +18,8 @@ class CreateMerchantsTable extends Migration
             $table->string('name');
             $table->text('logo')->nullable();
             $table->string('status', 20);
-            $table->string('location');
+            $table->string('floor', 2);
+            $table->string('unit', 10);
             $table->string('category');
             $table->string('business_reg_no');
             $table->string('website');
@@ -30,6 +31,10 @@ class CreateMerchantsTable extends Migration
             $table->bigInteger('created_by')->unsigned();
             $table->bigInteger('updated_by')->unsigned()->nullable();
             $table->timestamps();
+
+
+            $table->index('name');
+            $table->index('business_reg_no');
         });
     }
 

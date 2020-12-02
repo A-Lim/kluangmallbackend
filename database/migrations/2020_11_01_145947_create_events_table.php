@@ -27,6 +27,8 @@ class CreateEventsTable extends Migration
             $table->bigInteger('created_by')->unsigned();
             $table->bigInteger('updated_by')->unsigned()->nullable();
             $table->timestamps();
+
+            $table->index('title');
         });
     }
 

@@ -23,6 +23,8 @@ class CreateBannersTable extends Migration
             $table->string('status', 20);
             $table->bigInteger('created_by')->unsigned();
             $table->timestamps();
+
+            $table->index('title');
         });
     }
 
