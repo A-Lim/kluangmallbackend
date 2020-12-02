@@ -53,7 +53,7 @@ class PageController extends ApiController {
         $data = $this->systemSettingRepository->findByCodes(['email', 'phone', 'address']);
         $result = [];
         foreach ($data as $systemsetting) {
-            $result[$systemsetting->name] = $systemsetting->value;
+            $result[$systemsetting->code] = $systemsetting->value;
         }
         return $this->responseWithData(200, $result);
     }

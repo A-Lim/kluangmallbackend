@@ -53,7 +53,7 @@ class SystemSettingRepository implements ISystemSettingRepository {
         }
 
         foreach ($systemsettings as $systemsetting) {
-            $result[$systemsetting->name] = $systemsetting->value;
+            $result[$systemsetting->code] = $systemsetting->value;
         }
 
         return $result;
