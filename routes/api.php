@@ -29,7 +29,10 @@ Route::prefix('v1')->group(function () {
             Route::get('users/{user}', 'UserController@details');
             Route::get('profile', 'UserController@profile');
             Route::post('users/{user}/reset-password', 'UserController@resetPassword');
+
             Route::patch('profile', 'UserController@updateProfile');
+            Route::patch('change-password', 'UserController@changePassword');
+
             Route::patch('users/{user}', 'UserController@update');
 
             Route::patch('users/{user}/avatar', 'UserController@uploadUserAvatar');

@@ -14,6 +14,7 @@ use App\Repositories\User\IUserRepository;
 use App\Http\Requests\User\UpdateRequest;
 use App\Http\Requests\User\UploadAvatarRequest;
 use App\Http\Requests\User\UpdateProfileRequest;
+use App\Http\Requests\User\ChangePasswordRequest;
 
 class UserController extends ApiController {
 
@@ -57,6 +58,18 @@ class UserController extends ApiController {
         $user = $this->userRepository->update(auth()->user(), $data);
         $userResource = new UserResource($user);
         return $this->responseWithMessageAndData(200, $userResource, 'Profile updated.');  
+    }
+
+    public function changePassword(ChangePasswordRequest $request) {
+        $user = auth()->user();
+        $credentials = ['email' => $user->email, 'password' => $request->oldPassword];
+        if (!Auth::guard('web')->attempt($credentials)) {
+            return $this->responseWithMessage(401, 'Invalid old password.');
+        }
+
+        $user = $this->userRepository->updatePassword(auth()->user(), $request->newPassword);
+        $userResource = new UserResource($user);
+        return $this->responseWithMessageAndData(200, $userResource, 'Password updated.'); 
     }
 
     public function uploadProfileAvatar(UploadAvatarRequest $request) {

@@ -125,6 +125,16 @@ class UserRepository implements IUserRepository {
     /**
      * {@inheritdoc}
      */
+    public function updatePassword(User $user, $newPassword) {
+        $data['password'] = Hash::make($newPassword);
+        $user->fill($data);
+        $user->save();
+        return $user;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function resetPassword(User $user, $password) {
         $user->password = Hash::make($password);
         $user->setRememberToken(Str::random(60));
