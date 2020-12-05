@@ -5,6 +5,7 @@ use DB;
 use App\User;
 use App\UserGroup;
 use App\Merchant;
+use App\MerchantVisit;
 use App\MerchantCategory;
 
 use Illuminate\Support\Str;
@@ -70,6 +71,19 @@ class MerchantRepository implements IMerchantRepository {
         }
 
         return $query->get();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function track($data) {
+        $exists = MerchantVisit::where([
+            'merchant_id' => $data['merchant_id'],
+            'device_id' => $data['device_id']
+        ])->exists();
+        
+        if (!$exists)
+            MerchantVisit::create($data);
     }
 
     /**

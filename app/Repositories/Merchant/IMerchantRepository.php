@@ -13,13 +13,21 @@ interface IMerchantRepository {
      */
     public function list($data, $paginate = false);
 
-/**
+    /**
      * List all merchant categories
      * @param array $data 
      * @param bool $paginate
      * @return array [Merchant]
      */
     public function listCategories($data, $paginate = false);
+
+    /**
+     * Track page visit for merchant page
+     * @param Merchant $merchant
+     * @param array $data
+     * @return null
+     */
+    public function track($data);
 
     /**
      * Create merchant

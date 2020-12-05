@@ -11,6 +11,7 @@ use App\MerchantCategory;
 use App\Repositories\Merchant\IMerchantRepository;
 use App\Repositories\User\IUserRepository;
 
+use App\Http\Requests\Merchant\TrackRequest;
 use App\Http\Requests\Merchant\CreateRequest;
 use App\Http\Requests\Merchant\UpdateRequest;
 use App\Http\Requests\Merchant\CreateUsersRequest;
@@ -29,13 +30,13 @@ class MerchantController extends ApiController {
     }
 
     public function list(Request $request) {
-        // $this->authorize('viewAny', Merchant::class);
+        $this->authorize('viewAny', Merchant::class);
         $merchants = $this->merchantRepository->list($request->all(), true);
         return $this->responseWithData(200, $merchants);
     }
 
     public function listUsers(Request $request, Merchant $merchant) {
-        // $this->authorize('view', Merchant::class);
+        $this->authorize('view', Merchant::class);
         $users = $this->userRepository->listMerchantUsers($merchant, $request->all(), true);
         return $this->responseWithData(200, $users);
     }
@@ -45,19 +46,24 @@ class MerchantController extends ApiController {
         return $this->responseWithData(200, $merchantCategories);
     }
 
+    public function track(TrackRequest $request) {
+        $this->merchantRepository->track($request->all());
+        return $this->responseWithMessage(200, 'Merchant page visit successfully tracked.');
+    }
+
     public function details(Merchant $merchant) {
-        // $this->authorize('view', $merchant);
+        $this->authorize('view', $merchant);
         return $this->responseWithData(200, $merchant);
     }
 
     public function create(CreateRequest $request) {
-        // $this->authorize('create', Merchant::class);
+        $this->authorize('create', Merchant::class);
         $merchant = $this->merchantRepository->create($request->all(), $request->files->all());
         return $this->responseWithMessageAndData(201, $merchant, 'Merchant created.');
     }
 
     public function update(UpdateRequest $request, Merchant $merchant) {
-        // $this->authorize('update', $merchant);
+        $this->authorize('update', $merchant);
         $merchant = $this->merchantRepository->update($merchant, $request->all(), $request->files->all());
         return $this->responseWithMessageAndData(200, $merchant, 'Merchant updated.');
     }
@@ -69,7 +75,7 @@ class MerchantController extends ApiController {
     // }
 
     public function createUsers(Merchant $merchant, CreateUsersRequest $request) {
-        // $this->authorize('update', $merchant);
+        $this->authorize('update', $merchant);
         $users = $this->merchantRepository->createUsers($merchant, $request->all());
         foreach ($users as $user) {
             $token = Password::broker()->createToken($user);

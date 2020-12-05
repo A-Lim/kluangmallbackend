@@ -38,4 +38,8 @@ class Merchant extends Model {
     public function users() {
         return $this->belongsToMany(User::class, 'merchant_user', 'merchant_id', 'user_id'); 
     }
+
+    public function visits() {
+        return $this->hasMany(MerchantVisit::class);
+    }
 }
