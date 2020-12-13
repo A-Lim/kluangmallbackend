@@ -25,6 +25,7 @@ class PermissionsTableSeeder extends Seeder {
             ['code' => 'promotions', 'name' => 'Promotions', 'description' => 'Promotions module', 'is_active' => '1'],
             ['code' => 'merchants', 'name' => 'Merchants', 'description' => 'Merchants module', 'is_active' => '1'],
             ['code' => 'feedbacks', 'name' => 'Feedbacks', 'description' => 'Feedbacks module', 'is_active' => '1'],
+            ['code' => 'apilogs', 'name' => 'Api Logs', 'description' => 'Api Logs module', 'is_active' => '1'],
         ];
 
         $permissions = [
@@ -73,6 +74,8 @@ class PermissionsTableSeeder extends Seeder {
             // feedbacks
             ['permission_module_id' => '9', 'code' => 'feedbacks.viewAny', 'name' => 'View Any Feedbacks', 'description' => ''],
             ['permission_module_id' => '9', 'code' => 'feedbacks.delete', 'name' => 'Delete Feedbacks', 'description' => ''],
+            // apilogs
+            ['permission_module_id' => '10', 'code' => 'apilogs.viewAny', 'name' => 'View Any Feedbacks', 'description' => ''],
         ];
 
         PermissionModule::insert($permission_modules);

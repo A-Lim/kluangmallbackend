@@ -29,6 +29,7 @@ class AuthServiceProvider extends ServiceProvider
         'App\Promotion' => 'App\Policies\PromotionPolicy',
         'App\Merchant' => 'App\Policies\MerchantPolicy',
         'App\Feedback' => 'App\Policies\FeedbackPolicy',
+        'App\ApiLog' => 'App\Policies\ApiLogPolicy',
     ];
 
     /**
