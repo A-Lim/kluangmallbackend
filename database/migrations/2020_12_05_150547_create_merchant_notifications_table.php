@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMerchantVisitsTable extends Migration
+class CreateMerchantNotificationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,18 @@ class CreateMerchantVisitsTable extends Migration
      */
     public function up()
     {
-        Schema::create('merchant_visits', function (Blueprint $table) {
+        Schema::create('merchant_notifications', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('merchant_id')->unsigned();
-            $table->string('device_id');
+            $table->string('title');
+            $table->text('content');
+            $table->boolean('read')->default(false);
             $table->timestamps();
 
             $table->foreign('merchant_id')
                   ->references('id')
                   ->on('merchants')
                   ->onDelete('cascade');
-
-            $table->index('device_id');
         });
     }
 
@@ -35,6 +35,6 @@ class CreateMerchantVisitsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('merchant_visits');
+        Schema::dropIfExists('merchant_notifications');
     }
 }

@@ -10,6 +10,8 @@ class SystemSetting extends Model {
     protected $hidden = [];
     protected $casts = [];
 
+    public $timestamps = false;
+
     public const CACHE_KEY = 'systemsettings';
 
     // verification types

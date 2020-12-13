@@ -7,9 +7,11 @@ use Illuminate\Http\JsonResponse;
 interface IApiLogRepository {
     /**
      * List all api logs
+     * @param array $data
+     * @param bool $paginate = false
      * @return array [ApiLog]
      */
-    public function list();
+    public function list($data, $paginate = false);
 
 
     /**

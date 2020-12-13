@@ -19,12 +19,15 @@ use App\Casts\Json;
 class User extends Authenticatable {
     use Notifiable, HasApiTokens, HasUserGroups, CustomQuery;
 
-    protected $fillable = ['name', 'email', 'password', 'avatar', 'email_verified_at', 'status', 'otp', 'otp_token', 'otp_expiry'];
+    protected $fillable = ['name', 'email', 'password', 'member_no', 'phone', 'gender', 'date_of_birth', 'avatar', 'email_verified_at', 'status', 'otp', 'otp_token', 'otp_expiry'];
     protected $hidden = ['password', 'otp', 'otp_token', 'otp_expiry', 'remember_token', 'created_at', 'updated_at'];
-    protected $casts = ['email_verified_at' => 'datetime'];
+    protected $casts = [
+        'email_verified_at' => 'datetime:d M Y',
+        'date_of_birth' => 'datetime:d M Y',
+    ];
 
     // list of properties queryable for datatable
-    public static $queryable = ['name', 'email', 'status'];
+    public static $queryable = ['name', 'email', 'member_no', 'phone', 'gender', 'date_of_birth', 'status'];
 
     const STATUS_ACTIVE = 'active';
     const STATUS_LOCKED = 'locked';

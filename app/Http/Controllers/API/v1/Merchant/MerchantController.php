@@ -53,6 +53,7 @@ class MerchantController extends ApiController {
 
     public function details(Merchant $merchant) {
         $this->authorize('view', $merchant);
+        $merchant = $this->merchantRepository->find($merchant->id, true);
         return $this->responseWithData(200, $merchant);
     }
 

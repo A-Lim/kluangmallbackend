@@ -35,5 +35,3 @@ class CreateRequest extends CustomFormRequest {
         ];
     }
 }
-
-// ['title', 'category', 'thumbnail', 'fromDate', 'toDate', 'content', 'status', 'created_by', 'updated_by'];

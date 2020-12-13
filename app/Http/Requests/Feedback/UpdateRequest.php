@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Requests\User;
+namespace App\Http\Requests\Feedback;
 
+use App\Feedback;
 use App\Http\Requests\CustomFormRequest;
 
 class UpdateRequest extends CustomFormRequest {
@@ -17,9 +18,9 @@ class UpdateRequest extends CustomFormRequest {
     public function rules() {
         return [
             'name' => 'required|string',
-            'phone' => 'nullable|string',
-            'gender' => 'nullable|string|in:male,female',
-            'date_of_birth' => 'nullable|date_format:d M Y',
+            'email' => 'required|email',
+            'subject' => 'required|string',
+            'message' => 'required'
         ];
     }
 }

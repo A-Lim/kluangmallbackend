@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMerchantCreditsTable extends Migration
+class CreateMerchantAccountsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateMerchantCreditsTable extends Migration
      */
     public function up()
     {
-        Schema::create('merchant_credits', function (Blueprint $table) {
-            $table->id();
+        Schema::create('merchant_accounts', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->bigInteger('merchant_id')->unsigned();
             $table->bigInteger('credit')->default(0);
             $table->timestamps();
-
 
             $table->foreign('merchant_id')
                   ->references('id')
@@ -34,6 +33,6 @@ class CreateMerchantCreditsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('merchant_credits');
+        Schema::dropIfExists('merchant_accounts');
     }
 }

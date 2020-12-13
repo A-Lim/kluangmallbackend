@@ -24,6 +24,7 @@ class PermissionsTableSeeder extends Seeder {
             ['code' => 'events', 'name' => 'Events', 'description' => 'Events module', 'is_active' => '1'],
             ['code' => 'promotions', 'name' => 'Promotions', 'description' => 'Promotions module', 'is_active' => '1'],
             ['code' => 'merchants', 'name' => 'Merchants', 'description' => 'Merchants module', 'is_active' => '1'],
+            ['code' => 'feedbacks', 'name' => 'Feedbacks', 'description' => 'Feedbacks module', 'is_active' => '1'],
         ];
 
         $permissions = [
@@ -63,12 +64,15 @@ class PermissionsTableSeeder extends Seeder {
             ['permission_module_id' => '7', 'code' => 'promotions.create', 'name' => 'Create Promotions', 'description' => ''],
             ['permission_module_id' => '7', 'code' => 'promotions.update', 'name' => 'Update Promotions', 'description' => ''],
             ['permission_module_id' => '7', 'code' => 'promotions.delete', 'name' => 'Delete Promotions', 'description' => ''],
-            // merchant8
+            // merchants
             ['permission_module_id' => '8', 'code' => 'merchants.view', 'name' => 'View Merchant', 'description' => ''],
             ['permission_module_id' => '8', 'code' => 'merchants.viewAny', 'name' => 'View Any Merchants', 'description' => ''],
             ['permission_module_id' => '8', 'code' => 'merchants.create', 'name' => 'Create Merchants', 'description' => ''],
             ['permission_module_id' => '8', 'code' => 'merchants.update', 'name' => 'Update Merchants', 'description' => ''],
             ['permission_module_id' => '8', 'code' => 'merchants.delete', 'name' => 'Delete Merchants', 'description' => ''],
+            // feedbacks
+            ['permission_module_id' => '9', 'code' => 'feedbacks.viewAny', 'name' => 'View Any Feedbacks', 'description' => ''],
+            ['permission_module_id' => '9', 'code' => 'feedbacks.delete', 'name' => 'Delete Feedbacks', 'description' => ''],
         ];
 
         PermissionModule::insert($permission_modules);

@@ -22,9 +22,9 @@ class MerchantRepository implements IMerchantRepository {
         $query = null;
         
         if ($data)
-            $query = Merchant::buildQuery($data);
+            $query = Merchant::with('account')->buildQuery($data);
         else 
-            $query = Merchant::query();
+            $query = Merchant::query()->orderBy('id', 'desc');
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
@@ -76,6 +76,16 @@ class MerchantRepository implements IMerchantRepository {
     /**
      * {@inheritdoc}
      */
+    public function find($id, $withDetails) {
+        if ($withDetails)
+            return Merchant::with('account')->where('id', $id)->first();
+        else
+            return Merchant::find($id);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function track($data) {
         $exists = MerchantVisit::where([
             'merchant_id' => $data['merchant_id'],
@@ -101,6 +111,8 @@ class MerchantRepository implements IMerchantRepository {
         }
 
         $merchant->save();
+        // create merchant account
+        $merchant->account()->create();
         DB::commit();
 
         return $merchant;

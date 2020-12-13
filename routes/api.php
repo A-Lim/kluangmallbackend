@@ -23,6 +23,11 @@ Route::prefix('v1')->group(function () {
         Route::post('verify-otp', 'VerificationController@verifyOTP');
     });
 
+    /**** Api Logs ****/
+    Route::namespace('API\v1\ApiLog')->group(function () {
+        Route::get('api-logs', 'ApiLogController@list');
+    });
+
     Route::middleware(['apilogger'])->group(function () {
         /**** User ****/
         Route::namespace('API\v1\User')->group(function () {
@@ -72,6 +77,13 @@ Route::prefix('v1')->group(function () {
         });
 
         /**** Events ****/
+        Route::namespace('API\v1\Feedback')->group(function () {
+            Route::get('feedbacks', 'FeedbackController@list');
+            Route::post('feedbacks', 'FeedbackController@create');
+            Route::delete('feedbacks/{feedback}', 'FeedbackController@delete');
+        });
+
+        /**** Events ****/
         Route::namespace('API\v1\Event')->group(function () {
             Route::get('events', 'EventController@list');
             Route::get('events/{event}', 'EventController@details');
@@ -117,6 +129,11 @@ Route::prefix('v1')->group(function () {
 
             Route::get('merchants/{merchant}/users', 'MerchantController@listUsers');
             Route::post('merchants/{merchant}/users', 'MerchantController@createUsers');
+
+            // credits 
+            Route::get('merchants/{merchant}/transactions', 'MerchantAccountController@listTransactions');
+            Route::post('merchants/{merchant}/topup', 'MerchantAccountController@topUp');
+            Route::post('merchants/refund/{transaction}', 'MerchantAccountController@refund');
         });
 
         /**** Page ****/

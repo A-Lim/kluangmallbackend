@@ -42,7 +42,7 @@ class UserController extends ApiController {
         $this->authorize('updateProfile', $authUser);
 
         // prevent user from updating anything else like status, verified_at etc
-        $data = $request->only(['name']);
+        $data = $request->only(['name', 'phone', 'gender', 'date_of_birth']);
 
         // if user has oldPassword filled,
         // user attempting to change password
@@ -96,7 +96,7 @@ class UserController extends ApiController {
 
     public function update(UpdateRequest $request, User $user) {
         $this->authorize('update', $user);
-        $data = $request->only(['name', 'status', 'usergroups']);
+        $data = $request->only(['name', 'phone', 'date_of_birth', 'gender', 'status', 'usergroups']);
         $user = $this->userRepository->update($user, $data);
         $userResource = new UserResource($user);
         return $this->responseWithMessageAndData(200, $userResource, 'User updated.'); 

@@ -86,8 +86,8 @@ class SystemSettingRepository implements ISystemSettingRepository {
 
             $codes = "'".implode('\',\'', $codes)."'";
             $cases = implode(' ', $cases);
-            $params[] = Carbon::now();
-            DB::update("UPDATE `{$table}` SET `value` = CASE {$cases} END, `updated_at` = ? WHERE `code` in ({$codes})", $params);
+            // $params[] = Carbon::now();
+            DB::update("UPDATE `{$table}` SET `value` = CASE {$cases} END WHERE `code` in ({$codes})", $params);
 
             // cache keys are codes
             $cacheKeys = array_keys($data);

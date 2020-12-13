@@ -17,7 +17,9 @@ class UpdateProfileRequest extends CustomFormRequest {
     public function rules() {
         return [
             'name' => 'required|string',
-            // 'phone' => 'nullable',
+            'phone' => 'nullable|string',
+            'gender' => 'nullable|string|in:male,female',
+            'date_of_birth' => 'nullable|date_format:d M Y',
             'oldPassword' => 'string',
             'newPassword' => 'required_with:oldPassword|confirmed',
         ];

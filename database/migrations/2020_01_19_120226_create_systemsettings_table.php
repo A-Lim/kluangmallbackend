@@ -21,10 +21,10 @@ class CreateSystemSettingsTable extends Migration
             $table->string('code', 100)->unique();
             $table->text('description')->nullable();
             $table->text('value')->nullable();
-            $table->timestamps();
 
             $table->foreign('systemsettingcategory_id')
-                ->references('id')->on('systemsettingcategories')
+                ->references('id')
+                ->on('systemsettingcategories')
                 ->onDelete('cascade');
         });
     }

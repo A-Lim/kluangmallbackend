@@ -12,10 +12,12 @@ class RepositoryServiceProvider extends ServiceProvider {
         $this->app->bind('App\Repositories\Permission\IPermissionRepository', 'App\Repositories\Permission\PermissionRepository');
         $this->app->bind('App\Repositories\ApiLog\IApiLogRepository', 'App\Repositories\ApiLog\ApiLogRepository');
 
+        $this->app->bind('App\Repositories\Feedback\IFeedbackRepository', 'App\Repositories\Feedback\FeedbackRepository');
         $this->app->bind('App\Repositories\Event\IEventRepository', 'App\Repositories\Event\EventRepository');
         $this->app->bind('App\Repositories\Promotion\IPromotionRepository', 'App\Repositories\Promotion\PromotionRepository');
         $this->app->bind('App\Repositories\Banner\IBannerRepository', 'App\Repositories\Banner\BannerRepository');
         $this->app->bind('App\Repositories\Landing\ILandingRepository', 'App\Repositories\Landing\LandingRepository');
         $this->app->bind('App\Repositories\Merchant\IMerchantRepository', 'App\Repositories\Merchant\MerchantRepository');
+        $this->app->bind('App\Repositories\Merchant\IMerchantAccountRepository', 'App\Repositories\Merchant\MerchantAccountRepository');
     }
 }

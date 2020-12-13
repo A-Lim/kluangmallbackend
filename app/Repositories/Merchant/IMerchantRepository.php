@@ -22,6 +22,14 @@ interface IMerchantRepository {
     public function listCategories($data, $paginate = false);
 
     /**
+     * Get Merchant Details
+     * @param integer $id 
+     * @param bool $withDetails
+     * @return array Merchant
+     */
+    public function find($id, $withDetails);
+
+    /**
      * Track page visit for merchant page
      * @param Merchant $merchant
      * @param array $data

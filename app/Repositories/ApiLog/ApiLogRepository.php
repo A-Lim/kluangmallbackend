@@ -11,8 +11,20 @@ class ApiLogRepository implements IApiLogRepository {
     /**
      * {@inheritdoc}
      */
-    public function list() {
+    public function list($data, $paginate = false) {
+        $query = null;
         
+        if ($data)
+            $query = ApiLog::buildQuery($data);
+        else 
+            $query = ApiLog::query();
+
+        if ($paginate) {
+            $limit = isset($data['limit']) ? $data['limit'] : 10;
+            return $query->paginate($limit);
+        }
+
+        return $query->get();
     }
 
     /**

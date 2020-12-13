@@ -17,8 +17,12 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'member_no' => $this->member_no,
             'email' => $this->email,
             'avatar' => $this->avatar,
+            'phone' => $this->phone,
+            'gender' => $this->gender,
+            'date_of_birth' => $this->date_of_birth->format('d M Y'),
             'email_verified_at' => $this->email_verified_at,
             'status' => $this->status,
             'usergroups' => new UserGroupCollection($this->usergroups)

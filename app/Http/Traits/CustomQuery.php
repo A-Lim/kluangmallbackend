@@ -2,6 +2,11 @@
 namespace App\Http\Traits;
 
 trait CustomQuery {
+
+    // scope query
+    public function scopeBuildQuery($query, $data) {
+        return self::agGridQuery($query, $data);
+    }
     
     public static function buildQuery($data) {
         // returns default query
@@ -22,12 +27,16 @@ trait CustomQuery {
         return $query;
     }
 
+    // static query
     private static function fromAgGrid($data) {
         $class = static::class;
         $query = $class::query();
-        // get queryable from model
-        $queryable = $class::$queryable;
+        return self::agGridQuery($query, $data);
+    }
 
+    private static function agGridQuery($query, $data) {
+        $class = static::class;
+        $queryable = $class::$queryable;
         foreach ($data as $key => $value) {
             if (in_array($key, $queryable) && is_string($value)) {
                 $filterData = explode(':', $value);
@@ -71,6 +80,8 @@ trait CustomQuery {
 
                 $query->orderBy($sortCol, $sortType);
             }
+        } else {
+            $query->orderBy('id', 'desc');
         }
         
         return $query;

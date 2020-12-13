@@ -103,7 +103,11 @@ class UserRepository implements IUserRepository {
      * {@inheritdoc}
      */
     public function create($data) {
+        // prevent member_no from being altered 
+        unset($data['member_no']);
+
         $data['password'] = Hash::make($data['password']);
+        $data['member_no'] = $this->generateMemberNo();
         return User::create($data);
     }
 
@@ -111,14 +115,21 @@ class UserRepository implements IUserRepository {
      * {@inheritdoc}
      */
     public function update(User $user, $data) {
+        // prevent member_no from being altered 
+        unset($data['member_no']);
+
         if (!empty($data['password']))
             $data['password'] = Hash::make($data['password']);
 
         if (!empty($data['usergroups']))
             $user->userGroups()->sync($data['usergroups']);
 
+        if (!empty($data['date_of_birth']))
+            $data['date_of_birth'] = Carbon::parse($data['date_of_birth']);
+
         $user->fill($data);
         $user->save();
+
         return $user;
     }
 
@@ -212,4 +223,13 @@ class UserRepository implements IUserRepository {
         return $user->otp_token;
     }
 
+    private function generateMemberNo() {
+        $memberNo = mt_rand(1000000000, 9999999999);
+        // check if member no exists
+        while (User::where('member_no', $memberNo)->exists()) {
+            $memberNo = mt_rand(1000000000, 9999999999);
+        }
+
+        return $memberNo;
+    }
 }
