@@ -14,6 +14,8 @@ class UserResource extends JsonResource
      * @return array
      */
     public function toArray($request) {
+        $dateformatted = $this->date_of_birth != null ? 
+            $this->date_of_birth->format('d M Y') : null;
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -22,7 +24,7 @@ class UserResource extends JsonResource
             'avatar' => $this->avatar,
             'phone' => $this->phone,
             'gender' => $this->gender,
-            'date_of_birth' => $this->date_of_birth->format('d M Y'),
+            'date_of_birth' => $dateformatted,
             'email_verified_at' => $this->email_verified_at,
             'status' => $this->status,
             'usergroups' => new UserGroupCollection($this->usergroups)
