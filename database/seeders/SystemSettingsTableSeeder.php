@@ -35,10 +35,15 @@ class SystemSettingsTableSeeder extends Seeder {
             ['systemsettingcategory_id' => $socialCategory->id, 'name' => 'Instagram', 'code' => 'instagram', 'description' => '', 'value' => ''],
             ['systemsettingcategory_id' => $socialCategory->id, 'name' => 'Whatsapp', 'code' => 'whatsapp', 'description' => '', 'value' => ''],
 
-            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'IOS Version', 'code' => 'ios_version', 'description' => '', 'value' => ''],
-            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'IOS Link', 'code' => 'ios_link', 'description' => '', 'value' => ''],
-            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'Android Version', 'code' => 'android_version', 'description' => '', 'value' => ''],
-            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'Android Link', 'code' => 'android_link', 'description' => '', 'value' => ''],
+            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'User App IOS Version', 'code' => 'user_ios_version', 'description' => '', 'value' => ''],
+            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'User App IOS Link', 'code' => 'user_ios_link', 'description' => '', 'value' => ''],
+            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'User App Android Version', 'code' => 'user_android_version', 'description' => '', 'value' => ''],
+            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'User App Android Link', 'code' => 'user_android_link', 'description' => '', 'value' => ''],
+
+            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'Merchant App IOS Version', 'code' => 'merchant_ios_version', 'description' => '', 'value' => ''],
+            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'Merchant App IOS Link', 'code' => 'merchant_ios_link', 'description' => '', 'value' => ''],
+            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'Merchant App Android Version', 'code' => 'merchant_android_version', 'description' => '', 'value' => ''],
+            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'Merchant App Android Link', 'code' => 'merchant_android_link', 'description' => '', 'value' => ''],
         ];
 
         SystemSetting::insert($systemsettings);

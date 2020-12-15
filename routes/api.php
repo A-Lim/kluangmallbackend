@@ -1,33 +1,34 @@
 <?php
 
 Route::prefix('v1')->group(function () {
+
+    /**** Auth ****/
+    Route::namespace('API\v1\Auth')->group(function () {
+        Route::post('login', 'LoginController@login');
+        Route::post('logout', 'LoginController@logout');
+
+        // Route::post('token/refresh', 'LoginController@refresh');
+        Route::post('register', 'RegistrationController@register');
+
+        Route::post('forgot-password', 'ForgotPasswordController@sendResetLink');
+        Route::post('forgot-password/otp', 'ForgotPasswordController@sendForgetPasswordOTP');
+
+        Route::post('reset-password', 'ForgotPasswordController@resetPassword');
+        Route::post('reset-password/otp', 'ForgotPasswordController@resetPasswordOTP');
+
+
+        Route::get('verify-email', 'VerificationController@verifyEmail')->name('verification.verify');
+        Route::post('verify-email', 'VerificationController@sendVerificationEmail');
+
+        Route::post('verify-otp', 'VerificationController@verifyOTP');
+    });
+
     /**** Api Logs ****/
     Route::namespace('API\v1\ApiLog')->group(function () {
         Route::get('api-logs', 'ApiLogController@list');
     });
 
     Route::middleware(['apilogger'])->group(function () {
-        /**** Auth ****/
-        Route::namespace('API\v1\Auth')->group(function () {
-            Route::post('login', 'LoginController@login');
-            Route::post('logout', 'LoginController@logout');
-
-            // Route::post('token/refresh', 'LoginController@refresh');
-            Route::post('register', 'RegistrationController@register');
-
-            Route::post('forgot-password', 'ForgotPasswordController@sendResetLink');
-            Route::post('forgot-password/otp', 'ForgotPasswordController@sendForgetPasswordOTP');
-
-            Route::post('reset-password', 'ForgotPasswordController@resetPassword');
-            Route::post('reset-password/otp', 'ForgotPasswordController@resetPasswordOTP');
-
-
-            Route::get('verify-email', 'VerificationController@verifyEmail')->name('verification.verify');
-            Route::post('verify-email', 'VerificationController@sendVerificationEmail');
-
-            Route::post('verify-otp', 'VerificationController@verifyOTP');
-        });
-    
         /**** User ****/
         Route::namespace('API\v1\User')->group(function () {
             Route::get('users', 'UserController@list');

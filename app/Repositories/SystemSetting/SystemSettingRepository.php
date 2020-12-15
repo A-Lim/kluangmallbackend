@@ -43,17 +43,27 @@ class SystemSettingRepository implements ISystemSettingRepository {
         $result = [];
         switch ($data['os']) {
             case 'android':
-                $systemsettings = SystemSetting::whereIn('code', ['android_version', 'android_link'])->get();
+                if ($data['type'] == 'merchant')
+                    $systemsettings = SystemSetting::whereIn('code', ['merchant_android_version', 'merchant_android_link'])->get();
+                else
+                    $systemsettings = SystemSetting::whereIn('code', ['user_android_version', 'user_android_link'])->get();
                 break;
             
             case 'ios':
-                $systemsettings = SystemSetting::
-                    whereIn('code', ['ios_version', 'ios_link'])->get();
+                if ($data['type'] == 'merchant')
+                    $systemsettings = SystemSetting::whereIn('code', ['merchant_ios_version', 'merchant_ios_link'])->get();
+                else
+                    $systemsettings = SystemSetting::whereIn('code', ['user_ios_version', 'user_ios_link'])->get();
+                
                 break;
         }
 
         foreach ($systemsettings as $systemsetting) {
-            $result[$systemsetting->code] = $systemsetting->value;
+            if (in_array($systemsetting->code, ['merchant_android_version', 'merchant_ios_version', 'user_android_version', 'user_ios_version']))
+                $result['version'] = $systemsetting->value;
+
+            if (in_array($systemsetting->code, ['merchant_android_link', 'merchant_ios_link', 'user_android_link', 'user_ios_link']))
+                $result['link'] = $systemsetting->value;
         }
 
         return $result;

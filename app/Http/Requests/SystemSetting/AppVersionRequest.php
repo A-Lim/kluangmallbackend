@@ -17,6 +17,7 @@ class AppVersionRequest extends CustomFormRequest {
 
     public function rules() {
         return [
+            'type' => 'required|in:user,merchant',
             'os' => 'required|in:android,ios',
         ];
     }

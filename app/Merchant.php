@@ -47,11 +47,7 @@ class Merchant extends Model {
     public function transactions() {
         return $this->hasMany(MerchantAccountTransaction::class);
     }
-
-    public function notifications() {
-        return $this->hasMany(MerchantNotification::class);
-    }
-
+    
     public function visits() {
         return $this->hasMany(MerchantVisit::class);
     }
