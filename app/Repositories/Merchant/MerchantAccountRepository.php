@@ -70,6 +70,7 @@ class MerchantAccountRepository implements IMerchantAccountRepository {
         
         $query = $query->where('merchant_id', $merchant->id);
 
+        $query->orderBy('id', 'desc');
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
             return $query->paginate($limit);
@@ -89,6 +90,7 @@ class MerchantAccountRepository implements IMerchantAccountRepository {
         else 
             $query = Merchant::query()->orderBy('id', 'desc');
 
+        $query->orderBy('id', 'desc');
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
             return $query->paginate($limit);

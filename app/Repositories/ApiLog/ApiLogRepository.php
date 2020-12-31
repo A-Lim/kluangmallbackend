@@ -17,13 +17,15 @@ class ApiLogRepository implements IApiLogRepository {
         if ($data)
             $query = ApiLog::buildQuery($data);
         else 
-            $query = ApiLog::query();
+            $query = ApiLog::query()->orderBy('id', 'desc');
+
+        $query->orderBy('id', 'desc');
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
             return $query->paginate($limit);
         }
-
+        
         return $query->get();
     }
 

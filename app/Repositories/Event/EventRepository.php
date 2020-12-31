@@ -19,13 +19,14 @@ class EventRepository implements IEventRepository {
         if ($data)
             $query = Event::buildQuery($data);
         else 
-            $query = Event::query();
+            $query = Event::query()->orderBy('id', 'desc');
+
+        $query->orderBy('id', 'desc');
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
             return $query->paginate($limit);
         }
-
         return $query->get();
     }
 

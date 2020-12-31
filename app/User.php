@@ -19,8 +19,8 @@ use App\Casts\Json;
 class User extends Authenticatable {
     use Notifiable, HasApiTokens, HasUserGroups, CustomQuery;
 
-    protected $fillable = ['name', 'email', 'password', 'member_no', 'phone', 'gender', 'date_of_birth', 'avatar', 'email_verified_at', 'status', 'otp', 'otp_token', 'otp_expiry'];
-    protected $hidden = ['password', 'otp', 'otp_token', 'otp_expiry', 'remember_token', 'created_at', 'updated_at'];
+    protected $fillable = ['name', 'email', 'password', 'member_no', 'phone', 'gender', 'date_of_birth', 'avatar', 'device_token', 'email_verified_at', 'status', 'otp', 'otp_token', 'otp_expiry'];
+    protected $hidden = ['password', 'device_token', 'otp', 'otp_token', 'otp_expiry', 'remember_token', 'created_at', 'updated_at'];
     protected $casts = [
         'email_verified_at' => 'datetime:d M Y',
         'date_of_birth' => 'datetime:d M Y',
@@ -42,7 +42,11 @@ class User extends Authenticatable {
     ];
 
     public function merchants() {
-        return $this->belongsToMany(Merchant::class, 'merchant_user', 'merchant_id', 'user_id'); 
+        return $this->belongsToMany(Merchant::class, 'merchant_user', 'user_id', 'merchant_id'); 
+    }
+
+    public function getMerchantAttribute() {
+        return $this->merchants()->first();
     }
 
     /**

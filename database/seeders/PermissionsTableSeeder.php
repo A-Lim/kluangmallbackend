@@ -24,6 +24,8 @@ class PermissionsTableSeeder extends Seeder {
             ['code' => 'events', 'name' => 'Events', 'description' => 'Events module', 'is_active' => '1'],
             ['code' => 'promotions', 'name' => 'Promotions', 'description' => 'Promotions module', 'is_active' => '1'],
             ['code' => 'merchants', 'name' => 'Merchants', 'description' => 'Merchants module', 'is_active' => '1'],
+            ['code' => 'announcements', 'name' => 'Announcements', 'description' => 'Announcements module', 'is_active' => '1'],
+            ['code' => 'vouchers', 'name' => 'Vouchers', 'description' => 'Vouchers module', 'is_active' => '1'],
             ['code' => 'feedbacks', 'name' => 'Feedbacks', 'description' => 'Feedbacks module', 'is_active' => '1'],
             ['code' => 'apilogs', 'name' => 'Api Logs', 'description' => 'Api Logs module', 'is_active' => '1'],
         ];
@@ -71,11 +73,21 @@ class PermissionsTableSeeder extends Seeder {
             ['permission_module_id' => '8', 'code' => 'merchants.create', 'name' => 'Create Merchants', 'description' => ''],
             ['permission_module_id' => '8', 'code' => 'merchants.update', 'name' => 'Update Merchants', 'description' => ''],
             ['permission_module_id' => '8', 'code' => 'merchants.delete', 'name' => 'Delete Merchants', 'description' => ''],
+            // announcements
+            ['permission_module_id' => '9', 'code' => 'announcements.view', 'name' => 'View Announcement', 'description' => ''],
+            ['permission_module_id' => '9', 'code' => 'announcements.viewAny', 'name' => 'View Any Announcements', 'description' => ''],
+            ['permission_module_id' => '9', 'code' => 'announcements.create', 'name' => 'Create Announcement', 'description' => ''],
+            ['permission_module_id' => '9', 'code' => 'announcements.update', 'name' => 'Update Announcement', 'description' => ''],
+            ['permission_module_id' => '9', 'code' => 'announcements.delete', 'name' => 'Delete Announcement', 'description' => ''],
+            ['permission_module_id' => '9', 'code' => 'announcements.action', 'name' => 'Action Announcement', 'description' => ''],
+            
+            // vouchers
+
             // feedbacks
-            ['permission_module_id' => '9', 'code' => 'feedbacks.viewAny', 'name' => 'View Any Feedbacks', 'description' => ''],
-            ['permission_module_id' => '9', 'code' => 'feedbacks.delete', 'name' => 'Delete Feedbacks', 'description' => ''],
+            ['permission_module_id' => '11', 'code' => 'feedbacks.viewAny', 'name' => 'View Any Feedbacks', 'description' => ''],
+            ['permission_module_id' => '11', 'code' => 'feedbacks.delete', 'name' => 'Delete Feedbacks', 'description' => ''],
             // apilogs
-            ['permission_module_id' => '10', 'code' => 'apilogs.viewAny', 'name' => 'View Any Feedbacks', 'description' => ''],
+            ['permission_module_id' => '12', 'code' => 'apilogs.viewAny', 'name' => 'View Any Feedbacks', 'description' => ''],
         ];
 
         PermissionModule::insert($permission_modules);

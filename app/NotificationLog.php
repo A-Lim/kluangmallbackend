@@ -4,7 +4,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 class NotificationLog extends Model {
-    protected $fillable = ['user_id', 'notification_log_id', 'title', 'content', 'read'];
+    protected $fillable = ['request_data', 'response_data', 'status'];
     protected $hidden = [];
     protected $casts = [];
 }

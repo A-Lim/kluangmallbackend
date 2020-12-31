@@ -26,6 +26,7 @@ class MerchantRepository implements IMerchantRepository {
         else 
             $query = Merchant::query()->orderBy('id', 'desc');
 
+        $query->orderBy('id', 'desc');
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
             return $query->paginate($limit);
@@ -54,7 +55,7 @@ class MerchantRepository implements IMerchantRepository {
         if ($data)
             $query = MerchantCategory::buildQuery($data);
         else 
-            $query = MerchantCategory::query();
+            $query = MerchantCategory::query()->orderBy('name', 'asc');
 
         if (isset($data['name']) && is_array($data['name'])) {
             $names = implode("','", $data['name']);
@@ -159,11 +160,19 @@ class MerchantRepository implements IMerchantRepository {
     public function createUsers(Merchant $merchant, $data) {
         DB::beginTransaction();
         $insert_data = [];
+        $memberNos = [];
+
         foreach ($data['users'] as $user) {
             $user_data = $user;
             $password = Str::random(8);
             $user_data['password'] = Hash::make($password);
             $user_data['status'] = 'active';
+
+            $memberNo = $this->generateMemberNo();
+            while (in_array($memberNo, $memberNos)) {
+                $memberNo = $this->generateMemberNo();
+            }
+            $user_data['member_no'] = $memberNo;
             array_push($insert_data, $user_data);
         }
 
@@ -223,5 +232,15 @@ class MerchantRepository implements IMerchantRepository {
                 unlink($fullPath);
         }
         $data['logo'] = null;
+    }
+
+    private function generateMemberNo() {
+        $memberNo = mt_rand(1000000000, 9999999999);
+        // check if member no exists
+        while (User::where('member_no', $memberNo)->exists()) {
+            $memberNo = mt_rand(1000000000, 9999999999);
+        }
+
+        return $memberNo;
     }
 }

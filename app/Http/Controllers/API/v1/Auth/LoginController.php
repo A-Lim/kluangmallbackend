@@ -57,7 +57,12 @@ class LoginController extends ApiController {
             }
 
             $tokenResult = $user->createToken('accesstoken');
+            
+            // update device token
+            if ($request->filled('device_token'))
+                $this->userRepository->updateDeviceToken($user, $request->device_token);
 
+            // TODO:: INACTIVE PERMISSIONS
             if ($user->status == User::STATUS_INACTIVE)
                 $permissions = $this->systemRepository->findByCode('inactive_permissions')->value;
             else

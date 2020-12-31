@@ -65,17 +65,37 @@ class UserRepository implements IUserRepository {
         if ($data)
             $query = User::buildQuery($data);
         else 
-            $query = User::query();
+            $query = User::query()->orderBy('id', 'desc');
 
         $query->join('merchant_user', 'merchant_user.user_id', '=', 'users.id')
             ->where('merchant_user.merchant_id', $merchant->id);
 
+        $query->orderBy('id', 'desc');
+        
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
             return $query->paginate($limit);
         }
 
         return $query->get();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function listAllMerchantUsers() {
+        return User::join('merchant_user', 'merchant_user.user_id', '=', 'users.id')
+            ->get();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function listAllNormalUsers() {
+        return User::join('user_usergroup', 'user_usergroup.user_id', '=', 'users.id')
+            ->join('usergroups', 'usergroups.id', 'user_usergroup.usergroup_id')
+            ->where('usergroups.code', 'user')
+            ->get();
     }
 
     /**
@@ -131,6 +151,14 @@ class UserRepository implements IUserRepository {
         $user->save();
 
         return $user;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function updateDeviceToken(User $user, $device_token) {
+        $user->device_token = $device_token;
+        $user->save();
     }
 
     /**

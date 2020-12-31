@@ -16,7 +16,8 @@ class UserGroupsTableSeeder extends Seeder {
     public function run() {
         $now = Carbon::now()->toDateTimeString();
         $userGroups = [
-            ['code' => 'malladmin', 'name' => 'Mall Admin', 'status' => 'active', 'is_admin' => true, 'created_at' => $now, 'updated_at' => $now],
+            ['code' => 'developer', 'name' => 'Developer', 'status' => 'active', 'is_admin' => true, 'created_at' => $now, 'updated_at' => $now],
+            ['code' => 'malladmin', 'name' => 'Mall Admin', 'status' => 'active', 'is_admin' => false, 'created_at' => $now, 'updated_at' => $now],
             ['code' => 'mallstaff', 'name' => 'Mall Staff', 'status' => 'active', 'is_admin' => false, 'created_at' => $now, 'updated_at' => $now],
             ['code' => 'merchant', 'name' => 'Merchant', 'status' => 'active', 'is_admin' => false, 'created_at' => $now, 'updated_at' => $now],
             ['code' => 'user', 'name' => 'User', 'status' => 'active', 'is_admin' => false, 'created_at' => $now, 'updated_at' => $now],

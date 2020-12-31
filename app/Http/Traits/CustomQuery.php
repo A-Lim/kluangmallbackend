@@ -80,8 +80,6 @@ trait CustomQuery {
 
                 $query->orderBy($sortCol, $sortType);
             }
-        } else {
-            $query->orderBy('id', 'desc');
         }
         
         return $query;

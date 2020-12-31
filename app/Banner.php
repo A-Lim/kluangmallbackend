@@ -11,7 +11,7 @@ use App\Http\Traits\CustomQuery;
 class Banner extends Model {
     use CustomQuery;
 
-    protected $fillable = ['title', 'status', 'is_clickable', 'image', 'type', 'type_id'];
+    protected $fillable = ['title', 'status', 'is_clickable', 'image', 'type', 'type_id', 'created_by', 'updated_by'];
     protected $hidden = [];
     protected $casts = [];
 

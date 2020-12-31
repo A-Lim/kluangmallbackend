@@ -147,5 +147,23 @@ Route::prefix('v1')->group(function () {
             Route::get('page/shops/{merchant}', 'PageController@shopDetail');
         });
 
+        /**** Notifications ****/
+        Route::namespace('API\v1\Notification')->group(function () {
+            Route::get('notifications', 'NotificationController@list');
+            Route::post('notifications/{notification}/read', 'NotificationController@read');
+            Route::post('notifications/all', 'NotificationController@readAll');
+        });
+
+        /**** Announcements ****/
+        Route::namespace('API\v1\Announcement')->group(function () {
+            Route::get('announcements', 'AnnouncementController@list');
+            Route::get('announcements/pending', 'AnnouncementController@pendingCount');
+            Route::post('announcements', 'AnnouncementController@create');
+            Route::patch('announcements/{announcement}', 'AnnouncementController@update');
+            Route::post('announcements/{announcement}/approve', 'AnnouncementController@approve');
+            Route::post('announcements/{announcement}/reject', 'AnnouncementController@reject');
+            // Route::post('notifications/{notification}/read', 'NotificationController@read');
+            // Route::post('notifications/all', 'NotificationController@readAll');
+        });
     });
 });

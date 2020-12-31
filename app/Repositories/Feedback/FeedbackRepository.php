@@ -14,8 +14,9 @@ class FeedbackRepository implements IFeedbackRepository {
         if ($data)
             $query = Feedback::buildQuery($data);
         else 
-            $query = Feedback::query();
+            $query = Feedback::query()->orderBy('id', 'desc');
 
+        $query->orderBy('id', 'desc');
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
             return $query->paginate($limit);

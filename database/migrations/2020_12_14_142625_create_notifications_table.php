@@ -18,7 +18,8 @@ class CreateNotificationsTable extends Migration
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('notification_log_id')->unsigned();
             $table->string('title');
-            $table->text('content');
+            $table->text('description')->nullable();
+            $table->text('payload')->nullable();
             $table->boolean('read')->default(false);
             $table->timestamps();
 

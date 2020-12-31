@@ -49,7 +49,7 @@ class BannerPolicy {
      * @param  \App\User $user
      * @return mixed
      */
-    public function create(Banner $banner) {
+    public function create(User $user) {
         return $user->can('banners.create') &&
             $user->status == 'active';
     }

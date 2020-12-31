@@ -16,8 +16,9 @@ class BannerRepository implements IBannerRepository {
         if ($data)
             $query = Banner::buildQuery($data);
         else 
-            $query = Banner::query();
+            $query = Banner::query()->orderBy('id', 'desc');
 
+        $query->orderBy('id', 'desc');
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
             return $query->paginate($limit);
@@ -39,6 +40,7 @@ class BannerRepository implements IBannerRepository {
     public function create($data, $files) {
         // boolean data is not recognised when being sent at formdata
         $data['is_clickable'] = $data['is_clickable'] === 'true';
+        $data['created_by'] = auth()->id();
         $banner = Banner::create($data);
 
         if (isset($files['uploadImage'])) {
@@ -55,6 +57,7 @@ class BannerRepository implements IBannerRepository {
     public function update(Banner $banner, $data, $files) {
         // boolean data is not recognised when being sent at formdata
         $data['is_clickable'] = $data['is_clickable'] === 'true';
+        $data['updated_by'] = auth()->id();
 
         if (isset($files['uploadImage'])) {
             $this->deleteImage($banner);

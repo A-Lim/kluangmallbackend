@@ -38,6 +38,14 @@ interface IUserGroupRepository
     public function listNotUsers(UserGroup $userGroup, $data, $paginate = false);
 
     /**
+     * List users that belong to a usergroup from usergroup code
+     * 
+     * @param string $code
+     * @return [User]
+     */
+    // public function listActiveUsersFromCode($code);
+
+    /**
      * Find usergroup from id
      * 
      * @param integer $id

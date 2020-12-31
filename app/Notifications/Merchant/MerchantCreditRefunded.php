@@ -8,7 +8,7 @@ use App\Channels\CustomFCMChannel;
 use App\MerchantAccountTransaction;
 
 
-class MerchantAccountToppedUp extends Notification {
+class MerchantCreditRefunded extends Notification {
     private $merchantAccountTransaction;
     
     public function __construct(MerchantAccountTransaction $merchantAccountTransaction) {
@@ -24,8 +24,8 @@ class MerchantAccountToppedUp extends Notification {
         $users = $merchant->users;
 
         $notification_data = [
-            'title' => 'Top Up Successful',
-            'body' => $this->merchantAccountTransaction->credit.' has been creditted into your merchant account.',
+            'title' => 'Credit Refunded',
+            'body' => $this->merchantAccountTransaction->credit.' credits has been deducted for the refund.',
             'redirect' => false,
         ];
 

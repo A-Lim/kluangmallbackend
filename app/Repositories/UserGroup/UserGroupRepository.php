@@ -44,7 +44,8 @@ class UserGroupRepository implements IUserGroupRepository {
     public function listUsers(UserGroup $userGroup, $data, $paginate = false) {
         $query = User::buildQuery($data)
             ->join('user_usergroup', 'user_usergroup.user_id', 'users.id')
-            ->where('user_usergroup.usergroup_id', $userGroup->id);
+            ->where('user_usergroup.usergroup_id', $userGroup->id)
+            ->orderBy('id', 'desc');
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
@@ -61,7 +62,8 @@ class UserGroupRepository implements IUserGroupRepository {
         $query = User::buildQuery($data)
             ->select('users.*')
             ->leftjoin('user_usergroup', 'user_usergroup.user_id', 'users.id')
-            ->whereNotIn('user_usergroup.user_id', $userGroup->users->pluck('id')->toArray());
+            ->whereNotIn('user_usergroup.user_id', $userGroup->users->pluck('id')->toArray())
+            ->orderBy('id', 'desc');
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
@@ -70,6 +72,17 @@ class UserGroupRepository implements IUserGroupRepository {
 
         return $query->get();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    // public function listActiveUsersFromCode($code) {
+    //     return UserGroup::where('code', $code)
+    //         ->first()
+    //         ->users()
+    //         ->where('status', User::STATUS_ACTIVE)
+    //         ->get();
+    // }
     
     /**
      * {@inheritdoc}

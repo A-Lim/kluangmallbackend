@@ -19,8 +19,10 @@ class PromotionRepository implements IPromotionRepository {
         if ($data)
             $query = Promotion::buildQuery($data);
         else 
-            $query = Promotion::query();
+            $query = Promotion::query()->orderBy('id', 'desc');
 
+        $query->orderBy('id', 'desc');
+        
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
             return $query->paginate($limit);

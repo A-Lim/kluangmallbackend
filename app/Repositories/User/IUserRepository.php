@@ -2,19 +2,41 @@
 namespace App\Repositories\User;
 
 use App\User;
+use App\Merchant;
 use Illuminate\Http\UploadedFile;
 
 interface IUserRepository
 {
-
     /**
-     * List users users
+     * List users
      * 
      * @param array $query
      * @param boolean $paginate = false
      * @return [User] / LengthAwarePaginator
      */
     public function list(array $query, $paginate = false);
+
+    /**
+     * List specified merchant's users
+     * 
+     * @param array $query
+     * @param boolean $paginate = false
+     * @return [User] / LengthAwarePaginator
+     */
+    public function listMerchantUsers(Merchant $merchant, $data, $paginate = false);
+
+
+    /**
+     * List all merchant users
+     * @return [User]
+     */
+    public function listAllMerchantUsers();
+
+    /**
+     * List all normal users
+     * @return [User]
+     */
+    public function listAllNormalUsers();
 
     /**
      * Find user from id
@@ -48,7 +70,7 @@ interface IUserRepository
      */
     public function create($data);
 
-     /**
+    /**
      * Update a user
      * 
      * @param User $user
@@ -56,6 +78,15 @@ interface IUserRepository
      * @return User
      */
     public function update(User $user, $data);
+
+    /**
+     * Update device token of user
+     * 
+     * @param User $user
+    * @param string $device_token
+     * @return User
+     */
+    public function updateDeviceToken(User $user, $device_token);
 
     /**
      * Reset user password

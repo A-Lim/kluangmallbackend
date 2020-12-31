@@ -22,6 +22,7 @@ class CreateBannersTable extends Migration
             $table->bigInteger('type_id')->nullable();
             $table->string('status', 20);
             $table->bigInteger('created_by')->unsigned();
+            $table->bigInteger('updated_by')->unsigned();
             $table->timestamps();
 
             $table->index('title');

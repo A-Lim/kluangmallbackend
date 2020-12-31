@@ -9,6 +9,7 @@ use App\Merchant;
 use App\MerchantAccountTransaction;
 use App\Repositories\Merchant\IMerchantAccountRepository;
 use App\Notifications\Merchant\MerchantAccountToppedUp;
+use App\Notifications\Merchant\MerchantCreditRefunded;
 
 use App\Http\Requests\Merchant\TopUpRequest;
 
@@ -58,7 +59,8 @@ class MerchantAccountController extends ApiController {
             'credit_balance' => $credit,
             'transaction' => $transaction
         ];
-        // $merchant->notify(new MerchantAccountRefunded($transaction));
+
+        $merchant->notify(new MerchantCreditRefunded($transaction));
         return $this->responseWithMessageAndData(200, $data, 'Merchant credit refunded.');
     }
 
