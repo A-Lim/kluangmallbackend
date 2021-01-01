@@ -40,7 +40,8 @@ class AnnouncementRepository implements IAnnouncementRepository {
         }
 
         // sort where status pending at the top
-        $query->orderByRaw("FIELD(announcements.status , 'pending', 'published', 'rejected') ASC");
+        $query->orderBy('id', 'desc');
+            // ->orderByRaw("FIELD(announcements.status , 'pending', 'published', 'rejected') ASC");
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;

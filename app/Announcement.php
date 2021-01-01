@@ -13,6 +13,7 @@ class Announcement extends Model {
     protected $fillable = ['title', 'description', 'content', 'has_content', 'image', 'remark', 'audience', 'status', 'merchant_id', 'requested_by', 'actioned_by'];
     protected $hidden = [];
     protected $casts = [
+        'has_content' => 'boolean',
         'created_at' => 'datetime:d M Y',
         'updated_at' => 'datetime:d M Y',
     ];

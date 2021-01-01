@@ -22,11 +22,11 @@ class AnnouncementPublished extends Notification {
     public function toCustomFCM($notifiable) {
         $notification_data = [
             'title' => $this->announcement->title,
-            'body' => $this->announcement->description
+            'body' => $this->announcement->description,
+            'redirect' => $this->announcement->has_content,
         ];
 
         if ($this->announcement->has_content) {
-            $notification_data['redirect'] = true;
             $notification_data['type'] = 'announcement';
             $notification_data['type_id'] = $this->announcement->id;
         }

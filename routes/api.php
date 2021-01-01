@@ -158,6 +158,7 @@ Route::prefix('v1')->group(function () {
         Route::namespace('API\v1\Announcement')->group(function () {
             Route::get('announcements', 'AnnouncementController@list');
             Route::get('announcements/pending', 'AnnouncementController@pendingCount');
+            Route::get('announcements/{announcement}', 'AnnouncementController@details');
             Route::post('announcements', 'AnnouncementController@create');
             Route::patch('announcements/{announcement}', 'AnnouncementController@update');
             Route::post('announcements/{announcement}/approve', 'AnnouncementController@approve');

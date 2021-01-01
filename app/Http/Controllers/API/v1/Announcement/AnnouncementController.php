@@ -77,11 +77,21 @@ class AnnouncementController extends ApiController {
 
     public function update(UpdateRequest $request, Announcement $announcement) {
         // $this->authorize('update', $announcement);
+        $user = auth()->user();
+        $data = $request->all();
+
+        if (!$user->isAdmin())
+            unset($data['status']);
 
         if ($announcement->status == Announcement::STATUS_PUBLISHED)
             return $this->responseWithMessage(400, 'Unable to update announcement that has already been published.');
 
-        $announcement = $this->announcementRepository->update($announcement, $request->all(), $request->files->all());
+        $announcement = $this->announcementRepository->update($announcement, $data, $request->files->all());
+        $merchant = $announcement->merchant;
+
+        // notify merchant
+        if ($merchant != null && $announcement->status != Announcement::STATUS_PENDING)
+            $merchant->notify(new AnnouncementActioned($announcement));
 
         if ($announcement->status == Announcement::STATUS_PUBLISHED)
             Notification::send(null, new AnnouncementPublished($announcement));
