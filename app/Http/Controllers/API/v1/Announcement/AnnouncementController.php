@@ -30,6 +30,7 @@ class AnnouncementController extends ApiController {
     }
 
     public function list(Request $request) {
+        $this->authorize('viewAny', Announcement::class);
         $user = auth()->user();
         $data = $request->all();
 
@@ -54,6 +55,7 @@ class AnnouncementController extends ApiController {
     }
 
     public function create(CreateRequest $request) {
+        $this->authorize('create', Announcement::class);
         $user = auth()->user();
         $data = $request->all();
 
@@ -64,9 +66,7 @@ class AnnouncementController extends ApiController {
             unset($data['status']);
         }
 
-        // $this->authorize('create', Announcement::class);
         $merchant = $user->merchant;
-
         $announcement = $this->announcementRepository->create($data, $merchant, $request->files->all());
 
         if ($announcement->status == Announcement::STATUS_PUBLISHED)
@@ -76,7 +76,7 @@ class AnnouncementController extends ApiController {
     }
 
     public function update(UpdateRequest $request, Announcement $announcement) {
-        // $this->authorize('update', $announcement);
+        $this->authorize('update', $announcement);
         $user = auth()->user();
         $data = $request->all();
 
@@ -100,7 +100,7 @@ class AnnouncementController extends ApiController {
     }
 
     public function approve(Request $request, Announcement $announcement) {
-        // $this->authorize('action', $announcement);
+        $this->authorize('action', $announcement);
         if ($announcement->status == Announcement::STATUS_PUBLISHED)
             return $this->responseWithMessage(400, 'Unable to approve a published announcement.');
         
@@ -117,7 +117,7 @@ class AnnouncementController extends ApiController {
     }
 
     public function reject(RejectRequest $request, Announcement $announcement) {
-        // $this->authorize('action', $announcement);
+        $this->authorize('action', $announcement);
 
         if ($announcement->status == Announcement::STATUS_PUBLISHED)
             return $this->responseWithMessage(400, 'Unable to reject a published announcement.');

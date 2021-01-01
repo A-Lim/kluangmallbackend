@@ -76,17 +76,6 @@ class UserGroupRepository implements IUserGroupRepository {
     /**
      * {@inheritdoc}
      */
-    // public function listActiveUsersFromCode($code) {
-    //     return UserGroup::where('code', $code)
-    //         ->first()
-    //         ->users()
-    //         ->where('status', User::STATUS_ACTIVE)
-    //         ->get();
-    // }
-    
-    /**
-     * {@inheritdoc}
-     */
     public function find($id) {
         return UserGroup::with(['permissions'])->find($id);
     }
@@ -106,9 +95,6 @@ class UserGroupRepository implements IUserGroupRepository {
         // save permissions if not admin
         if ($data['is_admin'] == false && !empty($data['permissions'])) 
             $userGroup->givePermissions($data['permissions']);
-        
-        // if (!empty($data['userIds']))
-        //     $userGroup->users()->sync($data['userIds']);
         
         return $userGroup;
     }
@@ -139,8 +125,6 @@ class UserGroupRepository implements IUserGroupRepository {
         // save permissions if not admin
         if ($data['is_admin'] == false && !empty($data['permissions'])) 
             $userGroup->givePermissions($data['permissions']);
-
-        $userGroup->users()->sync($data['userIds']);
 
         $userGroup->fill($data);
         $userGroup->save();

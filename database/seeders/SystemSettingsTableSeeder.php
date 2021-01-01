@@ -27,23 +27,23 @@ class SystemSettingsTableSeeder extends Seeder {
             ['systemsettingcategory_id' => $generalCategory->id, 'name' => 'Terms & Conditions', 'code' => 'terms_and_conditions', 'description' => '', 'value' => ''],
             ['systemsettingcategory_id' => $generalCategory->id, 'name' => 'Privacy Policy', 'code' => 'privacy_policy', 'description' => '', 'value' => ''],
 
-            ['systemsettingcategory_id' => $authCategory->id, 'name' => 'Allow Public Registration', 'code' => 'allow_public_registration', 'description' => 'Allow public users to register to site.', 'value' => true],
-            ['systemsettingcategory_id' => $authCategory->id, 'name' => 'Verification Type', 'code' => 'verification_type', 'description' => '', 'value' => 'none'],
-            ['systemsettingcategory_id' => $authCategory->id, 'name' => 'Default User Group', 'code' => 'default_usergroups', 'description' => '', 'value' => ''],
+            ['systemsettingcategory_id' => $authCategory->id, 'name' => 'Allow Public Registration', 'code' => 'allow_public_registration', 'description' => 'Allow public users to register to site.', 'value' => false],
+            ['systemsettingcategory_id' => $authCategory->id, 'name' => 'Verification Type', 'code' => 'verification_type', 'description' => '', 'value' => SystemSetting::VTYPE_EMAIL],
+            ['systemsettingcategory_id' => $authCategory->id, 'name' => 'Default User Group', 'code' => 'default_usergroups', 'description' => '', 'value' => '[5]'],
 
             ['systemsettingcategory_id' => $socialCategory->id, 'name' => 'Facebook', 'code' => 'facebook', 'description' => '', 'value' => ''],
             ['systemsettingcategory_id' => $socialCategory->id, 'name' => 'Instagram', 'code' => 'instagram', 'description' => '', 'value' => ''],
             ['systemsettingcategory_id' => $socialCategory->id, 'name' => 'Whatsapp', 'code' => 'whatsapp', 'description' => '', 'value' => ''],
 
-            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'User App IOS Version', 'code' => 'user_ios_version', 'description' => '', 'value' => ''],
-            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'User App IOS Link', 'code' => 'user_ios_link', 'description' => '', 'value' => ''],
-            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'User App Android Version', 'code' => 'user_android_version', 'description' => '', 'value' => ''],
-            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'User App Android Link', 'code' => 'user_android_link', 'description' => '', 'value' => ''],
+            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'User App IOS Version', 'code' => 'user_ios_version', 'description' => '', 'value' => '1.0.0'],
+            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'User App IOS Link', 'code' => 'user_ios_link', 'description' => '', 'value' => 'user.ios.com'],
+            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'User App Android Version', 'code' => 'user_android_version', 'description' => '', 'value' => '1.0.0'],
+            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'User App Android Link', 'code' => 'user_android_link', 'description' => '', 'value' => 'user.android.com'],
 
-            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'Merchant App IOS Version', 'code' => 'merchant_ios_version', 'description' => '', 'value' => ''],
-            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'Merchant App IOS Link', 'code' => 'merchant_ios_link', 'description' => '', 'value' => ''],
-            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'Merchant App Android Version', 'code' => 'merchant_android_version', 'description' => '', 'value' => ''],
-            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'Merchant App Android Link', 'code' => 'merchant_android_link', 'description' => '', 'value' => ''],
+            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'Merchant App IOS Version', 'code' => 'merchant_ios_version', 'description' => '', 'value' => '1.0.0'],
+            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'Merchant App IOS Link', 'code' => 'merchant_ios_link', 'description' => '', 'value' => 'merchant.ios.com'],
+            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'Merchant App Android Version', 'code' => 'merchant_android_version', 'description' => '', 'value' => '1.0.0'],
+            ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'Merchant App Android Link', 'code' => 'merchant_android_link', 'description' => '', 'value' => 'merchant.android.com'],
         ];
 
         SystemSetting::insert($systemsettings);

@@ -26,8 +26,8 @@ class LandingPolicy {
      * @param  \App\Landing $user
      * @return mixed
      */
-    public function viewAny(User $user) {
-        return $user->can('landings.viewAny') && 
+    public function userViewAny(User $user) {
+        return $user->can('user.landing.viewAny') && 
             ($user->status == 'active' || $user->status == 'inactive');
     }
 
@@ -38,8 +38,31 @@ class LandingPolicy {
      * @param  \App\Landing $landing
      * @return mixed
      */
-    public function update(User $user, Landing $landing) {
-        return $user->can('landings.update') && 
+    public function userUpdate(User $user, Landing $landing) {
+        return $user->can('user.landing.update') && 
+            $user->status == 'active';
+    }
+
+    /**
+     * Determine whether the user can view any landings.
+     *
+     * @param  \App\Landing $user
+     * @return mixed
+     */
+    public function merchantViewAny(User $user) {
+        return $user->can('merchant.landing.viewAny') && 
+            ($user->status == 'active' || $user->status == 'inactive');
+    }
+
+    /**
+     * Determine whether the user can update the landing.
+     *
+     * @param  \App\User $user
+     * @param  \App\Landing $landing
+     * @return mixed
+     */
+    public function merchantUpdate(User $user, Landing $landing) {
+        return $user->can('merchant.landing.update') && 
             $user->status == 'active';
     }
 }

@@ -37,42 +37,52 @@ class PermissionsTableSeeder extends Seeder {
             ['permission_module_id' => '1', 'code' => 'users.create', 'name' => 'Create Users', 'description' => ''],
             ['permission_module_id' => '1', 'code' => 'users.update', 'name' => 'Update Users', 'description' => ''],
             ['permission_module_id' => '1', 'code' => 'users.delete', 'name' => 'Delete Users', 'description' => ''],
+            
             // usergroups
             ['permission_module_id' => '2', 'code' => 'usergroups.view', 'name' => 'View User Group', 'description' => ''],
             ['permission_module_id' => '2', 'code' => 'usergroups.viewAny', 'name' => 'View Any User Groups', 'description' => ''],
             ['permission_module_id' => '2', 'code' => 'usergroups.create', 'name' => 'Create User Groups', 'description' => ''],
             ['permission_module_id' => '2', 'code' => 'usergroups.update', 'name' => 'Update User Groups', 'description' => ''],
             ['permission_module_id' => '2', 'code' => 'usergroups.delete', 'name' => 'Delete User Groups', 'description' => ''],
+            
             // systemsettings
             ['permission_module_id' => '3', 'code' => 'systemsettings.viewAny', 'name' => 'View Any System Settings', 'description' => ''],
             ['permission_module_id' => '3', 'code' => 'systemsettings.update', 'name' => 'Update System Settings', 'description' => ''],
+            
             // landing
-            ['permission_module_id' => '4', 'code' => 'landing.viewAny', 'name' => 'View Landing Management Page', 'description' => ''],
-            ['permission_module_id' => '4', 'code' => 'landing.update', 'name' => 'Update Landing Page', 'description' => ''],
+            ['permission_module_id' => '4', 'code' => 'user.landing.viewAny', 'name' => 'View User Landing Management Page', 'description' => ''],
+            ['permission_module_id' => '4', 'code' => 'user.landing.update', 'name' => 'Update User Landing Page', 'description' => ''],
+            ['permission_module_id' => '4', 'code' => 'merchant.landing.viewAny', 'name' => 'View Merchant Landing Management Page', 'description' => ''],
+            ['permission_module_id' => '4', 'code' => 'merchant.landing.update', 'name' => 'Update Merchant Landing Page', 'description' => ''],
+            
             // banners
             ['permission_module_id' => '5', 'code' => 'banners.view', 'name' => 'View Banner', 'description' => ''],
             ['permission_module_id' => '5', 'code' => 'banners.viewAny', 'name' => 'View Any Banners', 'description' => ''],
             ['permission_module_id' => '5', 'code' => 'banners.create', 'name' => 'Create Banners', 'description' => ''],
             ['permission_module_id' => '5', 'code' => 'banners.delete', 'name' => 'Delete Banners', 'description' => ''],
             ['permission_module_id' => '5', 'code' => 'banners.update', 'name' => 'Update Banners', 'description' => ''],
+            
             // events
             ['permission_module_id' => '6', 'code' => 'events.view', 'name' => 'View Event', 'description' => ''],
             ['permission_module_id' => '6', 'code' => 'events.viewAny', 'name' => 'View Any Events', 'description' => ''],
             ['permission_module_id' => '6', 'code' => 'events.create', 'name' => 'Create Events', 'description' => ''],
             ['permission_module_id' => '6', 'code' => 'events.delete', 'name' => 'Delete Events', 'description' => ''],
             ['permission_module_id' => '6', 'code' => 'events.update', 'name' => 'Update Events', 'description' => ''],
+            
             // promotions
             ['permission_module_id' => '7', 'code' => 'promotions.view', 'name' => 'View Promotion', 'description' => ''],
             ['permission_module_id' => '7', 'code' => 'promotions.viewAny', 'name' => 'View Any Promotions', 'description' => ''],
             ['permission_module_id' => '7', 'code' => 'promotions.create', 'name' => 'Create Promotions', 'description' => ''],
             ['permission_module_id' => '7', 'code' => 'promotions.update', 'name' => 'Update Promotions', 'description' => ''],
             ['permission_module_id' => '7', 'code' => 'promotions.delete', 'name' => 'Delete Promotions', 'description' => ''],
+            
             // merchants
             ['permission_module_id' => '8', 'code' => 'merchants.view', 'name' => 'View Merchant', 'description' => ''],
             ['permission_module_id' => '8', 'code' => 'merchants.viewAny', 'name' => 'View Any Merchants', 'description' => ''],
             ['permission_module_id' => '8', 'code' => 'merchants.create', 'name' => 'Create Merchants', 'description' => ''],
             ['permission_module_id' => '8', 'code' => 'merchants.update', 'name' => 'Update Merchants', 'description' => ''],
             ['permission_module_id' => '8', 'code' => 'merchants.delete', 'name' => 'Delete Merchants', 'description' => ''],
+            
             // announcements
             ['permission_module_id' => '9', 'code' => 'announcements.view', 'name' => 'View Announcement', 'description' => ''],
             ['permission_module_id' => '9', 'code' => 'announcements.viewAny', 'name' => 'View Any Announcements', 'description' => ''],
@@ -82,10 +92,16 @@ class PermissionsTableSeeder extends Seeder {
             ['permission_module_id' => '9', 'code' => 'announcements.action', 'name' => 'Action Announcement', 'description' => ''],
             
             // vouchers
+            ['permission_module_id' => '10', 'code' => 'vouchers.view', 'name' => 'View Voucher', 'description' => ''],
+            ['permission_module_id' => '10', 'code' => 'vouchers.viewAny', 'name' => 'View Any Vouchers', 'description' => ''],
+            ['permission_module_id' => '10', 'code' => 'vouchers.create', 'name' => 'Create Vouchers', 'description' => ''],
+            ['permission_module_id' => '10', 'code' => 'vouchers.update', 'name' => 'Update Vouchers', 'description' => ''],
+            ['permission_module_id' => '10', 'code' => 'vouchers.delete', 'name' => 'Delete Vouchers', 'description' => ''],
 
             // feedbacks
             ['permission_module_id' => '11', 'code' => 'feedbacks.viewAny', 'name' => 'View Any Feedbacks', 'description' => ''],
             ['permission_module_id' => '11', 'code' => 'feedbacks.delete', 'name' => 'Delete Feedbacks', 'description' => ''],
+            
             // apilogs
             ['permission_module_id' => '12', 'code' => 'apilogs.viewAny', 'name' => 'View Any Feedbacks', 'description' => ''],
         ];

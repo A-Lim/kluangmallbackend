@@ -21,7 +21,7 @@ class FeedbackController extends ApiController {
     }
 
     public function list(Request $request) {
-        // $this->authorize('viewAny', Feedback::class);
+        $this->authorize('viewAny', Feedback::class);
         $feedbacks = $this->feedbackRepository->list($request->all(), true);
         return $this->responseWithData(200, $feedbacks);
     }
@@ -32,7 +32,7 @@ class FeedbackController extends ApiController {
     }
 
     public function delete(Feedback $feedback) {
-        // $this->authorize('delete', $feedback);
+        $this->authorize('delete', $feedback);
         $this->feedbackRepository->delete($feedback);
         return $this->responseWithMessage(200, 'Feedback deleted.');
     }
