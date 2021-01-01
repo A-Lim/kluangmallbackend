@@ -59,6 +59,17 @@ class UserRepository implements IUserRepository {
     /**
      * {@inheritdoc}
      */
+    public function listMerchantsAndUsers() {
+        return User::join('user_usergroup', 'users.id', '=', 'user_usergroup.user_id')
+            ->join('usergroups', 'usergroups.id', '=', 'user_usergroup.usergroup_id')
+            ->whereIn('code', ['merchant', 'user'])
+            ->select('users.*')
+            ->get();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function listMerchantUsers(Merchant $merchant, $data, $paginate = false) {
         $query = null;
         

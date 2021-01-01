@@ -26,14 +26,6 @@ class CustomFCMChannel {
 
         if (isset($data['users']))
             $this->sendToUsers($data['payload'], $data['users']);
-
-        // call notification api
-        // if (isset($data['topic']))
-        //     $result = $fcm->sendToTopic($data['topic'], $data['payload']);
-        // else
-        //     $result = $fcm->send($data['device_tokens'], $data['payload']);
-        
-        // $this->notificationRepository->create($data['users'], $data['data']);
     }
 
     private function sendToTopic($data, $topic) {
@@ -42,7 +34,7 @@ class CustomFCMChannel {
 
         switch($topic) {
             case Announcement::AUDIENCE_ALL:
-                $users = $this->userRepository->list([], false);
+                $users = $this->userRepository->listMerchantsAndUsers();
                 break;
 
             case Announcement::AUDIENCE_MERCHANT:

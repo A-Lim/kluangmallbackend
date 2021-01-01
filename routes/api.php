@@ -152,6 +152,7 @@ Route::prefix('v1')->group(function () {
             Route::get('notifications', 'NotificationController@list');
             Route::post('notifications/{notification}/read', 'NotificationController@read');
             Route::post('notifications/all', 'NotificationController@readAll');
+            Route::delete('notifications/{notification}', 'NotificationController@delete');
         });
 
         /**** Announcements ****/

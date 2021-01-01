@@ -44,4 +44,12 @@ interface INotificationRepository
      * @return void
      */
     public function markAllAsRead(User $user);
+
+
+    /**
+     * Delete notification
+     * @param Notification $notification
+     * @return void
+     */
+    public function delete(Notification $notification);
 }

@@ -23,18 +23,26 @@ class NotificationController extends ApiController {
         return $this->responseWithData(200, $notifications);
     }
 
-    public function read(Notification $notification) {
+    public function read(Request $request, Notification $notification) {
         $user = auth()->user();
         if ($notification->user_id != $user->id)
             return $this->responseWithMessage(400, 'Unable to mark a notification that does not belong to you as read.');
 
         $this->notificationRepository->read($notification);
-        return $this->responseWithMessage(200, 'Notification successfully mark as read.');
+        return $this->responseWithMessage(200, 'Notification marked as read.');
     }
 
     public function readAll() {
         $user = auth()->user();
         $this->notificationRepository->markAllAsRead($user);
-        return $this->responseWithMessage(200, 'All notifications successfully mark as read.');
+        return $this->responseWithMessage(200, 'All notifications marked as read.');
+    }
+
+    public function delete(Request $request, Notification $notification) {
+        if ($notification->user_id != auth()->id())
+            return $this->responseWithMessage(403, 'You do not have permission to perform this action.');
+
+        $notifications = $this->notificationRepository->delete($notification);
+        return $this->responseWithMessage(200, 'Notification deleted.');
     }
 }

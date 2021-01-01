@@ -17,6 +17,13 @@ interface IUserRepository
     public function list(array $query, $paginate = false);
 
     /**
+     * List users under "merchant" and "user" usergroup
+     * 
+     * @return [User]
+     */
+    public function listMerchantsAndUsers();
+
+    /**
      * List specified merchant's users
      * 
      * @param array $query
@@ -24,7 +31,6 @@ interface IUserRepository
      * @return [User] / LengthAwarePaginator
      */
     public function listMerchantUsers(Merchant $merchant, $data, $paginate = false);
-
 
     /**
      * List all merchant users

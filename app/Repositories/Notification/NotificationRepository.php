@@ -79,4 +79,11 @@ class NotificationRepository implements INotificationRepository {
             ->where('read', false)
             ->update(['read' => true]);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function delete(Notification $notification) {
+        $notification->delete();
+    }
 }
