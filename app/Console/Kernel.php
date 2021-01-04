@@ -29,6 +29,7 @@ class Kernel extends ConsoleKernel
             ->monthly();
 
         $schedule->command('push:announcements')
+            ->timezone('Asia/Kuala_Lumpur')
             ->daily(env('PUSH_NOTIFICATION_TIME'));
     }
 
