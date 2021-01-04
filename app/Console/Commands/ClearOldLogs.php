@@ -38,7 +38,7 @@ class ClearOldLogs extends Command {
      * @return int
      */
     public function handle() {
-        $days = env('CLEAR_OLD_LOGS_DAYS');
+        $days = env('CLEAR_OLD_LOGS_DAYS', 30);
         $this->apiLogRepository->clear_old_logs($days);
         return 0;
     }

@@ -19,6 +19,7 @@ class UpdateRequest extends CustomFormRequest {
         return [
             'title' => 'required|string',
             'description' => 'required|string',
+            'publish_at' => 'required|date_format:d M Y',
             'has_content' => 'required',
             'content' => 'required_if:has_content,true',
             'uploadImage' => 'image|nullable',

@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 use App\User;
 use App\Http\Resources\Users\UserResource;
-use App\Http\Resources\Users\UserCollection;
 use App\Repositories\User\IUserRepository;
 
 use App\Http\Requests\User\UpdateRequest;

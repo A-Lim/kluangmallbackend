@@ -37,6 +37,10 @@ trait CustomQuery {
     private static function agGridQuery($query, $data) {
         $class = static::class;
         $queryable = $class::$queryable;
+
+        $model = new $class();
+        $tableName = $model->getTable();
+
         foreach ($data as $key => $value) {
             if (in_array($key, $queryable) && is_string($value)) {
                 $filterData = explode(':', $value);
@@ -50,14 +54,14 @@ trait CustomQuery {
 
                 switch($filterType) {
                     case 'contains':
-                        $query->where($key, 'LIKE', '%'.$filterVal.'%');
+                        $query->where($tableName.'.'.$key, 'LIKE', '%'.$filterVal.'%');
                         break;
                     
                     case 'equals':
                         if (in_array($key, ['created_at', 'updated_at']))
-                            $query->whereDate($key, $filterVal);
+                            $query->whereDate($tableName.'.'.$key, $filterVal);
                         else
-                            $query->where($key, $filterVal);
+                            $query->where($tableName.'.'.$key, $filterVal);
                         break;
                     
                     default:
@@ -78,7 +82,7 @@ trait CustomQuery {
                 $sortCol = $sortData[1];
                 $sortType = $sortData[0];
 
-                $query->orderBy($sortCol, $sortType);
+                $query->orderBy($tableName.'.'.$sortCol, $sortType);
             }
         }
         

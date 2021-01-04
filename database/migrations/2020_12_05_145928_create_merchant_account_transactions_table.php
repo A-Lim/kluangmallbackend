@@ -17,7 +17,7 @@ class CreateMerchantAccountTransactionsTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('merchant_id')->unsigned();
             $table->bigInteger('credit');
-            $table->decimal('amount', 8, 2);
+            $table->string('title');
             $table->string('type', 100);
             $table->text('remark')->nullable();
             $table->boolean('refunded')->default(false);

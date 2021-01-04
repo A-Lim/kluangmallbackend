@@ -11,8 +11,6 @@ class MerchantAccount extends Model {
     protected $hidden = [];
     protected $casts = [];
 
-    const RATE = 1;
-
     public function merchant() {
         return $this->belongsTo(Merchant::class);
     }

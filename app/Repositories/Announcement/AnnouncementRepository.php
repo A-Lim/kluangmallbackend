@@ -61,13 +61,23 @@ class AnnouncementRepository implements IAnnouncementRepository {
     /**
      * {@inheritdoc}
      */
-    public function create($data, Merchant $merchant = null, $files = null) {
+    public function create($data, $credit_paid, Merchant $merchant = null, $files = null) {
         if ($merchant)
             $data['merchant_id'] = $merchant->id;
 
         // boolean data is not recognised when being sent at formdata
         $data['has_content'] = $data['has_content'] === 'true';
         $data['requested_by'] = auth()->id();
+        $data['credit_paid'] = $credit_paid;
+        
+        if (isset($data['publish_now']) && (bool)$data['publish_now']) {
+            $data['publish_at'] = Carbon::today();
+            $data['status'] = Announcement::STATUS_PUBLISHED;
+        }
+        else {
+            $data['publish_at'] = Carbon::createFromFormat(env('DATE_FORMAT'), $data['publish_at']);
+        }
+
         $announcement = Announcement::create($data);
 
         if (isset($files['uploadImage']))
@@ -83,6 +93,7 @@ class AnnouncementRepository implements IAnnouncementRepository {
     public function update(Announcement $announcement, $data, $files = null) {
         // boolean data is not recognised when being sent at formdata
         $data['has_content'] = $data['has_content'] === 'true';
+        $data['publish_at'] = Carbon::createFromFormat(env('DATE_FORMAT'), $data['publish_at']);
         
         if (isset($files['uploadImage'])) {
             $this->deleteImage($announcement);
@@ -102,7 +113,7 @@ class AnnouncementRepository implements IAnnouncementRepository {
 
     public function approve(Announcement $announcement, $data) {
         $announcement->actioned_by = auth()->id();
-        $announcement->status = Announcement::STATUS_PUBLISHED;
+        $announcement->status = Announcement::STATUS_APPROVED;
         $announcement->remark = @$data['remark'];
         $announcement->save();
 

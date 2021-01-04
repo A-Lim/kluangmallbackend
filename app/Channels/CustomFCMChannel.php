@@ -69,6 +69,7 @@ class CustomFCMChannel {
 
         $params = [
             'notification' => $data,
+            'data' => $data,
             'priority' => 'high'
         ];
 

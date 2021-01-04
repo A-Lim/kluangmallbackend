@@ -16,7 +16,7 @@ class TopUpRequest extends CustomFormRequest {
 
     public function rules() {
         return [
-            'amount' => 'required|numeric',
+            'credit' => 'required|numeric',
             'remark' => 'nullable|string',
         ];
     }

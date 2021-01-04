@@ -96,6 +96,7 @@ class UserRepository implements IUserRepository {
      */
     public function listAllMerchantUsers() {
         return User::join('merchant_user', 'merchant_user.user_id', '=', 'users.id')
+            ->select('users.*')
             ->get();
     }
 
@@ -106,6 +107,7 @@ class UserRepository implements IUserRepository {
         return User::join('user_usergroup', 'user_usergroup.user_id', '=', 'users.id')
             ->join('usergroups', 'usergroups.id', 'user_usergroup.usergroup_id')
             ->where('usergroups.code', 'user')
+            ->select('users.*')
             ->get();
     }
 

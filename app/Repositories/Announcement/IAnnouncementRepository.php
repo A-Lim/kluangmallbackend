@@ -3,6 +3,7 @@ namespace App\Repositories\Announcement;
 
 use App\Announcement;
 use App\User;
+use App\Merchant;
 
 interface IAnnouncementRepository
 {
@@ -15,25 +16,13 @@ interface IAnnouncementRepository
      */
     public function list($data, $paginate = false);
 
-    // /**
-    //  * Create announcement for users
-    //  * @param [User] $users
-    //  * @param array $announcement_data
-    //  * @return Announcement $announcement
-    //  */
-    // public function create($users, $announcement_data);
-
-    // /**
-    //  * Mark a announcement as read
-    //  * @param Announcement $announcement
-    //  * @return void
-    //  */
-    // public function read(Announcement $announcement);
-
-    // /**
-    //  * Mark all announcements of specified user as read
-    //  * @param User $user
-    //  * @return void
-    //  */
-    // public function markAllAsRead(User $user);
+    /**
+     * Create announcement
+     * @param array $data
+     * @param integer $credit_paid
+     * @param Merchant $merchant
+     * @param array $files
+     * @return Announcement
+     */
+    public function create($data, $credit_paid, Merchant $merchant = null, $files = null);
 }

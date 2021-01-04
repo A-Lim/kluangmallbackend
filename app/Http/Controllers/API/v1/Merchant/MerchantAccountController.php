@@ -43,7 +43,8 @@ class MerchantAccountController extends ApiController {
 
     public function refund(Request $request, MerchantAccountTransaction $transaction) {
         $merchant = $transaction->merchant;
-        if ($transaction->type != MerchantAccountTransaction::TYPE_TOPUP)
+        if ($transaction->type != MerchantAccountTransaction::TYPE_TOPUP || 
+            $transaction->type != MerchantAccountTransaction::TYPE_DEDUCT)
             return $this->responseWithMessage(403, 'Unable to refund this transaction.');
 
         if ($transaction->refunded)

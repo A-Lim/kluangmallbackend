@@ -17,6 +17,8 @@ class CreateAnnouncementsTable extends Migration
             $table->bigIncrements('id');
             $table->string('title');
             $table->text('description')->nullable();
+            $table->integer('credit_paid');
+            $table->date('publish_at');
             $table->boolean('has_content');
             $table->text('content')->nullable();
             $table->text('image')->nullable();

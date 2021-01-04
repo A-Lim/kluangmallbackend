@@ -20,6 +20,7 @@ class SystemSettingsTableSeeder extends Seeder {
         $authCategory = SystemSettingCategory::create(['name' => 'Authentication']);
         $socialCategory = SystemSettingCategory::create(['name' => 'Social']);
         $mobileCategory = SystemSettingCategory::create(['name' => 'Mobile']);
+        $creditCategory = SystemSettingCategory::create(['name' => 'Credit']);
         
         $systemsettings = [
             ['systemsettingcategory_id' => $generalCategory->id, 'name' => 'About Us', 'code' => 'about_us', 'description' => '', 'value' => ''],
@@ -44,6 +45,8 @@ class SystemSettingsTableSeeder extends Seeder {
             ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'Merchant App IOS Link', 'code' => 'merchant_ios_link', 'description' => '', 'value' => 'merchant.ios.com'],
             ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'Merchant App Android Version', 'code' => 'merchant_android_version', 'description' => '', 'value' => '1.0.0'],
             ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'Merchant App Android Link', 'code' => 'merchant_android_link', 'description' => '', 'value' => 'merchant.android.com'],
+
+            ['systemsettingcategory_id' => $creditCategory->id, 'name' => 'Announcement', 'code' => 'announcement', 'description' => 'Credits required per announcement.', 'value' => '5'],
         ];
 
         SystemSetting::insert($systemsettings);

@@ -15,15 +15,14 @@ class MerchantAccountRepository implements IMerchantAccountRepository {
             $merchant->account()->create(['credit' => 0]);
 
         $merchant_account = $merchant->account;
-        $credit_amount = $data['amount'] * MerchantAccount::RATE;
 
         // add credit 
         $merchant_account
-            ->update(['credit' => $merchant_account->credit + $credit_amount]);
+            ->update(['credit' => $merchant_account->credit + $data['credit']]);
 
         $transaction = $merchant->transactions()->create([
-            'amount' => $data['amount'],
-            'credit' => $data['amount'] * MerchantAccount::RATE,
+            'title' => 'Credit Top Up',
+            'credit' => $data['credit'],
             'type' => MerchantAccountTransaction::TYPE_TOPUP,
             'remark' => @$data['remark'],
             'created_by' => auth()->id()
@@ -40,10 +39,10 @@ class MerchantAccountRepository implements IMerchantAccountRepository {
 
         // deduct credit
         $merchant_account
-            ->update(['credit' => $merchant_account->credit - $transaction->amount]);
+            ->update(['credit' => $merchant_account->credit - $transaction->credit]);
 
         $refund_transaction = $merchant->transactions()->create([
-            'amount' => $transaction->amount,
+            'title' => 'Credit Refund',
             'credit' => $transaction->credit,
             'type' => MerchantAccountTransaction::TYPE_REFUND,
             'refund_transaction_id' => $transaction->id,
@@ -55,6 +54,52 @@ class MerchantAccountRepository implements IMerchantAccountRepository {
         $transaction->save();
 
         return $refund_transaction;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deduct(Merchant $merchant, $data) {
+        if (!$merchant->account()->exists())
+            $merchant->account()->create(['credit' => 0]);
+
+        $merchant_account = $merchant->account;
+
+        $merchant_account
+            ->update(['credit' => $merchant_account->credit - $data['credit']]);
+
+        $transaction = $merchant->transactions()->create([
+            'title' => $data['title'],
+            'credit' => $data['credit'],
+            'type' => MerchantAccountTransaction::TYPE_DEDUCT,
+            'remark' => @$data['remark'],
+            'created_by' => auth()->id()
+        ]);
+
+        return $transaction;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function reCredit(Merchant $merchant, $data) {
+        if (!$merchant->account()->exists())
+            $merchant->account()->create(['credit' => 0]);
+
+        $merchant_account = $merchant->account;
+
+        $merchant_account
+            ->update(['credit' => $merchant_account->credit + $data['credit']]);
+
+        $transaction = $merchant->transactions()->create([
+            'title' => $data['title'],
+            'credit' => $data['credit'],
+            'type' => MerchantAccountTransaction::TYPE_RECREDIT,
+            'remark' => @$data['remark'],
+            'created_by' => auth()->id()
+        ]);
+
+        return $transaction;
     }
 
     /**

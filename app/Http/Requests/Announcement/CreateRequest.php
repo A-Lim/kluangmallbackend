@@ -19,16 +19,20 @@ class CreateRequest extends CustomFormRequest {
         return [
             'title' => 'required|string',
             'description' => 'required|string',
+            'publish_now' => 'required',
+            'publish_at' => 'required_if:publish_now,false|date_format:d M Y|after:now',
             'has_content' => 'required',
             'content' => 'required_if:has_content,true',
             'uploadImage' => 'image|nullable',
             'audience' => 'nullable|in:'.implode(',', Announcement::AUDIENCES),
             'status' => 'nullable|in:'.implode(',', Announcement::STATUSES),
+            'now' => 'nullable'
         ];
     }
 
     public function messages() {
         return [
+            'publish_at.after' => 'The :attribute must be a date greater than today.'
         ];
     }
 }

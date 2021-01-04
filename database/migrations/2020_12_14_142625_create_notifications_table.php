@@ -30,7 +30,7 @@ class CreateNotificationsTable extends Migration
 
             $table->foreign('notification_log_id')
                   ->references('id')
-                  ->on('notifications')
+                  ->on('notification_logs')
                   ->onDelete('cascade');
         });
     }

@@ -10,10 +10,11 @@ use App\Http\Traits\CustomQuery;
 class Announcement extends Model {
     use CustomQuery;
 
-    protected $fillable = ['title', 'description', 'content', 'has_content', 'image', 'remark', 'audience', 'status', 'merchant_id', 'requested_by', 'actioned_by'];
+    protected $fillable = ['title', 'description', 'credit_paid', 'content', 'has_content', 'image', 'remark', 'audience', 'status', 'merchant_id', 'publish_at', 'requested_by', 'actioned_by'];
     protected $hidden = [];
     protected $casts = [
         'has_content' => 'boolean',
+        'publish_at' => 'datetime:d M Y',
         'created_at' => 'datetime:d M Y',
         'updated_at' => 'datetime:d M Y',
     ];
@@ -22,8 +23,9 @@ class Announcement extends Model {
     public static $queryable = ['title', 'type', 'target', 'status'];
 
     const STATUS_PENDING = 'pending';
-    const STATUS_PUBLISHED = 'published';
+    const STATUS_APPROVED = 'approved';
     const STATUS_REJECTED = 'rejected';
+    const STATUS_PUBLISHED = 'published';
 
     const AUDIENCE_ALL = 'all';
     const AUDIENCE_MERCHANT = 'merchant';
@@ -31,8 +33,9 @@ class Announcement extends Model {
 
     const STATUSES = [
         self::STATUS_PENDING,
-        self::STATUS_PUBLISHED,
+        self::STATUS_APPROVED,
         self::STATUS_REJECTED,
+        self::STATUS_PUBLISHED,
     ];
 
     const AUDIENCES = [

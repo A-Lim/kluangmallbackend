@@ -30,4 +30,21 @@ interface IMerchantAccountRepository {
      * @return array [MerchantAccountTransaction]
      */
     public function listTransactions(Merchant $merchant, $data, $paginate = false);
+
+
+    /**
+     * Deduct credit
+     * @param Merchant $merchant 
+     * @param array $data
+     * @return array [MerchantAccountTransaction]
+     */
+    public function deduct(Merchant $merchant, $data);
+
+    /**
+     * Return back credits that was deducted 
+     * @param Merchant $merchant 
+     * @param array $data
+     * @return array [MerchantAccountTransaction]
+     */
+    public function reCredit(Merchant $merchant, $data);
 }
