@@ -20,7 +20,7 @@ class Announcement extends Model {
     ];
 
     // list of properties queryable for datatable
-    public static $queryable = ['title', 'type', 'target', 'status'];
+    public static $queryable = ['title', 'type', 'merchant_id', 'target', 'status'];
 
     const STATUS_PENDING = 'pending';
     const STATUS_APPROVED = 'approved';
