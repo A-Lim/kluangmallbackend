@@ -70,7 +70,7 @@ class AnnouncementRepository implements IAnnouncementRepository {
         $data['requested_by'] = auth()->id();
         $data['credit_paid'] = $credit_paid;
         
-        if (isset($data['publish_now']) && (bool)$data['publish_now']) {
+        if (isset($data['publish_now']) && $data['publish_now'] == 'true') {
             $data['publish_at'] = Carbon::today();
             $data['status'] = Announcement::STATUS_PUBLISHED;
         }

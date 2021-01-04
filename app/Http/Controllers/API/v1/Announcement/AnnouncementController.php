@@ -99,12 +99,11 @@ class AnnouncementController extends ApiController {
                 'credit' => $announcement_credit_price,
             ]);
         }
-
         $announcement = $this->announcementRepository->create($data, $announcement_credit_price, $merchant, $request->files->all());
-
+        
         // if user is admin
         // and publish now
-        if ($user->isAdmin() && $request->filled('publish_now') && (bool)$request->publish_now == true)
+        if ($user->isAdmin() && $request->filled('publish_now') && $request->publish_now == 'true')
             Notification::send(null, new AnnouncementPublished($announcement));
 
         return $this->responseWithMessageAndData(201, $announcement, 'Announcement created.');
