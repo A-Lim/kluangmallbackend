@@ -13,7 +13,7 @@ class ClearOldLogs extends Command {
      *
      * @var string
      */
-    protected $signature = 'logs:clear';
+    protected $signature = 'clear:logs';
 
     /**
      * The console command description.

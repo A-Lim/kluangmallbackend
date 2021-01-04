@@ -51,14 +51,13 @@ class PushAnnouncement extends Command {
         ];
 
         $announcements = $this->announcementRepository->list($filter, false);
-        // dd($announcements->toArray());
 
         foreach($announcements as $announcement) {
             Notification::send(null, new AnnouncementPublished($announcement));
         }
 
-        // $announcement_ids = $announcements->pluck('id')->toArray();
-        // Announcement::whereIn('id', $announcement_ids)
-        //     ->update(['status' => Announcement::STATUS_PUBLISHED]);
+        $announcement_ids = $announcements->pluck('id')->toArray();
+        Announcement::whereIn('id', $announcement_ids)
+            ->update(['status' => Announcement::STATUS_PUBLISHED]);
     }
 }

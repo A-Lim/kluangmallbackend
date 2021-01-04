@@ -25,8 +25,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('PushAnnouncement')
-            ->everyMinute();
+        $schedule->command('clear:logs')
+            ->monthly();
+
+        $schedule->command('push:announcements')
+            ->daily(env('PUSH_NOTIFICATION_TIME'));
     }
 
     /**
