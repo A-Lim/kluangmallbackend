@@ -131,6 +131,10 @@ Route::prefix('v1')->group(function () {
             Route::post('merchants/{merchant}/users', 'MerchantController@createUsers');
 
             // credits 
+            Route::get('merchants/my/transactions', 'MerchantAccountController@listMyTransactions');
+            Route::post('merchants/my/topup', 'MerchantAccountController@topUpMyAccount');
+
+
             Route::get('merchants/{merchant}/transactions', 'MerchantAccountController@listTransactions');
             Route::post('merchants/{merchant}/topup', 'MerchantAccountController@topUp');
             Route::post('merchants/refund/{transaction}', 'MerchantAccountController@refund');

@@ -27,8 +27,38 @@ class MerchantAccountController extends ApiController {
         return $this->responseWithData(200, $transactions);
     }
 
+    public function listMyTransactions(Request $request) {
+        $user = auth()->user();
+        $merchant = $user->merchant;
+
+        if (!$merchant)
+            return $this->responseWithMessage(400, 'Invalid merchant account.');
+
+        $transactions = $this->merchantAccountRepository->listTransactions($merchant, $request->all(), true);
+        return $this->responseWithData(200, $transactions);
+    }
+
     public function topup(TopUpRequest $request, Merchant $merchant) {
         // $this->authorize('', Merchant::class);
+        $transaction = $this->merchantAccountRepository->topUp($merchant, $request->all());
+        $credit = $merchant->account->credit;
+
+        $data = [
+            'credit_balance' => $credit,
+            'transaction' => $transaction
+        ];
+
+        $merchant->notify(new MerchantAccountToppedUp($transaction));
+        return $this->responseWithMessageAndData(200, $data, 'Merchant credit topped up.');
+    }
+
+    public function topUpMyAccount(TopUpRequest $request) {
+        $user = auth()->user();
+        $merchant = $user->merchant;
+
+        if (!$merchant)
+            return $this->responseWithMessage(400, 'Invalid merchant account.');
+
         $transaction = $this->merchantAccountRepository->topUp($merchant, $request->all());
         $credit = $merchant->account->credit;
 
