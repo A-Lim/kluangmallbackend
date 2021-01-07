@@ -119,6 +119,7 @@ Route::prefix('v1')->group(function () {
         /**** Merchants ****/
         Route::namespace('API\v1\Merchant')->group(function () {
             Route::get('merchants', 'MerchantController@list');
+            Route::get('merchants/profile', 'MerchantController@profile');
             Route::get('merchants/categories', 'MerchantController@listCategories');
             Route::get('merchants/{merchant}', 'MerchantController@details');
             Route::post('merchants', 'MerchantController@create');

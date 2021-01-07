@@ -115,6 +115,7 @@ class AnnouncementRepository implements IAnnouncementRepository {
         $announcement->actioned_by = auth()->id();
         $announcement->status = Announcement::STATUS_APPROVED;
         $announcement->remark = @$data['remark'];
+        $announcement->updated_at = Carbon::now();
         $announcement->save();
 
         return $announcement;
@@ -124,6 +125,7 @@ class AnnouncementRepository implements IAnnouncementRepository {
         $announcement->actioned_by = auth()->id();
         $announcement->status = Announcement::STATUS_REJECTED;
         $announcement->remark = @$data['remark'];
+        $announcement->updated_at = Carbon::now();
         $announcement->save();
         
         return $announcement;

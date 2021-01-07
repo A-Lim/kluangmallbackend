@@ -51,6 +51,17 @@ class MerchantController extends ApiController {
         return $this->responseWithMessage(200, 'Merchant page visit successfully tracked.');
     }
 
+    public function profile() {
+        $user = auth()->user();
+        $merchant = $user->merchant;
+        if (!$merchant)
+            return $this->responseWithMessage(400, 'This account is not a merchant account.');
+
+        $merchant = $this->merchantRepository->find($merchant->id, true);
+        
+        return $this->responseWithData(200, $merchant);
+    }
+
     public function details(Merchant $merchant) {
         $this->authorize('view', $merchant);
         $merchant = $this->merchantRepository->find($merchant->id, true);
