@@ -100,6 +100,13 @@ class MerchantRepository implements IMerchantRepository {
     /**
      * {@inheritdoc}
      */
+    public function visits(Merchant $merchant) {
+        return MerchantVisit::where('merchant_id', $merchant->id)->count();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function create($data, $files) {
         DB::beginTransaction();
         $data['created_by'] = auth()->id();

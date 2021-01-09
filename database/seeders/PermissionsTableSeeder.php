@@ -50,10 +50,10 @@ class PermissionsTableSeeder extends Seeder {
             ['permission_module_id' => '3', 'code' => 'systemsettings.update', 'name' => 'Update System Settings', 'description' => ''],
             
             // landing
-            ['permission_module_id' => '4', 'code' => 'user.landing.viewAny', 'name' => 'View User Landing Management Page', 'description' => ''],
-            ['permission_module_id' => '4', 'code' => 'user.landing.update', 'name' => 'Update User Landing Page', 'description' => ''],
-            ['permission_module_id' => '4', 'code' => 'merchant.landing.viewAny', 'name' => 'View Merchant Landing Management Page', 'description' => ''],
-            ['permission_module_id' => '4', 'code' => 'merchant.landing.update', 'name' => 'Update Merchant Landing Page', 'description' => ''],
+            ['permission_module_id' => '4', 'code' => 'userlanding.viewAny', 'name' => 'View User Landing Management Page', 'description' => ''],
+            ['permission_module_id' => '4', 'code' => 'userlanding.update', 'name' => 'Update User Landing Page', 'description' => ''],
+            ['permission_module_id' => '4', 'code' => 'merchantlanding.viewAny', 'name' => 'View Merchant Landing Management Page', 'description' => ''],
+            ['permission_module_id' => '4', 'code' => 'merchantlanding.update', 'name' => 'Update Merchant Landing Page', 'description' => ''],
             
             // banners
             ['permission_module_id' => '5', 'code' => 'banners.view', 'name' => 'View Banner', 'description' => ''],

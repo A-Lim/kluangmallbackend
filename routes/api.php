@@ -112,7 +112,7 @@ Route::prefix('v1')->group(function () {
 
         /**** Landing ****/
         Route::namespace('API\v1\Landing')->group(function () {
-            Route::get('landing', 'LandingController@details');
+            Route::get('landing/{app}', 'LandingController@details');
             Route::patch('landing', 'LandingController@update');
         });
 
@@ -143,7 +143,9 @@ Route::prefix('v1')->group(function () {
 
         /**** Page ****/
         Route::namespace('API\v1\Page')->group(function () {
-            Route::get('page/landing', 'PageController@landing');
+            Route::get('page/landing/user', 'PageController@userLanding');
+            Route::get('page/landing/merchant', 'PageController@merchantLanding');
+
             Route::get('page/about-us', 'PageController@aboutUs');
             Route::get('page/contact-us', 'PageController@contactUs');
             Route::get('page/privacy-policy', 'PageController@privacyPolicy');

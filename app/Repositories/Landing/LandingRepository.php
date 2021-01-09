@@ -12,12 +12,18 @@ class LandingRepository implements ILandingRepository {
      /**
       * {@inheritdoc}
       */
-     public function list() {
-          return [
-               'banners' => $this->landingBanners(),
-               'events' => $this->landingEvents(),
-               'promotions' => $this->landingPromotions(),
-          ];
+     public function list($app) {
+          if ($app == 'user') {
+               return [
+                    'banners' => $this->landingBanners($app),
+                    'events' => $this->landingEvents(),
+                    'promotions' => $this->landingPromotions(),
+               ];
+          } else {
+               return [
+                    'banners' => $this->landingBanners($app),
+               ];
+          }
      }
 
      /**
@@ -26,13 +32,16 @@ class LandingRepository implements ILandingRepository {
      public function update($data) {
           DB::beginTransaction();
           // clear all
-          Landing::query()->delete();
+          Landing::query()
+               ->where('app', $data['app'])
+               ->delete();
 
           $insertData = [];
 
           if (isset($data['banners'])) {
                foreach ($data['banners'] as $banner) {
                     array_push($insertData, [
+                         'app' => $data['app'],
                          'type' => Landing::TYPE_BANNER,
                          'type_id' => $banner['type_id'],
                          'seq' => $banner['seq'],
@@ -43,6 +52,7 @@ class LandingRepository implements ILandingRepository {
           if (isset($data['events'])) {
                foreach ($data['events'] as $event) {
                     array_push($insertData, [
+                         'app' => $data['app'],
                          'type' => Landing::TYPE_EVENT,
                          'type_id' => $event['type_id'],
                          'seq' => $event['seq'],
@@ -54,6 +64,7 @@ class LandingRepository implements ILandingRepository {
           if (isset($data['promotions'])) {
                foreach ($data['promotions'] as $promotion) {
                     array_push($insertData, [
+                         'app' => $data['app'],
                          'type' => Landing::TYPE_PROMOTION,
                          'type_id' => $promotion['type_id'],
                          'seq' => $promotion['seq'],
@@ -65,10 +76,11 @@ class LandingRepository implements ILandingRepository {
           DB::commit();
      }
 
-     private function landingBanners() {
+     private function landingBanners($app) {
           return Banner::join('landings', 'landings.type_id', '=', 'banners.id')
                ->where('landings.type', Landing::TYPE_BANNER)
                ->where('banners.status', Event::STATUS_ACTIVE)
+               ->where('banners.app', $app)
                ->select('banners.*')
                ->orderBy('landings.seq')
                ->get();

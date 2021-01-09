@@ -38,6 +38,13 @@ interface IMerchantRepository {
     public function track($data);
 
     /**
+     * Retrive unique visits to merchant page
+     * @param Merchant $merchant
+     * @return integer
+     */
+    public function visits(Merchant $merchant);
+
+    /**
      * Create merchant
      * @param array $data 
      * @param array $files

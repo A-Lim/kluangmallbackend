@@ -55,7 +55,7 @@ class MerchantController extends ApiController {
         $user = auth()->user();
         $merchant = $user->merchant;
         if (!$merchant)
-            return $this->responseWithMessage(400, 'This account is not a merchant account.');
+            return $this->responseWithMessage(400, 'Invalid merchant account.');
 
         $merchant = $this->merchantRepository->find($merchant->id, true);
         

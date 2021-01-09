@@ -27,7 +27,7 @@ class LandingPolicy {
      * @return mixed
      */
     public function userViewAny(User $user) {
-        return $user->can('user.landing.viewAny') && 
+        return $user->can('userlanding.viewAny') && 
             ($user->status == 'active' || $user->status == 'inactive');
     }
 
@@ -39,7 +39,7 @@ class LandingPolicy {
      * @return mixed
      */
     public function userUpdate(User $user, Landing $landing) {
-        return $user->can('user.landing.update') && 
+        return $user->can('userlanding.update') && 
             $user->status == 'active';
     }
 

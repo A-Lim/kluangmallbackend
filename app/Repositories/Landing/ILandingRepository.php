@@ -4,9 +4,10 @@ namespace App\Repositories\Landing;
 interface ILandingRepository {
     /**
      * List Landing Page Details
+     * @param string $app
      * @return array
      */
-    public function list();
+    public function list($app);
 
 
     /**

@@ -20,13 +20,28 @@ class PageController extends ApiController {
         IMerchantRepository $iMerchantRepository,
         ISystemSettingRepository $iSystemSettingRepository) {
         // $this->middleware('auth:api')->except(['landing', 'shops']);
+        $this->middleware('auth:api')->only(['merchantLanding']);
         $this->landingRepository = $iLandingRepository;
         $this->merchantRepository = $iMerchantRepository;
         $this->systemSettingRepository = $iSystemSettingRepository;
     }
 
-    public function landing(Request $request) {
-        $data = $this->landingRepository->list();
+    public function userLanding(Request $request) {
+        $data = $this->landingRepository->list('user');
+        return $this->responseWithData(200, $data);
+    }
+
+    public function merchantLanding(Request $reqeust) {
+        $user = auth()->user();
+        $merchant = $user->merchant;
+
+        if (!$merchant)
+            return $this->responseWithMessage(400, 'Invalid merchant account.');
+
+        $data = $this->landingRepository->list('merchant');
+        $data['unique_visits'] = $this->merchantRepository->visits($merchant);
+        $data['vouchers_redeemed'] = 0;
+        $data['points_given'] = 0;
         return $this->responseWithData(200, $data);
     }
 

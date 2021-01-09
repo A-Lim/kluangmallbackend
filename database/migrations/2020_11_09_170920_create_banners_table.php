@@ -17,12 +17,13 @@ class CreateBannersTable extends Migration
             $table->bigIncrements('id');
             $table->string('title');
             $table->text('image')->nullable();
+            $table->string('app', '10');
             $table->boolean('is_clickable');
             $table->string('type', 20)->nullable();
             $table->bigInteger('type_id')->nullable();
             $table->string('status', 20);
             $table->bigInteger('created_by')->unsigned();
-            $table->bigInteger('updated_by')->unsigned();
+            $table->bigInteger('updated_by')->unsigned()->nullable();
             $table->timestamps();
 
             $table->index('title');

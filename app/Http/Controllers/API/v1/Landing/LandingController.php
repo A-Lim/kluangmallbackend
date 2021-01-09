@@ -11,6 +11,8 @@ use App\Repositories\Banner\IBannerRepository;
 use App\Repositories\Event\IEventRepository;
 use App\Repositories\Promotion\IPromotionRepository;
 
+use App\Http\Requests\Landing\UpdateRequest;
+
 class LandingController extends ApiController {
 
     private $landingRepository;
@@ -25,14 +27,37 @@ class LandingController extends ApiController {
         $this->landingRepository = $iLandingRepository;
     }
 
-    public function details(Request $request) {
-        $this->authorize('userViewAny', Landing::class);
-        $data = $this->landingRepository->list();
+    public function details(Request $request, $app) {
+        switch ($app) {
+            case 'user':
+                $this->authorize('userViewAny', Landing::class);
+                break;
+            
+            case 'merchant':
+                $this->authorize('merchantViewAny', Landing::class);
+                break;
+            
+            default:
+                return $this->responseWithMessage(400, 'Invalid app type');
+        }
+        
+        $data = $this->landingRepository->list($app);
         return $this->responseWithData(200, $data);
     }
 
-    public function update(Request $request) {
-        $this->authorize('userUpdate', null);
+    public function update(UpdateRequest $request) {
+        switch ($request->app) {
+            case 'user':
+                $this->authorize('userUpdate', Landing::class);
+                break;
+            
+            case 'merchant':
+                $this->authorize('merchantUpdate', Landing::class);
+                break;
+            
+            default:
+                return $this->responseWithMessage(400, 'Invalid app type');
+        }
         $this->landingRepository->update($request->all());
         return $this->responseWithMessage(200, 'Landing Page updated.');
     }

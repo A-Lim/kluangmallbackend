@@ -19,6 +19,7 @@ class CreateRequest extends CustomFormRequest {
         return [
             'title' => 'required|string',
             'status' => 'required|in:'.implode(',', Banner::STATUSES),
+            'app' => 'required|in:'.implode(',', Banner::APPS),
             'is_clickable' => 'required',
             'uploadImage' => 'nullable|image',
             'type' => 'required_if:is_clickable,true',

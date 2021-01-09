@@ -22,13 +22,11 @@ class BannerController extends ApiController {
     }
 
     public function list(Request $request) {
-        // $this->authorize('viewAny', Banner::class);
         $banners = $this->bannerRepository->list($request->all(), true);
         return $this->responseWithData(200, $banners);
     }
 
     public function details(Banner $banner) {
-        // $this->authorize('view', $banner);
         return $this->responseWithData(200, $banner);
     }
 
