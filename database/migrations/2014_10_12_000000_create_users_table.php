@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('member_no')->unique();
             $table->string('gender', 6)->nullable();
             $table->date('date_of_birth')->nullable();
+            $table->integer('points')->default(0);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('otp', 6)->nullable();

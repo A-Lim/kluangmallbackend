@@ -38,8 +38,6 @@ class BannerRepository implements IBannerRepository {
      * {@inheritdoc}
      */
     public function create($data, $files) {
-        // boolean data is not recognised when being sent at formdata
-        $data['is_clickable'] = $data['is_clickable'] === 'true';
         $data['created_by'] = auth()->id();
         $banner = Banner::create($data);
 
@@ -55,8 +53,6 @@ class BannerRepository implements IBannerRepository {
      * {@inheritdoc}
      */
     public function update(Banner $banner, $data, $files) {
-        // boolean data is not recognised when being sent at formdata
-        $data['is_clickable'] = $data['is_clickable'] === 'true';
         $data['updated_by'] = auth()->id();
 
         if (isset($files['uploadImage'])) {

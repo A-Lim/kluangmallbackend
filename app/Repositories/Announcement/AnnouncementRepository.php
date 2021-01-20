@@ -65,12 +65,10 @@ class AnnouncementRepository implements IAnnouncementRepository {
         if ($merchant)
             $data['merchant_id'] = $merchant->id;
 
-        // boolean data is not recognised when being sent at formdata
-        $data['has_content'] = $data['has_content'] === 'true';
         $data['requested_by'] = auth()->id();
         $data['credit_paid'] = $credit_paid;
         
-        if (isset($data['publish_now']) && $data['publish_now'] == 'true') {
+        if (isset($data['publish_now']) && $data['publish_now']) {
             $data['publish_at'] = Carbon::today();
             $data['status'] = Announcement::STATUS_PUBLISHED;
         }
@@ -78,12 +76,15 @@ class AnnouncementRepository implements IAnnouncementRepository {
             $data['publish_at'] = Carbon::createFromFormat(env('DATE_FORMAT'), $data['publish_at']);
         }
 
+        DB::beginTransaction();
         $announcement = Announcement::create($data);
 
         if (isset($files['uploadImage']))
             $announcement->image = json_encode($this->saveImage($announcement, $files['uploadImage']));
 
         $announcement->save();
+        DB::commit();
+        
         return $announcement;
     }
 
@@ -91,8 +92,6 @@ class AnnouncementRepository implements IAnnouncementRepository {
      * {@inheritdoc}
      */
     public function update(Announcement $announcement, $data, $files = null) {
-        // boolean data is not recognised when being sent at formdata
-        $data['has_content'] = $data['has_content'] === 'true';
         $data['publish_at'] = Carbon::createFromFormat(env('DATE_FORMAT'), $data['publish_at']);
         
         if (isset($files['uploadImage'])) {

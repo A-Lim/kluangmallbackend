@@ -51,4 +51,8 @@ class Merchant extends Model {
     public function visits() {
         return $this->hasMany(MerchantVisit::class);
     }
+
+    public function vouchers() {
+        return $this->hasMany(Voucher::class);
+    }
 }

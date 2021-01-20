@@ -12,7 +12,8 @@ class Notification extends Model {
     protected $fillable = ['user_id', 'notification_log_id', 'title', 'description', 'payload', 'read'];
     protected $hidden = ['user_id', 'notification_log_id'];
     protected $casts = [
-        'read' => 'boolean'
+        'read' => 'boolean',
+        'created_at' => 'datetime:d M Y',
     ];
 
     // list of properties queryable for datatable

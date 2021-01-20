@@ -174,5 +174,15 @@ Route::prefix('v1')->group(function () {
             // Route::post('notifications/{notification}/read', 'NotificationController@read');
             // Route::post('notifications/all', 'NotificationController@readAll');
         });
+
+        /**** Vouchers ****/
+        Route::namespace('API\v1\Voucher')->group(function () {
+            Route::get('vouchers', 'VoucherController@list');
+            Route::get('vouchers/my/active', 'VoucherController@listMyActive');
+            Route::get('vouchers/{voucher}', 'VoucherController@details');
+            Route::post('vouchers', 'VoucherController@create');
+            Route::post('vouchers/{voucher}', 'VoucherController@redeem');
+            Route::patch('vouchers/{voucher}', 'VoucherController@update');
+        });
     });
 });
