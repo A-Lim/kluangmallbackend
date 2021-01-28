@@ -138,7 +138,7 @@ class User extends Authenticatable {
     
     public function getAvatarAttribute($value) {
         if ($value != '' || $value != null)
-            return URL::to('/').$value;
+            return asset($value);
         else 
             return $value;
     }

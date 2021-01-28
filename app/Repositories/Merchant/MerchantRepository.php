@@ -7,6 +7,7 @@ use App\UserGroup;
 use App\Merchant;
 use App\MerchantVisit;
 use App\MerchantCategory;
+use Carbon\Carbon;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -100,7 +101,7 @@ class MerchantRepository implements IMerchantRepository {
     /**
      * {@inheritdoc}
      */
-    public function visits(Merchant $merchant) {
+    public function visitCount(Merchant $merchant) {
         return MerchantVisit::where('merchant_id', $merchant->id)->count();
     }
 
@@ -137,9 +138,7 @@ class MerchantRepository implements IMerchantRepository {
         if (isset($files['uploadLogo'])) {
             $this->deleteLogo($merchant);
             $data['logo'] = json_encode($this->saveImage($merchant, $files['uploadLogo']));
-        } 
-        
-        if (!isset($data['logo'])) {
+        } else if (!isset($files['uploadLogo']) && !isset($data['logo'])) {
             $this->deleteLogo($merchant);
             $data['logo'] = null;
         } else {
@@ -180,6 +179,7 @@ class MerchantRepository implements IMerchantRepository {
                 $memberNo = $this->generateMemberNo();
             }
             $user_data['member_no'] = $memberNo;
+            $user_data['created_at'] = Carbon::now();
             array_push($insert_data, $user_data);
         }
 
@@ -219,13 +219,13 @@ class MerchantRepository implements IMerchantRepository {
     }
 
     private function saveImage(Merchant $merchant, UploadedFile $file) {
-        $saveDirectory = 'public/merchants/'.$merchant->id.'/logo/';
+        $saveDirectory = 'merchants/'.$merchant->id.'/logo/';
 
         $fileName = $file->getClientOriginalName();
-        Storage::putFileAs($saveDirectory, $file, $fileName);
+        Storage::disk('s3')->putFileAs($saveDirectory, $file, $fileName, 'public');
 
         $data['name'] = $fileName;
-        $data['path'] = Storage::url($saveDirectory.$fileName);
+        $data['path'] = Storage::disk('s3')->url($saveDirectory.$fileName);
         return $data;
     }
 
@@ -233,12 +233,8 @@ class MerchantRepository implements IMerchantRepository {
         // image property without mutator
         $logoOriginal = json_decode($merchant->getAttributes()['logo']);
 
-        if ($logoOriginal != null) {
-            $fullPath = public_path($logoOriginal->path);
-            if (file_exists($fullPath))
-                unlink($fullPath);
-        }
-        $data['logo'] = null;
+        if ($logoOriginal != null)
+            Storage::disk('s3')->delete('merchants/'.$merchant->id.'/'.$logoOriginal->name);
     }
 
     private function generateMemberNo() {

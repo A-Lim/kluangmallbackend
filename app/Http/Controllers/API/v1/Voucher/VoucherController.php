@@ -14,6 +14,9 @@ use App\Repositories\Voucher\IVoucherRepository;
 use App\Http\Requests\Voucher\CreateRequest;
 use App\Http\Requests\Voucher\UpdateRequest;
 
+use Libern\QRCodeReader\QRCodeReader;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 class VoucherController extends ApiController {
 
     private $voucherRepository;
@@ -24,8 +27,20 @@ class VoucherController extends ApiController {
     }
 
     public function list(Request $request) {
-        // $this->authorize('viewAny', Voucher::class);
+        $this->authorize('viewAny', Voucher::class);
         $vouchers = $this->voucherRepository->list($request->all(), true);
+        return $this->responseWithData(200, $vouchers);
+    }
+
+    public function listMyActive(Request $request) {
+        $user = auth()->user();
+        $vouchers = $this->voucherRepository->listMyActive($user, true);
+        return $this->responseWithData(200, $vouchers);
+    }
+
+    public function listMyInactive(Request $request) {
+        $user = auth()->user();
+        $vouchers = $this->voucherRepository->listMyExpiredUsed($user, true);
         return $this->responseWithData(200, $vouchers);
     }
 
@@ -36,21 +51,43 @@ class VoucherController extends ApiController {
     }
 
     public function create(CreateRequest $request) {
-        // $this->authorize('create', Voucher::class);
-        $voucher = $this->voucherRepository->create($request->all());
+        $this->authorize('create', Voucher::class);
+        $data = $request->all();
+        if ($request->hasFile('uploadQr')) {
+            $decoded = $this->decodeQr($request->file('uploadQr'));
+            if (!$decoded)
+                return $this->responseWithMessage(400, 'Invalid Qr Code.');
 
+            $data['data'] = $decoded;
+        }
+
+        $voucher = $this->voucherRepository->create($data, $request->files->all());
         return $this->responseWithMessageAndData(201, $voucher, 'Voucher created.');
     }
 
     public function update(UpdateRequest $request, Voucher $voucher) {
-        // $this->authorize('update', $voucher);
-        $voucher = $this->voucherRepository->update($voucher, $request->all());
+        $this->authorize('update', $voucher);
+        $data = $request->all();
+        if ($request->hasFile('uploadQr')) {
+            $decoded = $this->decodeQr($request->file('uploadQr'));
+            if (!$decoded)
+                return $this->responseWithMessage(400, 'Invalid Qr Code.');
+
+            $data['data'] = $decoded;
+        }
+
+        $voucher = $this->voucherRepository->update($voucher, $data, $request->files->all());
         return $this->responseWithMessageAndData(200, $voucher, 'Voucher updated.'); 
+    }
+
+    public function delete(Request $request, Voucher $voucher) {
+        $this->authorize('delete', $voucher);
+        $this->voucherRepository->delete($voucher);
+        return $this->responseWithMessage(200, 'Voucher deleted.');
     }
 
     public function redeem(Request $request, Voucher $voucher) {
         $user = auth()->user();
-
         $result = $this->validateVoucher($user, $voucher);
 
         // validation fail
@@ -62,8 +99,17 @@ class VoucherController extends ApiController {
         return $this->responseWithMessage(200, 'Voucher redeemed.');
     }
 
-    public function used(Request $request, Voucher $voucher) {
+    public function use(Request $request, Voucher $voucher) {
+        $user = auth()->user();
+        $result = $this->validateMyVoucher($user, $voucher);
 
+        // validation fail
+        if ($result != null && get_class($result) == 'Illuminate\Http\JsonResponse')
+            return $result;
+        
+        // consume voucher
+        $this->voucherRepository->use($voucher, $user);
+        return $this->responseWithMessage(200, 'Voucher used.');
     }
 
     public function validateVoucher(User $user, Voucher $voucher) {
@@ -71,6 +117,9 @@ class VoucherController extends ApiController {
         // check if enough points
         if ($user->points < $voucher->points)
             return $this->responseWithMessage(400, 'Insufficient points to redeem voucher.');
+
+        if ($voucher->status != Voucher::STATUS_ACTIVE)
+            return $this->responseWithMessage(400, 'Voucher is no longer valid.');
 
         // check if period is valid
         if ($today->lessThan($voucher->fromDate)) 
@@ -116,4 +165,19 @@ class VoucherController extends ApiController {
 
     }
 
+    public function validateMyVoucher(User $user, Voucher $voucher) {
+        $today = Carbon::today();
+        $myVouchers = $this->voucherRepository->listMyActive($user);
+
+        if ($myVouchers->count() == 0)
+            return $this->responseWithMessage(400, 'You do not own this voucher.'); 
+
+        if ($voucher->status != Voucher::STATUS_ACTIVE)
+            return $this->responseWithMessage(400, 'Voucher is no longer valid.');
+    }
+
+    private function decodeQr(UploadedFile $file) {
+        $qrCodeReader = new QRCodeReader();
+        return $qrCodeReader->decode($file->getPathName());
+    }
 }

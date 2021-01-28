@@ -38,25 +38,16 @@ class Promotion extends Model {
     }
 
     public function getThumbnailAttribute($value) {
-        if ($value != null) {
-            $data = json_decode($value);
-            $thumbNail['name'] = $data->name;
-            $thumbNail['path'] = URL::to('/').$data->path;
-            return $thumbNail;
-        }
-        return $value;
+        if ($valuel)
+            return json_decode($value);
+
+        return null;
     }
 
     public function getImagesAttribute($value) {
-        $images = [];
-        if ($value) {
-            $data = json_decode($value);
-            foreach ($data as $image) {
-                $imageData['name'] = $image->name;
-                $imageData['path'] = URL::to('/').$image->path;
-                array_push($images, $imageData);
-            }
-        }
-        return $images;
+        if ($value)
+            return json_decode($value);
+
+        return null;
     }
 }

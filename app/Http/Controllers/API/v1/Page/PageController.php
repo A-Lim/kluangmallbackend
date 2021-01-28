@@ -9,21 +9,24 @@ use App\Merchant;
 use App\Repositories\Landing\ILandingRepository;
 use App\Repositories\Merchant\IMerchantRepository;
 use App\Repositories\SystemSetting\ISystemSettingRepository;
+use App\Repositories\Voucher\IVoucherTransactionRepository;
 
 class PageController extends ApiController {
 
     private $landingRepository;
     private $merchantRepository;
     private $systemSettingRepository;
+    private $voucherTransactionRepository;
 
     public function __construct(ILandingRepository $iLandingRepository,
         IMerchantRepository $iMerchantRepository,
-        ISystemSettingRepository $iSystemSettingRepository) {
-        // $this->middleware('auth:api')->except(['landing', 'shops']);
+        ISystemSettingRepository $iSystemSettingRepository,
+        IVoucherTransactionRepository $iVoucherTransactionRepository) {
         $this->middleware('auth:api')->only(['merchantLanding']);
         $this->landingRepository = $iLandingRepository;
         $this->merchantRepository = $iMerchantRepository;
         $this->systemSettingRepository = $iSystemSettingRepository;
+        $this->voucherTransactionRepository = $iVoucherTransactionRepository;
     }
 
     public function userLanding(Request $request) {
@@ -39,8 +42,8 @@ class PageController extends ApiController {
             return $this->responseWithMessage(400, 'Invalid merchant account.');
 
         $data = $this->landingRepository->list('merchant');
-        $data['unique_visits'] = $this->merchantRepository->visits($merchant);
-        $data['vouchers_redeemed'] = 0;
+        $data['unique_visits'] = $this->merchantRepository->visitCount($merchant);
+        $data['vouchers_redeemed'] = $this->voucherTransactionRepository->redeemCount($merchant);
         $data['points_given'] = 0;
         return $this->responseWithData(200, $data);
     }

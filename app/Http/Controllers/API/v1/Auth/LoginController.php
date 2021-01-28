@@ -62,13 +62,12 @@ class LoginController extends ApiController {
             if ($request->filled('device_token'))
                 $this->userRepository->updateDeviceToken($user, $request->device_token);
 
-            // TODO:: INACTIVE PERMISSIONS
             if ($user->status == User::STATUS_INACTIVE)
                 $permissions = $this->systemRepository->findByCode('inactive_permissions')->value;
             else
                 $permissions = $this->userRepository->permissions($user);
             
-            return $this->responseWithLoginData(200, $tokenResult, $user, $permissions, 0);
+            return $this->responseWithLoginData(200, $tokenResult, $user, $permissions);
         }
 
         // if unsuccessful, increase login attempt count

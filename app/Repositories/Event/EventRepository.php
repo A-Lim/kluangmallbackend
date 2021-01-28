@@ -87,9 +87,7 @@ class EventRepository implements IEventRepository {
 
         // delete files 
         foreach ($imgToBeDeleted as $image) {
-            $fullPath = public_path($image['path']);
-            if (file_exists($fullPath))
-                unlink($fullPath);
+            Storage::disk('s3')->delete('events/'.$event->id.'/'.$image['name']);
             
             foreach ($existingImages as $index => $existingImage) {
                 if ($existingImage['name'] == $image['name']) {
@@ -110,9 +108,7 @@ class EventRepository implements IEventRepository {
         // delete existing thumbnail
         if (!isset($data['thumbnail'])) {
             if ($thumbnailOriginal != null) {
-                $fullPath = public_path($thumbnailOriginal->path);
-                if (file_exists($fullPath))
-                    unlink($fullPath);
+                Storage::disk('s3')->delete('events/'.$event->id.'/'.$thumbnailOriginal->name);
             }
             $data['thumbnail'] = null;
         }
@@ -137,8 +133,8 @@ class EventRepository implements IEventRepository {
      * {@inheritdoc}
      */
     public function delete(Event $event) {
-        $folderDir = 'public/events/'.$event->id.'/';
-        Storage::deleteDirectory($folderDir);
+        $folderDir = 'events/'.$event->id.'/';
+        Storage::disk('s3')->deleteDirectory($folderDir);
         $event->delete();
     }
 
@@ -155,16 +151,16 @@ class EventRepository implements IEventRepository {
     }
 
     private function saveImage(Event $event, UploadedFile $file, $isThumbnail) {
-        $saveDirectory = 'public/events/'.$event->id.'/';
+        $saveDirectory = 'events/'.$event->id.'/';
 
         if ($isThumbnail)
             $saveDirectory = $saveDirectory.'thumbnails/';
 
         $fileName = $file->getClientOriginalName();
-        Storage::putFileAs($saveDirectory, $file, $fileName);
+        Storage::disk('s3')->putFileAs($saveDirectory, $file, $fileName, 'public');
 
         $data['name'] = $fileName;
-        $data['path'] = Storage::url($saveDirectory.$fileName);
+        $data['path'] = Storage::disk('s3')->url($saveDirectory.$fileName);
         return $data;
     }
 }

@@ -171,18 +171,28 @@ Route::prefix('v1')->group(function () {
             Route::patch('announcements/{announcement}', 'AnnouncementController@update');
             Route::post('announcements/{announcement}/approve', 'AnnouncementController@approve');
             Route::post('announcements/{announcement}/reject', 'AnnouncementController@reject');
-            // Route::post('notifications/{notification}/read', 'NotificationController@read');
-            // Route::post('notifications/all', 'NotificationController@readAll');
         });
 
         /**** Vouchers ****/
         Route::namespace('API\v1\Voucher')->group(function () {
+            Route::get('vouchers/transactions', 'VoucherTransactionController@list');
+            
             Route::get('vouchers', 'VoucherController@list');
             Route::get('vouchers/my/active', 'VoucherController@listMyActive');
+            Route::get('vouchers/my/inactive', 'VoucherController@listMyInactive');
             Route::get('vouchers/{voucher}', 'VoucherController@details');
             Route::post('vouchers', 'VoucherController@create');
-            Route::post('vouchers/{voucher}', 'VoucherController@redeem');
+            Route::post('vouchers/{voucher}/redeem', 'VoucherController@redeem');
+            Route::post('vouchers/{voucher}/use', 'VoucherController@use');
             Route::patch('vouchers/{voucher}', 'VoucherController@update');
+            Route::delete('vouchers/{voucher}', 'VoucherController@delete');
+        });
+
+        /**** Dashboard ****/
+        Route::namespace('API\v1\Dashboard')->group(function () {
+            Route::get('dashboard/stats', 'DashboardController@stats');
+            Route::get('dashboard/top10merchantvisits', 'DashboardController@top_10_merchant_visits');
+            Route::get('dashboard/newusers', 'DashboardController@new_users');
         });
     });
 });

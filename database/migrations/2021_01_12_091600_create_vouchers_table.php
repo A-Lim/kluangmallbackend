@@ -27,6 +27,7 @@ class CreateVouchersTable extends Migration
             $table->text('terms_and_conditions')->nullable();
             $table->bigInteger('created_by')->unsigned();
             $table->bigInteger('updated_by')->unsigned()->nullable();
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('merchant_id')

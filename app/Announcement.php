@@ -63,12 +63,9 @@ class Announcement extends Model {
     }
 
     public function getImageAttribute($value) {
-        if ($value != null) {
-            $data = json_decode($value);
-            $thumbNail['name'] = $data->name;
-            $thumbNail['path'] = URL::to('/').$data->path;
-            return $thumbNail;
-        }
-        return $value;
+        if ($value != null)
+            return json_decode($value);
+
+        return null;
     }
 }

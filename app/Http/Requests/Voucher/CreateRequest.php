@@ -31,6 +31,7 @@ class CreateRequest extends CustomFormRequest {
             'points' => 'required|integer',
             'fromDate' => 'required|date_format:d M Y',
             'toDate' => 'required|date_format:d M Y|after_or_equal:fromDate',
+            'uploadQr' => 'nullable|image',
             'has_redemption_limit' => 'required|boolean',
             'limits' => 'required_if:has_redemption_limit,true',
             'terms_and_conditions' => 'required|string',

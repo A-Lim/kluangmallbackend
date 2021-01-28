@@ -131,13 +131,13 @@ class AnnouncementRepository implements IAnnouncementRepository {
     }
 
     private function saveImage(Announcement $announcement, UploadedFile $file) {
-        $saveDirectory = 'public/announcements/'.$announcement->id.'/';
+        $saveDirectory = 'announcements/'.$announcement->id.'/';
 
         $fileName = $file->getClientOriginalName();
-        Storage::putFileAs($saveDirectory, $file, $fileName);
+        Storage::disk('s3')->putFileAs($saveDirectory, $file, $fileName, 'public');
 
         $data['name'] = $fileName;
-        $data['path'] = Storage::url($saveDirectory.$fileName);
+        $data['path'] = Storage::disk('s3')->url($saveDirectory.$fileName);
         return $data;
     }
 
@@ -145,10 +145,7 @@ class AnnouncementRepository implements IAnnouncementRepository {
         // image property without mutator
         $imgOriginal = json_decode($announcement->getAttributes()['image']);
 
-        if ($imgOriginal != null) {
-            $fullPath = public_path($imgOriginal->path);
-            if (file_exists($fullPath))
-                unlink($fullPath);
-        }
+        if ($imgOriginal != null)
+            Storage::disk('s3')->delete('vouchers/'.$voucher->id.'/'.$imgOriginal->name);
     }
 }

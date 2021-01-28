@@ -9,7 +9,8 @@ class VoucherTransaction extends Model {
     protected $fillable = ['myvoucher_id', 'merchant_id', 'user_id', 'voucher_id', 'type'];
     protected $hidden = [];
     protected $casts = [
-        'created_at' => 'datetime:d M Y'
+        'created_at' => 'datetime:d M Y H:i:s',
+        'updated_at' => 'datetime:d M Y H:i:s'
     ];
 
     const TYPE_REDEEM = 'redeem';

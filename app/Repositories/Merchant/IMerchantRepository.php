@@ -42,7 +42,7 @@ interface IMerchantRepository {
      * @param Merchant $merchant
      * @return integer
      */
-    public function visits(Merchant $merchant);
+    public function visitCount(Merchant $merchant);
 
     /**
      * Create merchant

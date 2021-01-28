@@ -87,9 +87,7 @@ class PromotionRepository implements IPromotionRepository {
 
         // delete files 
         foreach ($imgToBeDeleted as $image) {
-            $fullPath = public_path($image['path']);
-            if (file_exists($fullPath))
-                unlink($fullPath);
+            Storage::disk('s3')->delete('promotions/'.$promotion->id.'/'.$image['name']);
             
             foreach ($existingImages as $index => $existingImage) {
                 if ($existingImage['name'] == $image['name']) {
@@ -110,9 +108,7 @@ class PromotionRepository implements IPromotionRepository {
         // delete existing thumbnail
         if (!isset($data['thumbnail'])) {
             if ($thumbnailOriginal != null) {
-                $fullPath = public_path($thumbnailOriginal->path);
-                if (file_exists($fullPath))
-                    unlink($fullPath);
+                Storage::disk('s3')->delete('promotions/'.$promotion->id.'/'.$thumbnailOriginal->name);
             }
             $data['thumbnail'] = null;
         }
@@ -137,8 +133,8 @@ class PromotionRepository implements IPromotionRepository {
      * {@inheritdoc}
      */
     public function delete(Promotion $promotion) {
-        $folderDir = 'public/promotions/'.$promotion->id.'/';
-        Storage::deleteDirectory($folderDir);
+        $folderDir = 'promotions/'.$promotion->id.'/';
+        Storage::disk('s3')->deleteDirectory($folderDir);
         $promotion->delete();
     }
 
@@ -155,16 +151,16 @@ class PromotionRepository implements IPromotionRepository {
     }
 
     private function saveImage(Promotion $promotion, UploadedFile $file, $isThumbnail) {
-        $saveDirectory = 'public/promotions/'.$promotion->id.'/';
+        $saveDirectory = 'promotions/'.$promotion->id.'/';
 
         if ($isThumbnail)
             $saveDirectory = $saveDirectory.'thumbnails/';
 
         $fileName = $file->getClientOriginalName();
-        Storage::putFileAs($saveDirectory, $file, $fileName);
+        Storage::disk('s3')->putFileAs($saveDirectory, $file, $fileName, 'public');
 
         $data['name'] = $fileName;
-        $data['path'] = Storage::url($saveDirectory.$fileName);
+        $data['path'] = Storage::disk('s3')->url($saveDirectory.$fileName);
         return $data;
     }
 }

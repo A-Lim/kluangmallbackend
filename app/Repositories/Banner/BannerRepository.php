@@ -75,19 +75,19 @@ class BannerRepository implements IBannerRepository {
      * {@inheritdoc}
      */
     public function delete(Banner $banner) {
-        $folderDir = 'public/banners/'.$banner->id.'/';
-        Storage::deleteDirectory($folderDir);
+        $folderDir = 'banners/'.$banner->id.'/';
+        Storage::disk('s3')->deleteDirectory($folderDir);
         $banner->delete();
     }
 
     private function saveImage(Banner $banner, UploadedFile $file) {
-        $saveDirectory = 'public/banners/'.$banner->id.'/';
+        $saveDirectory = 'banners/'.$banner->id.'/';
 
         $fileName = $file->getClientOriginalName();
-        Storage::putFileAs($saveDirectory, $file, $fileName);
+        Storage::disk('s3')->putFileAs($saveDirectory, $file, $fileName, 'public');
 
         $data['name'] = $fileName;
-        $data['path'] = Storage::url($saveDirectory.$fileName);
+        $data['path'] = Storage::disk('s3')->url($saveDirectory.$fileName);
         return $data;
     }
 
@@ -95,10 +95,7 @@ class BannerRepository implements IBannerRepository {
         // image property without mutator
         $imgOriginal = json_decode($banner->getAttributes()['image']);
 
-        if ($imgOriginal != null) {
-            $fullPath = public_path($imgOriginal->path);
-            if (file_exists($fullPath))
-                unlink($fullPath);
-        }
+        if ($imgOriginal != null)
+            Storage::disk('s3')->delete('banners/'.$banner->id.'/'.$imgOriginal->name);
     }
 }

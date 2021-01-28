@@ -14,4 +14,11 @@ class MerchantVisit extends Model {
     public function merchant() {
         return $this->belongsTo(Merchant::class);
     }
+
+    public function getLogoAttribute($value) {
+        if ($value != null) 
+            return json_decode($value);
+        
+        return $value;
+    }
 }

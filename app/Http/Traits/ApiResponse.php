@@ -53,7 +53,7 @@ trait ApiResponse {
             ->json(['data' => $data], $statusCode, $this->headers);
     }
 
-    public function responseWithLoginData($statusCode, $token, $user, $permissions, $points) {
+    public function responseWithLoginData($statusCode, $token, $user, $permissions) {
         $createdAt = new Carbon($token->token->created_at);
         $expiresAt = new Carbon($token->token->expires_at);
 
@@ -63,7 +63,6 @@ trait ApiResponse {
             'accessToken' => $token->accessToken,
             'user' => $user,
             'permissions' => $permissions,
-            'points' => 0,
         ];
         return response()
             ->json(['data' => $data], $statusCode, $this->headers);

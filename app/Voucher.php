@@ -3,12 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Http\Traits\CustomQuery;
 
 class Voucher extends Model {
-    use CustomQuery;
+    use CustomQuery, SoftDeletes;
 
-    protected $fillable = ['name', 'description', 'merchant_id', 'points', 'status', 'qr', 'data', 'terms_and_conditions', 'has_redemption_limit', 'fromDate', 'toDate', 'created_by', 'updated_by'];
+    protected $fillable = ['name', 'description', 'merchant_id', 'points', 'status', 'qr', 'data', 'terms_and_conditions', 'has_redemption_limit', 'fromDate', 'toDate', 'deleted_at', 'created_at', 'updated_at', 'created_by', 'updated_by'];
     protected $hidden = [];
     protected $casts = [
         'fromDate' => 'datetime:d M Y',
@@ -36,5 +37,12 @@ class Voucher extends Model {
 
     public function transactions() {
         return $this->hasMany(VoucherTransaction::class);
+    }
+
+    public function getQrAttribute($value) {
+        if ($value != null)
+            return json_decode($value);
+        
+        return null;
     }
 }

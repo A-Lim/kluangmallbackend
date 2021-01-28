@@ -15,7 +15,9 @@
         "intervention/image": "^2.5",
         "laravel/framework": "^8.0",
         "laravel/passport": "^10.0",
-        "laravel/tinker": "^2.0"
+        "laravel/tinker": "^2.0",
+        "league/flysystem-aws-s3-v3": "^1.0",
+        "libern/qr-code-reader": "^1.0"
     },
     "require-dev": {
         "laravel/ui": "^3.0",
