@@ -44,7 +44,7 @@ class DashboardRepository implements IDashboardRepository {
     public function top_merchants_visit() {
         return MerchantVisit::join('merchants', 'merchants.id', '=', 'merchant_visits.merchant_id')
             ->select('merchants.id', 'merchants.name', 'merchants.logo', DB::raw('COUNT(*) as visits'))
-            ->groupBy('merchant_visits.merchant_id', 'merchants.name')
+            ->groupBy('merchants.id', 'merchants.name')
             ->orderBy('visits', 'desc')
             ->take(10)
             ->get();

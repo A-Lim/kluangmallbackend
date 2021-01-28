@@ -21,6 +21,7 @@ class SystemSettingsTableSeeder extends Seeder {
         $socialCategory = SystemSettingCategory::create(['name' => 'Social']);
         $mobileCategory = SystemSettingCategory::create(['name' => 'Mobile']);
         $creditCategory = SystemSettingCategory::create(['name' => 'Credit']);
+        $redemptionCategory = SystemSettingCategory::create(['name' => 'Redemption']);
         
         $systemsettings = [
             ['systemsettingcategory_id' => $generalCategory->id, 'name' => 'About Us', 'code' => 'about_us', 'description' => '', 'value' => ''],
@@ -47,6 +48,8 @@ class SystemSettingsTableSeeder extends Seeder {
             ['systemsettingcategory_id' => $mobileCategory->id, 'name' => 'Merchant App Android Link', 'code' => 'merchant_android_link', 'description' => '', 'value' => 'merchant.android.com'],
 
             ['systemsettingcategory_id' => $creditCategory->id, 'name' => 'Announcement', 'code' => 'announcement', 'description' => 'Credits required per announcement.', 'value' => '5'],
+
+            ['systemsettingcategory_id' => $redemptionCategory->id, 'name' => 'Points Rate', 'code' => 'points_rate', 'description' => 'Points awarded for every RM1', 'value' => ''],
         ];
 
         SystemSetting::insert($systemsettings);
