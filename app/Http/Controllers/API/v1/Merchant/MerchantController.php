@@ -24,7 +24,7 @@ class MerchantController extends ApiController {
 
     public function __construct(IMerchantRepository $iMerchantRepository,
     IUserRepository $iUserRepository) {
-        $this->middleware('auth:api');
+        $this->middleware('auth:api')->except(['track']);
         $this->merchantRepository = $iMerchantRepository;
         $this->userRepository = $iUserRepository;
     }

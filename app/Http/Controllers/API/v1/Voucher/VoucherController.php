@@ -10,9 +10,11 @@ use App\User;
 use App\Voucher;
 use App\VoucherLimit;
 use App\Repositories\Voucher\IVoucherRepository;
+use App\Repositories\User\IUserRepository;
 
 use App\Http\Requests\Voucher\CreateRequest;
 use App\Http\Requests\Voucher\UpdateRequest;
+use App\Http\Requests\Voucher\UseUserVoucher;
 
 use Libern\QRCodeReader\QRCodeReader;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -20,10 +22,13 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class VoucherController extends ApiController {
 
     private $voucherRepository;
+    private $userRepository;
 
-    public function __construct(IVoucherRepository $iVoucherRepository) {
+    public function __construct(IVoucherRepository $iVoucherRepository,
+        IUserRepository $iUserRepository) {
         $this->middleware('auth:api');
         $this->voucherRepository = $iVoucherRepository;
+        $this->userRepository = $iUserRepository;
     }
 
     public function list(Request $request) {
@@ -109,6 +114,28 @@ class VoucherController extends ApiController {
         
         // consume voucher
         $this->voucherRepository->use($voucher, $user);
+        return $this->responseWithMessage(200, 'Voucher used.');
+    }
+
+    // merchant scan user to redeem voucher
+    public function useOnBehalfOfUser(UseUserVoucher $request) {
+        $merchant = auth()->user()->merchant;
+
+        if (!$merchant)
+            return $this->responseWithMessage(400, 'Invalid merchant account.');
+
+        $user = $this->userRepository->find($request->user_id);
+        $result = $this->validateMyVoucher($user, $voucher);
+
+        // validation fail
+        if ($result != null && get_class($result) == 'Illuminate\Http\JsonResponse')
+            return $result;
+
+        // consume voucher
+        $this->voucherRepository->use($voucher, $user);
+
+        // send notification
+
         return $this->responseWithMessage(200, 'Voucher used.');
     }
 
