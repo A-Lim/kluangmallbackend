@@ -38,7 +38,7 @@ class Promotion extends Model {
     }
 
     public function getThumbnailAttribute($value) {
-        if ($valuel)
+        if ($value)
             return json_decode($value);
 
         return null;
