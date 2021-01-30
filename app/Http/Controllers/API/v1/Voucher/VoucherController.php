@@ -16,6 +16,8 @@ use App\Http\Requests\Voucher\CreateRequest;
 use App\Http\Requests\Voucher\UpdateRequest;
 use App\Http\Requests\Voucher\UseUserVoucher;
 
+use App\Notifications\Voucher\VoucherUsed;
+
 use Libern\QRCodeReader\QRCodeReader;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -34,6 +36,28 @@ class VoucherController extends ApiController {
     public function list(Request $request) {
         $this->authorize('viewAny', Voucher::class);
         $vouchers = $this->voucherRepository->list($request->all(), true);
+        return $this->responseWithData(200, $vouchers);
+    }
+
+    // list merchants active vouchers
+    public function listMerchantsActive(Request $request) {
+        $merchant = auth()->user()->merchant;
+
+        if (!$merchant)
+            return $this->responseWithMessage(400, 'Invalid merchant account.');
+
+        $vouchers = $this->voucherRepository->listMerchantsActive($merchant, true);
+        return $this->responseWithData(200, $vouchers);
+    }
+
+    // list merchants ended vouchers
+    public function listMerchantsInactive(Request $request) {
+        $merchant = auth()->user()->merchant;
+
+        if (!$merchant)
+            return $this->responseWithMessage(400, 'Invalid merchant account.');
+
+        $vouchers = $this->voucherRepository->listMerchantsInactive($merchant, true);
         return $this->responseWithData(200, $vouchers);
     }
 
@@ -124,6 +148,7 @@ class VoucherController extends ApiController {
         if (!$merchant)
             return $this->responseWithMessage(400, 'Invalid merchant account.');
 
+        $voucher = $this->voucherRepository->find($request->voucher_id);
         $user = $this->userRepository->find($request->user_id);
         $result = $this->validateMyVoucher($user, $voucher);
 
@@ -132,9 +157,10 @@ class VoucherController extends ApiController {
             return $result;
 
         // consume voucher
-        $this->voucherRepository->use($voucher, $user);
+        $myVoucher = $this->voucherRepository->use($voucher, $user);
 
         // send notification
+        $user->notify(new VoucherUsed($myVoucher));
 
         return $this->responseWithMessage(200, 'Voucher used.');
     }
@@ -192,12 +218,20 @@ class VoucherController extends ApiController {
 
     }
 
-    public function validateMyVoucher(User $user, Voucher $voucher) {
+    public function validateMyVoucher(User $user, Voucher $voucher, $isMerchant = false) {
         $today = Carbon::today();
         $myVouchers = $this->voucherRepository->listMyActive($user);
 
-        if ($myVouchers->count() == 0)
-            return $this->responseWithMessage(400, 'You do not own this voucher.'); 
+        if ($myVouchers->count() == 0) {
+            $message = null;
+            if ($isMerchant)
+                $message = 'User does not own this voucher.';
+            else 
+                $message = 'You do not own this voucher.';
+
+            return $this->responseWithMessage(400, $message);
+        }
+             
 
         if ($voucher->status != Voucher::STATUS_ACTIVE)
             return $this->responseWithMessage(400, 'Voucher is no longer valid.');

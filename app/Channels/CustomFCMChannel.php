@@ -54,7 +54,7 @@ class CustomFCMChannel {
             ->where('device_token', '<>', null)
             ->pluck('device_token')
             ->toArray();
-
+            
         $notificationLog = $this->sendNotification($data, $device_ids);
         $this->notificationRepository->create($users, $notificationLog->id, $data);
     }

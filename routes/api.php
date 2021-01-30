@@ -180,8 +180,13 @@ Route::prefix('v1')->group(function () {
             Route::get('vouchers', 'VoucherController@list');
             Route::get('vouchers/my/active', 'VoucherController@listMyActive');
             Route::get('vouchers/my/inactive', 'VoucherController@listMyInactive');
+            Route::get('vouchers/merchant/active', 'VoucherController@listMerchantsActive');
+            Route::get('vouchers/merchant/inactive', 'VoucherController@listMerchantsInactive');
+
             Route::get('vouchers/{voucher}', 'VoucherController@details');
+
             Route::post('vouchers', 'VoucherController@create');
+            Route::post('vouchers/redeemforuser', 'VoucherController@useOnBehalfOfUser');
             Route::post('vouchers/{voucher}/redeem', 'VoucherController@redeem');
             Route::post('vouchers/{voucher}/use', 'VoucherController@use');
             Route::patch('vouchers/{voucher}', 'VoucherController@update');

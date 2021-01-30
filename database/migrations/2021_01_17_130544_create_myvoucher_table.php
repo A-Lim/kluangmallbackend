@@ -34,7 +34,7 @@ class CreateMyvoucherTable extends Migration
 
             $table->foreign('voucher_id')
                   ->references('id')
-                  ->on('merchants')
+                  ->on('vouchers')
                   ->onDelete('cascade');
         });
     }

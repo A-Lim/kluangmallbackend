@@ -17,11 +17,13 @@ class CreateVouchersTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('merchant_id')->unsigned();
             $table->string('status', 100);
+            $table->text('image');
             $table->string('name', 100);
             $table->text('description');
             $table->integer('points');
             $table->text('data')->nullable();
             $table->text('qr')->nullable();
+            $table->boolean('has_redemption_limit')->default(false);
             $table->date('fromDate')->nullable();
             $table->date('toDate')->nullable();
             $table->text('terms_and_conditions')->nullable();

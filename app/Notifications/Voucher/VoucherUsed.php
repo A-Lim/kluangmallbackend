@@ -5,14 +5,13 @@ namespace App\Notifications\Voucher;
 use Illuminate\Notifications\Notification;
 
 use App\Channels\CustomFCMChannel;
-use App\Voucher;
 use App\MyVoucher;
 
 class VoucherUsed extends Notification {
-    private $voucher;
+    private $myVoucher;
     
-    public function __construct(Voucher $voucher) {
-        $this->voucher = $voucher;
+    public function __construct(MyVoucher $myVoucher) {
+        $this->myVoucher = $myVoucher;
     }
 
     public function via($notifiable) {
@@ -20,31 +19,17 @@ class VoucherUsed extends Notification {
     }
 
     public function toCustomFCM($notifiable) {
-        // $merchant = $notifiable;
-        // $title = '';
-        // $description = '';
+        $user = $notifiable;
 
-        // switch ($this->announcement->status) {
-        //     case Announcement::STATUS_PUBLISHED:
-        //         $title = 'Announcement Approved';
-        //         $description = 'Your announcement "'.$this->announcement->title.'" has been approved and is published.';
-        //         break;
+        $notification_data = [
+            'title' => 'Voucher successfully used.',
+            'body' => 'You have used your ['.$this->myVoucher->merchant->name.'] '.$this->myVoucher->voucher->name.' voucher.',
+            'redirect' => false
+        ];
 
-        //     case Announcement::STATUS_REJECTED:
-        //         $title = 'Announcement Rejected';
-        //         $description = $this->announcement->remark;
-        //         break;
-        // }
-
-        // $notification_data = [
-        //     'title' => $title,
-        //     'body' => $description,
-        //     'redirect' => false
-        // ];
-
-        // return [
-        //     'users' => $merchant->users,
-        //     'payload' => $notification_data
-        // ];
+        return [
+            'users' => collect([$user]),
+            'payload' => $notification_data
+        ];
     }
 }

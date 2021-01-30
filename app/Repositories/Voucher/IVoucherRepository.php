@@ -2,6 +2,7 @@
 namespace App\Repositories\Voucher;
 
 use App\User;
+use App\Merchant;
 use App\Voucher;
 use App\VoucherLimit;
 
@@ -16,7 +17,7 @@ interface IVoucherRepository {
      * List all user's active vouchers
      * @param User $user
      * @param boolean $paginate
-     * @return array [Voucher]
+     * @return array [MyVoucher]
      */
     public function listMyActive(User $user, $paginate = false);
 
@@ -24,9 +25,25 @@ interface IVoucherRepository {
      * List all user's expired / used vouchers
      * @param User $user
      * @param boolean $paginate
-     * @return array [Voucher]
+     * @return array [MyVoucher]
      */
     public function listMyExpiredUsed(User $user, $paginate = false);
+
+    /**
+     * List all merchant's active vouchers
+     * @param Merchant $merchant
+     * @param boolean $paginate
+     * @return array [Voucher]
+     */
+    public function listMerchantsActive(Merchant $merchant, $paginate = false);
+
+    /**
+     * List all merchant's ended vouchers
+     * @param User $user
+     * @param boolean $paginate
+     * @return array [Voucher]
+     */
+    public function listMerchantsInactive(Merchant $merchant, $paginate = false);
 
     /**
      * Create Voucher

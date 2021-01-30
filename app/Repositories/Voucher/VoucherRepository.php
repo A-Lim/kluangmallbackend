@@ -3,6 +3,7 @@ namespace App\Repositories\Voucher;
 
 use DB;
 use App\User;
+use App\Merchant;
 use App\MyVoucher;
 use App\Voucher;
 use App\VoucherLimit;
@@ -91,6 +92,40 @@ class VoucherRepository implements IVoucherRepository {
     /**
      * {@inheritdoc}
      */
+    public function listMerchantsActive(Merchant $merchant, $paginate = false) {
+        $today = Carbon::today();
+        $query = Voucher::where('merchant_id', $merchant->id)
+            ->where('status', Voucher::STATUS_ACTIVE)
+            ->whereDate('toDate', '>=', $today);
+
+        if ($paginate) {
+            $limit = isset($data['limit']) ? $data['limit'] : 10;
+            return $query->paginate($limit);
+        }
+
+        return $query->get();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function listMerchantsInactive(Merchant $merchant, $paginate = false) {
+        $today = Carbon::today();
+        $query = Voucher::where('merchant_id', $merchant->id)
+            ->where('status', Voucher::STATUS_ACTIVE)
+            ->whereDate('toDate', '<', $today);
+
+        if ($paginate) {
+            $limit = isset($data['limit']) ? $data['limit'] : 10;
+            return $query->paginate($limit);
+        }
+
+        return $query->get();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function find($id) {
         return Voucher::with('limits')
             ->where('id', $id)
@@ -113,6 +148,11 @@ class VoucherRepository implements IVoucherRepository {
             $voucher->save();
         }
 
+        if (isset($files['uploadImage'])) {
+            $voucher->image = json_encode($this->saveQr($voucher, $files['uploadImage']));
+            $voucher->save();
+        }
+
         if (isset($data['limits']))
             $voucher->limits()->createMany($data['limits']);
 
@@ -129,6 +169,13 @@ class VoucherRepository implements IVoucherRepository {
         $data['toDate'] = Carbon::createFromFormat(env('DATE_FORMAT'), $data['toDate']);
         $data['updated_by'] = auth()->id();
 
+        // prevent qr data to be filled into voucher object
+        $qrData = @$data['qr'];
+        unset($data['qr']);
+        // prevent image data to be filled into voucher object
+        $imageData = @$data['image'];
+        unset($data['image']);
+
         $voucher->fill($data);
 
         DB::beginTransaction();
@@ -139,7 +186,7 @@ class VoucherRepository implements IVoucherRepository {
         if (isset($files['uploadQr'])) {
             $this->deleteQr($voucher);
             $voucher->qr = json_encode($this->saveQr($voucher, $files['uploadQr']));
-        } else if (!isset($files['uploadQr']) && !isset($data['qr'])) {
+        } else if (!isset($files['uploadQr']) && !$qrData) {
             $this->deleteQr($voucher);
             $voucher->qr = null;
             $voucher->data = null;
@@ -147,12 +194,22 @@ class VoucherRepository implements IVoucherRepository {
             $data['qr'] = $voucher->getAttributes()['qr'];
         }
 
+        // update image 
+        if (isset($files['uploadImage'])) {
+            $this->deleteImage($voucher);
+            $voucher->image = json_encode($this->saveImage($voucher, $files['uploadImage']));
+        } else if (!isset($files['uploadImage']) && !$imageData) {
+            $this->deleteImage($voucher);
+            $voucher->image = null;
+        } else {
+            $data['image'] = $voucher->getAttributes()['image'];
+        }
+
         if (isset($data['limits']))
             $voucher->limits()->createMany($data['limits']);
 
         $voucher->save();
         DB::commit();
-
         return $voucher;
     }
 
@@ -283,6 +340,17 @@ class VoucherRepository implements IVoucherRepository {
     }
 
     private function saveQr(Voucher $voucher, UploadedFile $file) {
+        $saveDirectory = 'vouchers/'.$voucher->id.'/qr/';
+
+        $fileName = $file->getClientOriginalName();
+        Storage::disk('s3')->putFileAs($saveDirectory, $file, $fileName, 'public');
+
+        $data['name'] = $fileName;
+        $data['path'] = Storage::disk('s3')->url($saveDirectory.$fileName);
+        return $data;
+    }
+
+    private function saveImage(Voucher $voucher, UploadedFile $file) {
         $saveDirectory = 'vouchers/'.$voucher->id.'/';
 
         $fileName = $file->getClientOriginalName();
@@ -297,7 +365,15 @@ class VoucherRepository implements IVoucherRepository {
         $qrOriginal = json_decode($voucher->getAttributes()['qr']);
 
         if ($qrOriginal != null)
-            Storage::disk('s3')->delete('vouchers/'.$voucher->id.'/'.$qrOriginal->name);
+            Storage::disk('s3')->delete('vouchers/'.$voucher->id.'/qr/'.$qrOriginal->name);
+        
+    }
+
+    private function deleteImage(Voucher $voucher) {
+        $imageOriginal = json_decode($voucher->getAttributes()['image']);
+
+        if ($imageOriginal != null)
+            Storage::disk('s3')->delete('vouchers/'.$voucher->id.'/'.$imageOriginal->name);
         
     }
 }

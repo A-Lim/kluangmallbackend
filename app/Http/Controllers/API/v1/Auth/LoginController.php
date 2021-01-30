@@ -67,6 +67,7 @@ class LoginController extends ApiController {
             else
                 $permissions = $this->userRepository->permissions($user);
             
+            // dd($user->toArray());
             return $this->responseWithLoginData(200, $tokenResult, $user, $permissions);
         }
 
