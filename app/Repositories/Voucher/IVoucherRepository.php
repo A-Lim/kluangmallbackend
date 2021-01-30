@@ -14,6 +14,12 @@ interface IVoucherRepository {
     public function list($data, $paginate = false);
 
     /**
+     * List all available vouchers
+     * @return array [Voucher]
+     */
+    public function listAvailable($data, $paginate = false);
+
+    /**
      * List all user's active vouchers
      * @param User $user
      * @param boolean $paginate

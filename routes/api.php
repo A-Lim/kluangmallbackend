@@ -176,7 +176,7 @@ Route::prefix('v1')->group(function () {
         /**** Vouchers ****/
         Route::namespace('API\v1\Voucher')->group(function () {
             Route::get('vouchers/transactions', 'VoucherTransactionController@list');
-            
+        
             Route::get('vouchers', 'VoucherController@list');
             Route::get('vouchers/my/active', 'VoucherController@listMyActive');
             Route::get('vouchers/my/inactive', 'VoucherController@listMyInactive');
@@ -191,6 +191,12 @@ Route::prefix('v1')->group(function () {
             Route::post('vouchers/{voucher}/use', 'VoucherController@use');
             Route::patch('vouchers/{voucher}', 'VoucherController@update');
             Route::delete('vouchers/{voucher}', 'VoucherController@delete');
+        });
+
+        /**** Rewards ****/
+        Route::namespace('API\v1\Voucher')->group(function () {
+            Route::get('rewards', 'VoucherController@listRewards');
+            Route::get('rewards/{voucher}', 'VoucherController@rewardDetails');
         });
 
         /**** Dashboard ****/

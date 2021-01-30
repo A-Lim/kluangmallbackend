@@ -54,6 +54,25 @@ class VoucherRepository implements IVoucherRepository {
     /**
      * {@inheritdoc}
      */
+    public function listAvailable($data, $paginate = false) {
+        $today = Carbon::today();
+        $query = Voucher::join('merchants', 'merchants.id', '=', 'vouchers.merchant_id')
+            ->whereDate('vouchers.fromDate', '<=', $today)
+            ->whereDate('vouchers.toDate', '>=', $today)
+            ->select('vouchers.id', 'vouchers.name', 'merchants.name as merchant', 'vouchers.image', 
+                'vouchers.points', 'vouchers.description', 'vouchers.terms_and_conditions');
+        
+        if ($paginate) {
+            $limit = isset($data['limit']) ? $data['limit'] : 10;
+            return $query->paginate($limit);
+        }
+
+        return $query->get();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function listMyActive(User $user, $paginate = false) {
         $query = MyVoucher::join('vouchers', 'vouchers.id', '=', 'myvouchers.voucher_id')
             ->join('merchants', 'merchants.id', '=', 'myvouchers.merchant_id')
@@ -129,6 +148,14 @@ class VoucherRepository implements IVoucherRepository {
     public function find($id) {
         return Voucher::with('limits')
             ->where('id', $id)
+            ->first();
+    }
+
+    public function rewardDetail(Voucher $voucher) {
+        return Voucher::join('merchants', 'merchants.id', '=', 'vouchers.merchant_id')
+            ->where('vouchers.id', $voucher->id)
+            ->select('vouchers.id', 'vouchers.name', 'merchants.name as merchant', 'vouchers.image', 
+                'vouchers.points', 'vouchers.description', 'vouchers.terms_and_conditions')
             ->first();
     }
 

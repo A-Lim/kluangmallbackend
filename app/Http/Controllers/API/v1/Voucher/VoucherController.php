@@ -39,6 +39,18 @@ class VoucherController extends ApiController {
         return $this->responseWithData(200, $vouchers);
     }
 
+    // list vouchers that are redeemable by users
+    public function listRewards(Request $request) {
+        $vouchers = $this->voucherRepository->listAvailable($request->all(), true);
+        return $this->responseWithData(200, $vouchers);
+    }
+
+    // reward details
+    public function rewardDetails(Request $request, Voucher $voucher) {
+        $reward = $this->voucherRepository->rewardDetail($voucher);
+        return $this->responseWithData(200, $reward);
+    }
+
     // list merchants active vouchers
     public function listMerchantsActive(Request $request) {
         $merchant = auth()->user()->merchant;
