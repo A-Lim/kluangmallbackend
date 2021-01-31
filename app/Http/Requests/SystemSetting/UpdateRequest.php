@@ -19,7 +19,8 @@ class UpdateRequest extends CustomFormRequest {
         return [
           'verification_type' => 'required|in:'.implode(',', SystemSetting::VTYPES),
           'allow_public_registration' => 'boolean',
-          'credit_announcement' => 'nullable|integer'
+          'credit_announcement' => 'required|integer',
+          'points_rate' => 'required|integer'
         ];
     }
 }

@@ -205,5 +205,10 @@ Route::prefix('v1')->group(function () {
             Route::get('dashboard/top10merchantvisits', 'DashboardController@top_10_merchant_visits');
             Route::get('dashboard/newusers', 'DashboardController@new_users');
         });
+
+        /**** Receipts ****/
+        Route::namespace('API\v1\Receipt')->group(function () {
+            Route::post('receipts/upload', 'ReceiptController@upload');
+        });
     });
 });

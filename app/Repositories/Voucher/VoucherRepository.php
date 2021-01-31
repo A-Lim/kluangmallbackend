@@ -59,7 +59,7 @@ class VoucherRepository implements IVoucherRepository {
         $query = Voucher::join('merchants', 'merchants.id', '=', 'vouchers.merchant_id')
             ->whereDate('vouchers.fromDate', '<=', $today)
             ->whereDate('vouchers.toDate', '>=', $today)
-            ->select('vouchers.id', 'vouchers.name', 'merchants.name as merchant', 'vouchers.image', 
+            ->select('vouchers.id', 'vouchers.name', 'merchants.id as merchant_id', 'merchants.name as merchant', 'vouchers.image', 
                 'vouchers.points', 'vouchers.description', 'vouchers.terms_and_conditions');
         
         if ($paginate) {
@@ -154,7 +154,7 @@ class VoucherRepository implements IVoucherRepository {
     public function rewardDetail(Voucher $voucher) {
         return Voucher::join('merchants', 'merchants.id', '=', 'vouchers.merchant_id')
             ->where('vouchers.id', $voucher->id)
-            ->select('vouchers.id', 'vouchers.name', 'merchants.name as merchant', 'vouchers.image', 
+            ->select('vouchers.id', 'vouchers.name', 'merchants.id as merchant_id', 'merchants.name as merchant', 'vouchers.image', 
                 'vouchers.points', 'vouchers.description', 'vouchers.terms_and_conditions')
             ->first();
     }
