@@ -41,6 +41,10 @@ class User extends Authenticatable {
         self::STATUS_INACTIVE,
     ];
 
+    public function point_transactions() {
+        return $this->hasMany(PointTransaction::class); 
+    }
+
     public function merchants() {
         return $this->belongsToMany(Merchant::class, 'merchant_user', 'user_id', 'merchant_id'); 
     }

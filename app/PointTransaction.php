@@ -17,4 +17,6 @@ class PointTransaction extends Model {
         self::TYPE_ADD,
         self::TYPE_DEDUCT
     ];
+
+    
 }
