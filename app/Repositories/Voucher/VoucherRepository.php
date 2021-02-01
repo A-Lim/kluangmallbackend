@@ -163,7 +163,9 @@ class VoucherRepository implements IVoucherRepository {
             ->where('myvouchers.user_id', $user->id)
             ->where('myvouchers.status', MyVoucher::STATUS_ACTIVE)
             ->select('vouchers.id', 'vouchers.name', 'merchants.name as merchant', 
-                'myvouchers.status', 'myvouchers.expiry_date', 'vouchers.image')
+                'vouchers.image', 'vouchers.description', 'vouchers.terms_and_conditions',
+                'vouchers.fromDate', 'vouchers.toDate', 'vouchers.points',
+                'myvouchers.status', 'myvouchers.expiry_date')
             ->first();
     }
 
