@@ -34,4 +34,11 @@ class MyVoucher extends Model {
     public function voucher() {
         return $this->belongsTo(Voucher::class);
     }
+
+    public function getImageAttribute($value) {
+        if ($value != null)
+            return json_decode($value);
+        
+        return null;
+    }
 }

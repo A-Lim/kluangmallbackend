@@ -78,8 +78,9 @@ class VoucherRepository implements IVoucherRepository {
             ->join('merchants', 'merchants.id', '=', 'myvouchers.merchant_id')
             ->where('myvouchers.user_id', $user->id)
             ->where('myvouchers.status', MyVoucher::STATUS_ACTIVE)
-            ->select('vouchers.id', 'vouchers.name', 'merchants.name as merchant', 'myvouchers.status', 'myvouchers.expiry_date', DB::raw('COUNT(*) as quantity'))
-            ->groupBy(['vouchers.id', 'vouchers.name', 'merchants.name', 'myvouchers.status', 'myvouchers.expiry_date']);
+            ->select('vouchers.id', 'vouchers.name', 'merchants.name as merchant', 'myvouchers.status', 
+                'myvouchers.expiry_date', 'vouchers.image', DB::raw('COUNT(*) as quantity'))
+            ->groupBy(['vouchers.id', 'vouchers.name', 'vouchers.image', 'merchants.name', 'myvouchers.status', 'myvouchers.expiry_date']);
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
@@ -97,8 +98,9 @@ class VoucherRepository implements IVoucherRepository {
             ->join('merchants', 'merchants.id', '=', 'myvouchers.merchant_id')
             ->where('myvouchers.user_id', $user->id)
             ->whereIn('myvouchers.status', [MyVoucher::STATUS_USED, MyVoucher::STATUS_EXPIRED])
-            ->select('vouchers.id', 'vouchers.name', 'merchants.name as merchant', 'myvouchers.status', 'myvouchers.expiry_date', DB::raw('COUNT(*) as quantity'))
-            ->groupBy(['vouchers.id', 'vouchers.name', 'merchants.name', 'myvouchers.status', 'myvouchers.expiry_date']);
+            ->select('vouchers.id', 'vouchers.name', 'merchants.name as merchant', 'myvouchers.status', 
+                'myvouchers.expiry_date', 'vouchers.image', DB::raw('COUNT(*) as quantity'))
+            ->groupBy(['vouchers.id', 'vouchers.name', 'vouchers.image', 'merchants.name', 'myvouchers.status', 'myvouchers.expiry_date']);
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
@@ -148,6 +150,20 @@ class VoucherRepository implements IVoucherRepository {
     public function find($id) {
         return Voucher::with('limits')
             ->where('id', $id)
+            ->first();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findMyVoucher(User $user, Voucher $voucher) {
+        return MyVoucher::join('vouchers', 'vouchers.id', '=', 'myvouchers.voucher_id')
+            ->join('merchants', 'merchants.id', '=', 'myvouchers.merchant_id')
+            ->where('myvouchers.voucher_id', $voucher->id)
+            ->where('myvouchers.user_id', $user->id)
+            ->where('myvouchers.status', MyVoucher::STATUS_ACTIVE)
+            ->select('vouchers.id', 'vouchers.name', 'merchants.name as merchant', 
+                'myvouchers.status', 'myvouchers.expiry_date', 'vouchers.image')
             ->first();
     }
 

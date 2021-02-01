@@ -85,6 +85,16 @@ class VoucherController extends ApiController {
         return $this->responseWithData(200, $vouchers);
     }
 
+    public function myVoucher(Voucher $voucher) {
+        $user = auth()->user();
+        $voucher = $this->voucherRepository->findMyVoucher($user, $voucher);
+
+        if (!$voucher)
+            return $this->responseWithMessage(400, 'Voucher not found.');
+
+        return $this->responseWithData(200, $voucher);
+    }
+
     public function details(Voucher $voucher) {
         // $this->authorize('view', $voucher);
         $voucher = $this->voucherRepository->find($voucher->id);

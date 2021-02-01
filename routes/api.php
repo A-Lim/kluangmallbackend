@@ -180,6 +180,7 @@ Route::prefix('v1')->group(function () {
             Route::get('vouchers', 'VoucherController@list');
             Route::get('vouchers/my/active', 'VoucherController@listMyActive');
             Route::get('vouchers/my/inactive', 'VoucherController@listMyInactive');
+            Route::get('vouchers/my/{voucher}', 'VoucherController@myVoucher');
             Route::get('vouchers/merchant/active', 'VoucherController@listMerchantsActive');
             Route::get('vouchers/merchant/inactive', 'VoucherController@listMerchantsInactive');
 
