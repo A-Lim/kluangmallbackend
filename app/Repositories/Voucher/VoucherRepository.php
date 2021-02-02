@@ -80,7 +80,7 @@ class VoucherRepository implements IVoucherRepository {
             ->where('myvouchers.status', MyVoucher::STATUS_ACTIVE)
             ->select('vouchers.id', 'vouchers.name', 'merchants.name as merchant', 'merchants.id as merchant_id', 'myvouchers.status', 
                 'myvouchers.expiry_date', 'vouchers.image', DB::raw('COUNT(*) as quantity'))
-            ->groupBy(['vouchers.id', 'vouchers.name', 'vouchers.image', 'merchants.name', 'myvouchers.status', 'myvouchers.expiry_date']);
+            ->groupBy(['vouchers.id', 'vouchers.name', 'vouchers.image', 'merchants.name', 'merchant_id', 'myvouchers.status', 'myvouchers.expiry_date']);
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
@@ -100,7 +100,7 @@ class VoucherRepository implements IVoucherRepository {
             ->whereIn('myvouchers.status', [MyVoucher::STATUS_USED, MyVoucher::STATUS_EXPIRED])
             ->select('vouchers.id', 'vouchers.name', 'merchants.name as merchant', 'merchants.id as merchant_id', 'myvouchers.status', 
                 'myvouchers.expiry_date', 'vouchers.image', DB::raw('COUNT(*) as quantity'))
-            ->groupBy(['vouchers.id', 'vouchers.name', 'vouchers.image', 'merchants.name', 'myvouchers.status', 'myvouchers.expiry_date']);
+            ->groupBy(['vouchers.id', 'vouchers.name', 'vouchers.image', 'merchants.name', 'merchant_id', 'myvouchers.status', 'myvouchers.expiry_date']);
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
