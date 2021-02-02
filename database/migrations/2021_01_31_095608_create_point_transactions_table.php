@@ -16,14 +16,21 @@ class CreatePointTransactionsTable extends Migration
         Schema::create('point_transactions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('user_id')->unsigned();
+            $table->bigInteger('receipt_id')->nullable()->unsigned();
             $table->bigInteger('amount');
             $table->string('type', 10);
+            $table->text('description');
             $table->timestamps();
-
+            
             $table->foreign('user_id')
-                  ->references('id')
-                  ->on('users')
-                  ->onDelete('cascade');
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
+
+            $table->foreign('receipt_id')
+                ->references('id')
+                ->on('receipts')
+                ->onDelete('cascade');
         });
     }
 

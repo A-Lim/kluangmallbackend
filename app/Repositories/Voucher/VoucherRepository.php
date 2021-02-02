@@ -78,7 +78,7 @@ class VoucherRepository implements IVoucherRepository {
             ->join('merchants', 'merchants.id', '=', 'myvouchers.merchant_id')
             ->where('myvouchers.user_id', $user->id)
             ->where('myvouchers.status', MyVoucher::STATUS_ACTIVE)
-            ->select('vouchers.id', 'vouchers.name', 'merchants.name as merchant', 'myvouchers.status', 
+            ->select('vouchers.id', 'vouchers.name', 'merchants.name as merchant', 'merchants.id as merchant_id', 'myvouchers.status', 
                 'myvouchers.expiry_date', 'vouchers.image', DB::raw('COUNT(*) as quantity'))
             ->groupBy(['vouchers.id', 'vouchers.name', 'vouchers.image', 'merchants.name', 'myvouchers.status', 'myvouchers.expiry_date']);
 
@@ -98,7 +98,7 @@ class VoucherRepository implements IVoucherRepository {
             ->join('merchants', 'merchants.id', '=', 'myvouchers.merchant_id')
             ->where('myvouchers.user_id', $user->id)
             ->whereIn('myvouchers.status', [MyVoucher::STATUS_USED, MyVoucher::STATUS_EXPIRED])
-            ->select('vouchers.id', 'vouchers.name', 'merchants.name as merchant', 'myvouchers.status', 
+            ->select('vouchers.id', 'vouchers.name', 'merchants.name as merchant', 'merchants.id as merchant_id', 'myvouchers.status', 
                 'myvouchers.expiry_date', 'vouchers.image', DB::raw('COUNT(*) as quantity'))
             ->groupBy(['vouchers.id', 'vouchers.name', 'vouchers.image', 'merchants.name', 'myvouchers.status', 'myvouchers.expiry_date']);
 
@@ -162,7 +162,7 @@ class VoucherRepository implements IVoucherRepository {
             ->where('myvouchers.voucher_id', $voucher->id)
             ->where('myvouchers.user_id', $user->id)
             ->where('myvouchers.status', MyVoucher::STATUS_ACTIVE)
-            ->select('vouchers.id', 'vouchers.name', 'merchants.name as merchant', 
+            ->select('vouchers.id', 'vouchers.name', 'merchants.name as merchant', 'merchants.id as merchant_id',
                 'vouchers.image', 'vouchers.description', 'vouchers.terms_and_conditions',
                 'vouchers.fromDate', 'vouchers.toDate', 'vouchers.points',
                 'myvouchers.status', 'myvouchers.expiry_date')
@@ -305,9 +305,7 @@ class VoucherRepository implements IVoucherRepository {
             'voucher_id' => $voucher->id,
             'type' => VoucherTransaction::TYPE_REDEEM
         ]);
-
-        // deduct points
-        $user->update(['points' => $user->points - $voucher->points]);
+        
         return $myVoucher;
     }
 

@@ -14,4 +14,8 @@ class Receipt extends Model {
     protected $casts = [
         'date' => 'datetime:d M Y',
     ];
+
+    public function merchant() {
+        return $this->belongsTo(Merchant::class);
+    }
 }

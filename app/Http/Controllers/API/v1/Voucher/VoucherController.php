@@ -9,8 +9,10 @@ use Carbon\Carbon;
 use App\User;
 use App\Voucher;
 use App\VoucherLimit;
+use App\PointTransaction;
 use App\Repositories\Voucher\IVoucherRepository;
 use App\Repositories\User\IUserRepository;
+use App\Repositories\PointTransaction\IPointTransactionRepository;
 
 use App\Http\Requests\Voucher\CreateRequest;
 use App\Http\Requests\Voucher\UpdateRequest;
@@ -25,12 +27,15 @@ class VoucherController extends ApiController {
 
     private $voucherRepository;
     private $userRepository;
+    private $pointTransactionRepository;
 
     public function __construct(IVoucherRepository $iVoucherRepository,
-        IUserRepository $iUserRepository) {
+        IUserRepository $iUserRepository,
+        IPointTransactionRepository $iPointTransactionRepository) {
         $this->middleware('auth:api');
         $this->voucherRepository = $iVoucherRepository;
         $this->userRepository = $iUserRepository;
+        $this->pointTransactionRepository = $iPointTransactionRepository;
     }
 
     public function list(Request $request) {
@@ -147,6 +152,12 @@ class VoucherController extends ApiController {
         
         // redeem voucher
         $this->voucherRepository->redeem($voucher, $user);
+        $data = [
+            'type' => PointTransaction::TYPE_DEDUCT,
+            'amount' => $voucher->points,
+            'description' => 'Deducted '.$voucher->points.' points from redeeming voucher '.$voucher->name.'.'
+        ];
+        $this->pointTransactionRepository->create($user, $data);
         return $this->responseWithMessage(200, 'Voucher redeemed.');
     }
 

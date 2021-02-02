@@ -25,5 +25,6 @@ class RepositoryServiceProvider extends ServiceProvider {
         $this->app->bind('App\Repositories\Voucher\IVoucherTransactionRepository', 'App\Repositories\Voucher\VoucherTransactionRepository');
         $this->app->bind('App\Repositories\Dashboard\IDashboardRepository', 'App\Repositories\Dashboard\DashboardRepository');
         $this->app->bind('App\Repositories\Receipt\IReceiptRepository', 'App\Repositories\Receipt\ReceiptRepository');
+        $this->app->bind('App\Repositories\PointTransaction\IPointTransactionRepository', 'App\Repositories\PointTransaction\PointTransactionRepository');
     }
 }
