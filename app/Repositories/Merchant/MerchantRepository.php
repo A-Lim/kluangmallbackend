@@ -27,7 +27,7 @@ class MerchantRepository implements IMerchantRepository {
         else 
             $query = Merchant::query()->orderBy('id', 'desc');
 
-        $query->join('merchant_categories', 'merchant_categories.id', '=', 'merchants.merchant_category_id')
+        $query->leftJoin('merchant_categories', 'merchant_categories.id', '=', 'merchants.merchant_category_id')
             ->select('merchants.*', 'merchant_categories.name as category');
 
         // category filter
