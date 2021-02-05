@@ -178,20 +178,22 @@ Route::prefix('v1')->group(function () {
             Route::get('vouchers/transactions', 'VoucherTransactionController@list');
         
             Route::get('vouchers', 'VoucherController@list');
-            Route::get('vouchers/my/active', 'VoucherController@listMyActive');
-            Route::get('vouchers/my/inactive', 'VoucherController@listMyInactive');
-            Route::get('vouchers/my/{voucher}', 'VoucherController@myVoucher');
             Route::get('vouchers/merchant/active', 'VoucherController@listMerchantsActive');
             Route::get('vouchers/merchant/inactive', 'VoucherController@listMerchantsInactive');
-
             Route::get('vouchers/{voucher}', 'VoucherController@details');
-
             Route::post('vouchers', 'VoucherController@create');
-            Route::post('vouchers/redeemforuser', 'VoucherController@useOnBehalfOfUser');
             Route::post('vouchers/{voucher}/redeem', 'VoucherController@redeem');
-            Route::post('vouchers/{voucher}/use', 'VoucherController@use');
             Route::patch('vouchers/{voucher}', 'VoucherController@update');
             Route::delete('vouchers/{voucher}', 'VoucherController@delete');
+
+            // MyVouchers
+            Route::get('vouchers/my/transactions', 'VoucherTransactionController@listMy');
+            Route::get('vouchers/my/active', 'MyVoucherController@listMyActive');
+            Route::get('vouchers/my/inactive', 'MyVoucherController@listMyInactive');
+            Route::get('vouchers/my/{myVoucher}', 'MyVoucherController@details');
+            Route::post('vouchers/my/{myVoucher}/swipetouse', 'MyVoucherController@swipetouse');
+            Route::post('vouchers/my/{myVoucher}/userscanmerchant', 'MyVoucherController@userscanmerchant');
+            Route::post('vouchers/my/{myVoucher}/merchantscanuser', 'MyVoucherController@merchantscanuser');
         });
 
         /**** Rewards ****/
@@ -209,7 +211,13 @@ Route::prefix('v1')->group(function () {
 
         /**** Receipts ****/
         Route::namespace('API\v1\Receipt')->group(function () {
+            Route::get('receipts/my', 'ReceiptController@listMy');
             Route::post('receipts/upload', 'ReceiptController@upload');
+        });
+
+        /**** Point ****/
+        Route::namespace('API\v1\Point')->group(function () {
+            Route::get('points/my', 'PointController@listMy');
         });
     });
 });

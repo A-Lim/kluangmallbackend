@@ -23,7 +23,13 @@ class VoucherTransactionController extends ApiController {
 
     public function list(Request $request) {
         $this->authorize('viewAny', Voucher::class);
-        $vouchers = $this->transactionRepository->list($request->all(), true);
-        return $this->responseWithData(200, $vouchers);
+        $transactions = $this->transactionRepository->list($request->all(), true);
+        return $this->responseWithData(200, $transactions);
+    }
+
+    public function listMy(Request $request) {
+        $user = auth()->user();
+        $transactions = $this->transactionRepository->listMy($user, true);
+        return $this->responseWithData(200, $transactions);
     }
 }

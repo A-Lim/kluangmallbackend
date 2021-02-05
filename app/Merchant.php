@@ -11,12 +11,12 @@ use App\Http\Traits\CustomQuery;
 class Merchant extends Model {
     use Notifiable, CustomQuery;
 
-    protected $fillable = ['name', 'logo', 'status', 'floor', 'unit', 'category', 'business_reg_no', 'website', 'email', 'phone', 'description', 'terms_and_conditions', 'privacy_policy', 'created_by', 'updated_by'];
+    protected $fillable = ['merchant_category_id', 'name', 'logo', 'status', 'floor', 'unit', 'business_reg_no', 'website', 'email', 'phone', 'description', 'terms_and_conditions', 'privacy_policy', 'created_by', 'updated_by'];
     protected $hidden = ['created_by', 'updated_by', 'created_at', 'updated_at'];
     protected $casts = [];
 
     // list of properties queryable for datatable
-    public static $queryable = ['name', 'status', 'floor', 'unit', 'category', 'business_reg_no', 'website', 'email', 'phone'];
+    public static $queryable = ['name', 'status', 'floor', 'unit', 'business_reg_no', 'website', 'email', 'phone'];
 
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
@@ -35,6 +35,10 @@ class Merchant extends Model {
 
     public function users() {
         return $this->belongsToMany(User::class, 'merchant_user', 'merchant_id', 'user_id'); 
+    }
+
+    public function category() {
+        return $this->belongsTo(MerchantCategory::class);
     }
 
     public function account() {

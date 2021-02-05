@@ -15,12 +15,12 @@ class CreateMerchantsTable extends Migration
     {
         Schema::create('merchants', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->integer('merchant_category_id')->unsigned();
             $table->string('name');
             $table->text('logo')->nullable();
             $table->string('status', 20);
             $table->string('floor', 2);
             $table->string('unit', 10);
-            $table->string('category');
             $table->string('business_reg_no');
             $table->string('website');
             $table->string('email');
@@ -32,6 +32,10 @@ class CreateMerchantsTable extends Migration
             $table->bigInteger('updated_by')->unsigned()->nullable();
             $table->timestamps();
 
+            $table->foreign('merchant_category_id')
+                  ->references('id')
+                  ->on('merchant_categories')
+                  ->onDelete('cascade');
 
             $table->index('name');
             $table->index('business_reg_no');

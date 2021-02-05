@@ -57,10 +57,15 @@ class VoucherRepository implements IVoucherRepository {
     public function listAvailable($data, $paginate = false) {
         $today = Carbon::today();
         $query = Voucher::join('merchants', 'merchants.id', '=', 'vouchers.merchant_id')
+            ->join('merchant_categories', 'merchant_categories.id', '=', 'merchants.merchant_category_id')
             ->whereDate('vouchers.fromDate', '<=', $today)
             ->whereDate('vouchers.toDate', '>=', $today)
-            ->select('vouchers.id', 'vouchers.name', 'merchants.id as merchant_id', 'merchants.name as merchant', 'vouchers.image', 
-                'vouchers.points', 'vouchers.description', 'vouchers.terms_and_conditions');
+            ->select('vouchers.id', 'vouchers.name', 'merchants.id as merchant_id', 'merchants.name as merchant', 
+                'merchant_categories.name as category', 'merchant_categories.id as category_id',
+                'vouchers.image', 'vouchers.points', 'vouchers.description', 'vouchers.terms_and_conditions');
+
+        if (isset($data['category_id']))
+            $query->where('merchant_categories.id', $data['category_id']);
         
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
@@ -70,45 +75,6 @@ class VoucherRepository implements IVoucherRepository {
         return $query->get();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function listMyActive(User $user, $paginate = false) {
-        $query = MyVoucher::join('vouchers', 'vouchers.id', '=', 'myvouchers.voucher_id')
-            ->join('merchants', 'merchants.id', '=', 'myvouchers.merchant_id')
-            ->where('myvouchers.user_id', $user->id)
-            ->where('myvouchers.status', MyVoucher::STATUS_ACTIVE)
-            ->select('vouchers.id', 'vouchers.name', 'merchants.name as merchant', 'merchants.id as merchant_id', 'myvouchers.status', 
-                'myvouchers.expiry_date', 'vouchers.image', DB::raw('COUNT(*) as quantity'))
-            ->groupBy(['vouchers.id', 'vouchers.name', 'vouchers.image', 'merchants.name', 'merchant_id', 'myvouchers.status', 'myvouchers.expiry_date']);
-
-        if ($paginate) {
-            $limit = isset($data['limit']) ? $data['limit'] : 10;
-            return $query->paginate($limit);
-        }
-
-        return $query->get();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function listMyExpiredUsed(User $user, $paginate = false) {
-        $query = MyVoucher::join('vouchers', 'vouchers.id', '=', 'myvouchers.voucher_id')
-            ->join('merchants', 'merchants.id', '=', 'myvouchers.merchant_id')
-            ->where('myvouchers.user_id', $user->id)
-            ->whereIn('myvouchers.status', [MyVoucher::STATUS_USED, MyVoucher::STATUS_EXPIRED])
-            ->select('vouchers.id', 'vouchers.name', 'merchants.name as merchant', 'merchants.id as merchant_id', 'myvouchers.status', 
-                'myvouchers.expiry_date', 'vouchers.image', DB::raw('COUNT(*) as quantity'))
-            ->groupBy(['vouchers.id', 'vouchers.name', 'vouchers.image', 'merchants.name', 'merchant_id', 'myvouchers.status', 'myvouchers.expiry_date']);
-
-        if ($paginate) {
-            $limit = isset($data['limit']) ? $data['limit'] : 10;
-            return $query->paginate($limit);
-        }
-
-        return $query->get();
-    }
 
     /**
      * {@inheritdoc}
@@ -150,22 +116,6 @@ class VoucherRepository implements IVoucherRepository {
     public function find($id) {
         return Voucher::with('limits')
             ->where('id', $id)
-            ->first();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findMyVoucher(User $user, Voucher $voucher) {
-        return MyVoucher::join('vouchers', 'vouchers.id', '=', 'myvouchers.voucher_id')
-            ->join('merchants', 'merchants.id', '=', 'myvouchers.merchant_id')
-            ->where('myvouchers.voucher_id', $voucher->id)
-            ->where('myvouchers.user_id', $user->id)
-            ->where('myvouchers.status', MyVoucher::STATUS_ACTIVE)
-            ->select('vouchers.id', 'vouchers.name', 'merchants.name as merchant', 'merchants.id as merchant_id',
-                'vouchers.image', 'vouchers.description', 'vouchers.terms_and_conditions',
-                'vouchers.fromDate', 'vouchers.toDate', 'vouchers.points',
-                'myvouchers.status', 'myvouchers.expiry_date')
             ->first();
     }
 
@@ -261,16 +211,6 @@ class VoucherRepository implements IVoucherRepository {
     /**
      * {@inheritdoc}
      */
-    public function updateExpired() {
-        $today = Carbon::today();
-        MyVoucher::whereDate('expiry_date', '<', $today)
-            ->where('status', MyVoucher::STATUS_ACTIVE)
-            ->update(['status' => MyVoucher::STATUS_EXPIRED]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function delete(Voucher $voucher, $forceDelete = false) {
         if ($forceDelete) {
             $voucher->forceDelete();
@@ -306,31 +246,6 @@ class VoucherRepository implements IVoucherRepository {
             'type' => VoucherTransaction::TYPE_REDEEM
         ]);
         
-        return $myVoucher;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function use(Voucher $voucher, User $user) {
-        // update one voucher to become used
-        $myVoucher = MyVoucher::where('voucher_id', $voucher->id)
-            ->where('user_id', $user->id)
-            ->where('status', MyVoucher::STATUS_ACTIVE)
-            ->first();
-
-        $myVoucher->status = MyVoucher::STATUS_USED;
-        $myVoucher->save();
-
-        // add transaction
-        $transaction = VoucherTransaction::create([
-            'myvoucher_id' => $myVoucher->id,
-            'merchant_id' => $myVoucher->merchant_id,
-            'user_id' => $myVoucher->user_id,
-            'voucher_id' => $myVoucher->voucher_id,
-            'type' => VoucherTransaction::TYPE_USE
-        ]);
-
         return $myVoucher;
     }
 
@@ -409,7 +324,6 @@ class VoucherRepository implements IVoucherRepository {
 
         if ($qrOriginal != null)
             Storage::disk('s3')->delete('vouchers/'.$voucher->id.'/qr/'.$qrOriginal->name);
-        
     }
 
     private function deleteImage(Voucher $voucher) {
@@ -417,6 +331,5 @@ class VoucherRepository implements IVoucherRepository {
 
         if ($imageOriginal != null)
             Storage::disk('s3')->delete('vouchers/'.$voucher->id.'/'.$imageOriginal->name);
-        
     }
 }

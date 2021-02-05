@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories\PointTransaction;
 
+use DB;
 use App\User;
 use App\PointTransaction;
 use App\Receipt;
@@ -30,7 +31,7 @@ class PointTransactionRepository implements IPointTransactionRepository {
     /**
      * {@inheritdoc}
      */
-    public function list(User $user, $paginate = false) {
+    public function listMy(User $user, $data, $paginate = false) {
         $query = PointTransaction::where('user_id', $user->id)
             ->orderBy('id', 'desc');
         
@@ -40,5 +41,31 @@ class PointTransactionRepository implements IPointTransactionRepository {
         }
 
         return $query->get();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function creditPending() {
+        DB::beginTransaction();
+        $transactions = PointTransaction::where('type', PointTransaction::TYPE_PENDING)
+            ->get();
+
+        $user_ids = $transactions->pluck('user_id');
+        $users = User::whereIn('id', $user_ids->toArray())->get();
+
+        foreach ($transactions as $transaction) {
+            $user = $users->where('id', $transaction->user_id)->first();
+            $user->points = $user->points + $transaction->amount;
+        }
+
+        foreach ($users as $user) {
+            $user->save();
+        }
+
+        PointTransaction::where('type', PointTransaction::TYPE_PENDING)
+            ->update(['type' => PointTransaction::TYPE_ADD]);
+
+        DB::commit();
     }
 }

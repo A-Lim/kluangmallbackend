@@ -27,6 +27,22 @@ class MerchantRepository implements IMerchantRepository {
         else 
             $query = Merchant::query()->orderBy('id', 'desc');
 
+        $query->join('merchant_categories', 'merchant_categories.id', '=', 'merchants.merchant_category_id')
+            ->select('merchants.*', 'merchant_categories.name as category');
+
+        // category filter
+        if (isset($data['category'])) {
+            $categoryData = explode(':', $data['category']);
+            $filterType = strtolower($categoryData[0]);
+            $filterVal = $categoryData[1];
+
+            if ($filterType == 'contains')
+                $query->where('merchant_categories.name', 'LIKE', '%'.$filterVal.'%');
+
+            if ($filterType == 'equals')
+                $query->where('merchant_categories.name', $filterVal);
+        }
+
         $query->orderBy('id', 'desc');
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
@@ -113,8 +129,6 @@ class MerchantRepository implements IMerchantRepository {
         $data['created_by'] = auth()->id();
         $merchant = Merchant::create($data);
 
-        $merchantCategory = MerchantCategory::firstOrCreate(['name' => $data['category']]);
-
         if (isset($files['uploadLogo'])) {
             $merchant->logo = json_encode($this->saveImage($merchant, $files['uploadLogo']));
         }
@@ -147,8 +161,6 @@ class MerchantRepository implements IMerchantRepository {
 
         $merchant->fill($data);
         $merchant->save();
-
-        $merchantCategory = MerchantCategory::firstOrCreate(['name' => $data['category']]);
 
         // deactivate merchant users
         if ($merchant->status == Merchant::STATUS_INACTIVE) {

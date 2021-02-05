@@ -11,6 +11,20 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ReceiptRepository implements IReceiptRepository {
 
+    public function listMy(User $user, $data, $paginate = false) {
+        $query = Receipt::join('merchants', 'merchants.id', '=', 'receipts.merchant_id')
+            ->where('receipts.user_id', $user->id)
+            ->select('receipts.*', 'merchants.name as merchant_name')
+            ->orderBy('receipts.id', 'desc');
+
+        if ($paginate) {
+            $limit = isset($data['limit']) ? $data['limit'] : 10;
+            return $query->paginate($limit);
+        }
+
+        return $query->get();
+    }
+
     /**
      * {@inheritdoc}
      */

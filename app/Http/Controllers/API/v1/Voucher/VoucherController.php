@@ -78,28 +78,6 @@ class VoucherController extends ApiController {
         return $this->responseWithData(200, $vouchers);
     }
 
-    public function listMyActive(Request $request) {
-        $user = auth()->user();
-        $vouchers = $this->voucherRepository->listMyActive($user, true);
-        return $this->responseWithData(200, $vouchers);
-    }
-
-    public function listMyInactive(Request $request) {
-        $user = auth()->user();
-        $vouchers = $this->voucherRepository->listMyExpiredUsed($user, true);
-        return $this->responseWithData(200, $vouchers);
-    }
-
-    public function myVoucher(Voucher $voucher) {
-        $user = auth()->user();
-        $voucher = $this->voucherRepository->findMyVoucher($user, $voucher);
-
-        if (!$voucher)
-            return $this->responseWithMessage(400, 'Voucher not found.');
-
-        return $this->responseWithData(200, $voucher);
-    }
-
     public function details(Voucher $voucher) {
         // $this->authorize('view', $voucher);
         $voucher = $this->voucherRepository->find($voucher->id);
@@ -161,43 +139,6 @@ class VoucherController extends ApiController {
         return $this->responseWithMessage(200, 'Voucher redeemed.');
     }
 
-    public function use(Request $request, Voucher $voucher) {
-        $user = auth()->user();
-        $result = $this->validateMyVoucher($user, $voucher);
-
-        // validation fail
-        if ($result != null && get_class($result) == 'Illuminate\Http\JsonResponse')
-            return $result;
-        
-        // consume voucher
-        $this->voucherRepository->use($voucher, $user);
-        return $this->responseWithMessage(200, 'Voucher used.');
-    }
-
-    // merchant scan user to redeem voucher
-    public function useOnBehalfOfUser(UseUserVoucher $request) {
-        $merchant = auth()->user()->merchant;
-
-        if (!$merchant)
-            return $this->responseWithMessage(400, 'Invalid merchant account.');
-
-        $voucher = $this->voucherRepository->find($request->voucher_id);
-        $user = $this->userRepository->find($request->user_id);
-        $result = $this->validateMyVoucher($user, $voucher);
-
-        // validation fail
-        if ($result != null && get_class($result) == 'Illuminate\Http\JsonResponse')
-            return $result;
-
-        // consume voucher
-        $myVoucher = $this->voucherRepository->use($voucher, $user);
-
-        // send notification
-        $user->notify(new VoucherUsed($myVoucher));
-
-        return $this->responseWithMessage(200, 'Voucher used.');
-    }
-
     public function validateVoucher(User $user, Voucher $voucher) {
         $today = Carbon::today();
         // check if enough points
@@ -249,25 +190,6 @@ class VoucherController extends ApiController {
         if ($totalLimit && $this->voucherRepository->hasReachedTotalLimit($totalLimit))
             return $this->responseWithMessage(400, 'Voucher total limit reached.');
 
-    }
-
-    public function validateMyVoucher(User $user, Voucher $voucher, $isMerchant = false) {
-        $today = Carbon::today();
-        $myVouchers = $this->voucherRepository->listMyActive($user);
-
-        if ($myVouchers->count() == 0) {
-            $message = null;
-            if ($isMerchant)
-                $message = 'User does not own this voucher.';
-            else 
-                $message = 'You do not own this voucher.';
-
-            return $this->responseWithMessage(400, $message);
-        }
-             
-
-        if ($voucher->status != Voucher::STATUS_ACTIVE)
-            return $this->responseWithMessage(400, 'Voucher is no longer valid.');
     }
 
     private function decodeQr(UploadedFile $file) {

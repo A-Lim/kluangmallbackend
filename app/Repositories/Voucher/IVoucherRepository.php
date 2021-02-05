@@ -19,21 +19,6 @@ interface IVoucherRepository {
      */
     public function listAvailable($data, $paginate = false);
 
-    /**
-     * List all user's active vouchers
-     * @param User $user
-     * @param boolean $paginate
-     * @return array [MyVoucher]
-     */
-    public function listMyActive(User $user, $paginate = false);
-
-    /**
-     * List all user's expired / used vouchers
-     * @param User $user
-     * @param boolean $paginate
-     * @return array [MyVoucher]
-     */
-    public function listMyExpiredUsed(User $user, $paginate = false);
 
     /**
      * List all merchant's active vouchers
@@ -69,12 +54,6 @@ interface IVoucherRepository {
     public function update(Voucher $voucher, $data, $files);
 
     /**
-     * Update status of expired voucher
-     * @return null
-     */
-    public function updateExpired();
-
-    /**
      * Delete Voucher
      * @param Voucher $voucher
      * @param boolean $forceDelete
@@ -89,14 +68,6 @@ interface IVoucherRepository {
      * @return MyVoucher 
      */
     public function redeem(Voucher $voucher, User $user);
-
-    /**
-     * Consume voucher
-     * @param Voucher $voucher
-     * @param User $user
-     * @return MyVoucher 
-     */
-    public function use(Voucher $voucher, User $user);
 
     /**
      * Checks if total limit has been reached

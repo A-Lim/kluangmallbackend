@@ -3,15 +3,20 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Http\Traits\CustomQuery;
 
 class MyVoucher extends Model {
+    use CustomQuery;
 
     protected $table = 'myvouchers';
     protected $fillable = ['voucher_id', 'user_id', 'merchant_id', 'expiry_date', 'status'];
     protected $hidden = [];
     protected $casts = [
-        'expiry_date' => 'datetime:d M Y',
+        'custom' => 'bool',
+        'expiry_date' => 'datetime:d M Y'
     ];
+
+    public static $queryable = ['voucher_id', 'user_id', 'merchant_id', 'expiry_date', 'status'];
 
     const STATUS_ACTIVE = 'active';
     const STATUS_USED = 'used';

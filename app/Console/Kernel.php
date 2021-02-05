@@ -32,6 +32,10 @@ class Kernel extends ConsoleKernel
             ->timezone('Asia/Kuala_Lumpur')
             ->daily(env('PUSH_NOTIFICATION_TIME'));
 
+        $schedule->command('credit:pending_points')
+            ->timezone('Asia/Kuala_Lumpur')
+            ->daily("08:00");
+
         $schedule->command('update:vouchers')
             ->daily();
     }

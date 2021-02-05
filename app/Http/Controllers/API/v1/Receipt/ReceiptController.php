@@ -23,15 +23,20 @@ class ReceiptController extends ApiController {
         $this->pointTransactionRepository = $iPointTransactionRepository;
     }
 
+    public function listMy(Request $request) {
+        $user = auth()->user();
+        $receipts = $this->receiptRepository->listMy($user, $request->all(), true);
+        return $this->responseWithData(200, $receipts);
+    }
+
     public function upload(UploadRequest $request) {
         $user = auth()->user();
 
         // upload to other service
 
         $receipt = $this->receiptRepository->upload($user, $request->all(), $request->file('image'));
-
         $data = [
-            'type' => PointTransaction::TYPE_ADD,
+            'type' => PointTransaction::TYPE_PENDING,
             'amount' => $receipt->points,
             'description' => 'Earned '.$receipt->points.' points from '.$receipt->merchant->name.'.'
         ];

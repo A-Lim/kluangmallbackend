@@ -1,6 +1,7 @@
 <?php 
 namespace App\Repositories\Voucher;
 
+use App\User;
 use App\Merchant;
 use App\VoucherTransaction;
 use Illuminate\Database\Eloquent\Builder;
@@ -54,8 +55,27 @@ class VoucherTransactionRepository implements IVoucherTransactionRepository {
             $query->orderBy('id', 'desc');
         }
 
-        if ($paginate)
-            return $query->paginate();
+        if ($paginate) {
+            $limit = isset($data['limit']) ? $data['limit'] : 10;
+            return $query->paginate($limit);
+        }
+
+        return $query->get();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function listMy(User $user, $paginate = false) {
+        $query = VoucherTransaction::join('merchants', 'merchants.id', '=', 'voucher_transactions.merchant_id')
+            ->join('vouchers', 'vouchers.id', '=', 'voucher_transactions.voucher_id')
+            ->where('voucher_transactions.user_id', $user->id)
+            ->select('voucher_transactions.id', 'merchants.name as merchant', 'vouchers.name as voucher', 'voucher_transactions.type', 'voucher_transactions.created_at');
+
+        if ($paginate) {
+            $limit = isset($data['limit']) ? $data['limit'] : 10;
+            return $query->paginate($limit);
+        }
 
         return $query->get();
     }

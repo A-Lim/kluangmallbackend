@@ -15,8 +15,17 @@ interface IPointTransactionRepository {
     public function create(User $user, $data, Receipt $receipt = null);
 
     /**
-     * List points transaction
+     * List user's points transaction
+     * @param User $user
+     * @param array $data
+     * @param boolean $paginate
      * @return PointTransaction
      */
-    public function list(User $user, $paginate = false);
+    public function listMy(User $user, $data, $paginate = false);
+
+    /**
+     * Credit pending points
+     * @return void
+     */
+    public function creditPending();
 }

@@ -22,7 +22,7 @@ class CreateRequest extends CustomFormRequest {
             'status' => 'required|in:'.implode(',', Merchant::STATUSES),
             'floor' => 'required|string',
             'unit' => 'required|string',
-            'category' => 'required|string',
+            'merchant_category_id' => 'required|integer',
             'business_reg_no' => 'required|string',
             'website' => 'required|string',
             'email' => 'required|string',
