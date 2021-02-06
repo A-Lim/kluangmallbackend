@@ -60,7 +60,7 @@ class VoucherRepository implements IVoucherRepository {
             ->join('merchant_categories', 'merchant_categories.id', '=', 'merchants.merchant_category_id')
             ->whereDate('vouchers.fromDate', '<=', $today)
             ->whereDate('vouchers.toDate', '>=', $today)
-            ->select('vouchers.id', 'vouchers.name', 'merchants.id as merchant_id', 'merchants.name as merchant', 
+            ->select('vouchers.id', 'vouchers.name', 'merchants.id as merchant_id', 'merchants.name as merchant_name', 
                 'merchant_categories.name as category', 'merchant_categories.id as category_id',
                 'vouchers.image', 'vouchers.points', 'vouchers.description', 'vouchers.terms_and_conditions');
 
@@ -74,7 +74,6 @@ class VoucherRepository implements IVoucherRepository {
 
         return $query->get();
     }
-
 
     /**
      * {@inheritdoc}
@@ -122,7 +121,7 @@ class VoucherRepository implements IVoucherRepository {
     public function rewardDetail(Voucher $voucher) {
         return Voucher::join('merchants', 'merchants.id', '=', 'vouchers.merchant_id')
             ->where('vouchers.id', $voucher->id)
-            ->select('vouchers.id', 'vouchers.name', 'merchants.id as merchant_id', 'merchants.name as merchant', 'vouchers.image', 
+            ->select('vouchers.id', 'vouchers.name', 'merchants.id as merchant_id', 'merchants.name as merchant_name', 'vouchers.image', 
                 'vouchers.points', 'vouchers.description', 'vouchers.terms_and_conditions')
             ->first();
     }
