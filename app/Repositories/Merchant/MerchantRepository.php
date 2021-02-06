@@ -98,7 +98,9 @@ class MerchantRepository implements IMerchantRepository {
         if ($withDetails)
             return Merchant::with('account')->where('id', $id)->first();
         else
-            return Merchant::find($id);
+            return Merchant::join('merchant_categories', 'merchant_categories.id', '=', 'merchants.merchant_category_id')
+                ->select('merchants.*', 'merchant_categories.name as category')
+                ->where('merchants.id', $id)->first();
     }
 
     /**

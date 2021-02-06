@@ -56,7 +56,7 @@ class PageController extends ApiController {
     public function shopDetail(Request $request, Merchant $merchant) {
         $similar = $this->merchantRepository->listSimilar($merchant);
         $data = [
-            'details' => $merchant,
+            'details' => $this->merchantRepository->find($merchant->id, false),
             'similar' => $similar,
         ];
         return $this->responseWithData(200, $data);
