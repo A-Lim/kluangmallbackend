@@ -13,6 +13,7 @@ class MyVoucherRepository implements IMyVoucherRepository {
         $query = MyVoucher::join('merchants', 'merchants.id', '=', 'myvouchers.merchant_id')
             ->join('vouchers', 'vouchers.id', '=', 'myvouchers.voucher_id')
             ->where('myvouchers.user_id', $user->id)
+            ->where('myvouchers.status', MyVoucher::STATUS_ACTIVE)
             ->select('myvouchers.id', 'myvouchers.expiry_date', 'myvouchers.status',
                 'merchants.name as merchant_name', 'merchants.id as merchant_id',
                 'vouchers.name', 'vouchers.description', 'vouchers.image', 'vouchers.terms_and_conditions',
