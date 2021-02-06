@@ -35,7 +35,7 @@ class VoucherTransactionRepository implements IVoucherTransactionRepository {
 
         // filter by created_at
         if (isset($data['created_at']))
-            $this->queryWhere($query, $data['created_at'], 'voucher_transactions.created_at', true);
+            $this->queryWhereDate($query, $data['created_at'], 'voucher_transactions.created_at', true);
 
         // sort
         if (isset($data['sort'])) {

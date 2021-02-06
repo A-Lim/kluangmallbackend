@@ -17,9 +17,16 @@ class PointController extends ApiController {
         $this->pointTransactionRepository = $iPointTransactionRepository;
     }
 
+    public function list(Request $request) {
+        $receipts = $this->pointTransactionRepository->list($request->all(), true);
+        return $this->responseWithData(200, $receipts);
+    }
+
     public function listMy(Request $request) {
         $user = auth()->user();
-        $receipts = $this->pointTransactionRepository->listMy($user, $request->all(), true);
+        $data = $request->all();
+        $data['user_id'] = 'equals:'.$user->id;
+        $receipts = $this->pointTransactionRepository->list($data, true);
         return $this->responseWithData(200, $receipts);
     }
 }

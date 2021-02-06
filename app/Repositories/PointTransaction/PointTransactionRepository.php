@@ -31,8 +31,8 @@ class PointTransactionRepository implements IPointTransactionRepository {
     /**
      * {@inheritdoc}
      */
-    public function listMy(User $user, $data, $paginate = false) {
-        $query = PointTransaction::where('user_id', $user->id)
+    public function list($data, $paginate = false) {
+        $query = PointTransaction::buildQuery($data)
             ->orderBy('id', 'desc');
         
         if ($paginate) {
@@ -67,5 +67,22 @@ class PointTransactionRepository implements IPointTransactionRepository {
             ->update(['type' => PointTransaction::TYPE_ADD]);
 
         DB::commit();
+    }
+
+    private function queryWhere(Builder $query, $data, $key, $isDate = false) {
+        $filterData = explode(':', $data);
+
+        if (count($filterData) > 1 && $filterData[0] == 'contains' && $isDate)
+            $query = $query->whereDate($key, 'LIKE', '%'.$filterData[1].'%');
+        else if (count($filterData) > 1 && $filterData[0] == 'contains' && !$isDate)
+            $query = $query->where($key, 'LIKE', '%'.$filterData[1].'%');
+        else if (count($filterData) > 1 && $filterData[0] == 'equals' && $isDate)
+            $query = $query->whereDate($key, $filterData[1]);
+        else if (count($filterData) > 1 && $filterData[0] == 'equals' && !$isDate)
+            $query = $query->where($key, $filterData[1]);
+        else 
+            $query = $query->where($key, $filterData[0]);
+
+        return $query;
     }
 }
