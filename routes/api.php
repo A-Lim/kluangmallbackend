@@ -188,6 +188,7 @@ Route::prefix('v1')->group(function () {
 
             // MyVouchers
             Route::get('vouchers/my/transactions', 'VoucherTransactionController@listMy');
+            Route::get('vouchers/my/all', 'MyVoucherController@list');
             Route::get('vouchers/my/active', 'MyVoucherController@listMyActive');
             Route::get('vouchers/my/inactive', 'MyVoucherController@listMyInactive');
             Route::get('vouchers/my/{myVoucher}', 'MyVoucherController@details');
@@ -211,6 +212,7 @@ Route::prefix('v1')->group(function () {
 
         /**** Receipts ****/
         Route::namespace('API\v1\Receipt')->group(function () {
+            Route::get('receipts', 'ReceiptController@list');
             Route::get('receipts/my', 'ReceiptController@listMy');
             Route::post('receipts/upload', 'ReceiptController@upload');
         });

@@ -14,7 +14,7 @@ class PointTransaction extends Model {
         'created_at' => 'datetime:d M Y H:i a',
     ];
 
-    public static $queryable = ['merchant_id', 'user_id', 'receipt_id', 'type', 'amount', 'description'];
+    public static $queryable = ['merchant_id', 'user_id', 'receipt_id', 'type', 'amount', 'description', 'created_at'];
 
     const TYPE_ADD = 'add';
     const TYPE_DEDUCT = 'deduct';

@@ -18,8 +18,8 @@ class VoucherTransactionRepository implements IVoucherTransactionRepository {
             ->select('voucher_transactions.id', 'users.name as user', 'merchants.name as merchant', 'vouchers.name as voucher', 'voucher_transactions.type', 'voucher_transactions.created_at');
 
         // filter by user
-        if (isset($data['user']))
-            $this->queryWhere($query, $data['user'], 'users.name');
+        if (isset($data['user_id']))
+            $this->queryWhere($query, $data['user_id'], 'users.id');
 
         // filter by merchant
         if (isset($data['merchant']))

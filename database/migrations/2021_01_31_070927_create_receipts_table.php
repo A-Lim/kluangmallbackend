@@ -17,6 +17,7 @@ class CreateReceiptsTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('merchant_id')->unsigned();
             $table->bigInteger('user_id')->unsigned();
+            $table->string('invoice_no', 100)->unique();
             $table->text('image');
             $table->bigInteger('amount');
             $table->bigInteger('points');

@@ -31,6 +31,11 @@ class MyVoucherController extends ApiController {
         $this->myVoucherRepository = $iMyVoucherRepository;
     }
 
+    public function list(Request $request) {
+        $myVouchers = $this->myVoucherRepository->list($request->all(), true);
+        return $this->responseWithData(200, $myVouchers);
+    }
+
     public function listMyActive(Request $request) {
         $user = auth()->user();
         $myVouchers = $this->myVoucherRepository->listActive($user, true);

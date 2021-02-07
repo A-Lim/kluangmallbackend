@@ -5,6 +5,7 @@ use DB;
 use App\User;
 use App\PointTransaction;
 use App\Receipt;
+use Illuminate\Database\Eloquent\Builder;
 
 class PointTransactionRepository implements IPointTransactionRepository {
 

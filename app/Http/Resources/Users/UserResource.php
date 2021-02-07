@@ -27,6 +27,7 @@ class UserResource extends JsonResource
             'date_of_birth' => $dateformatted,
             'email_verified_at' => $this->email_verified_at,
             'status' => $this->status,
+            'points' => $this->points,
             'usergroups' => new UserGroupCollection($this->usergroups)
         ];
     }

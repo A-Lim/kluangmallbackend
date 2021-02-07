@@ -23,6 +23,11 @@ class ReceiptController extends ApiController {
         $this->pointTransactionRepository = $iPointTransactionRepository;
     }
 
+    public function list(Request $request) {
+        $receipts = $this->receiptRepository->list($request->all(), true);
+        return $this->responseWithData(200, $receipts);
+    }
+
     public function listMy(Request $request) {
         $user = auth()->user();
         $receipts = $this->receiptRepository->listMy($user, $request->all(), true);
@@ -33,6 +38,12 @@ class ReceiptController extends ApiController {
         $user = auth()->user();
 
         // upload to other service
+
+        $invoice_no = null;
+
+        if ($this->receiptRepository->exists($invoice_no))
+            return $this->responseWithMessage(400, 'Receipt has already been used.');
+
 
         $receipt = $this->receiptRepository->upload($user, $request->all(), $request->file('image'));
         $data = [

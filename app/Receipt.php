@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\URL;
 
 class Receipt extends Model {
 
-    protected $fillable = ['merchant_id', 'user_id', 'date', 'image', 'amount', 'points'];
+    protected $fillable = ['merchant_id', 'user_id', 'invoice_no', 'date', 'image', 'amount', 'points'];
     protected $hidden = [
         'created_at',
         'updated_at'
