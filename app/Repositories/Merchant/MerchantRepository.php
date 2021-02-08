@@ -94,7 +94,7 @@ class MerchantRepository implements IMerchantRepository {
     /**
      * {@inheritdoc}
      */
-    public function find($id, $withDetails) {
+    public function find($id, $withDetails = false) {
         if ($withDetails)
             return Merchant::with('account')->where('id', $id)->first();
         else

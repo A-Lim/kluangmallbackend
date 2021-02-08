@@ -13,6 +13,7 @@ use App\PointTransaction;
 use App\Repositories\Voucher\IVoucherRepository;
 use App\Repositories\User\IUserRepository;
 use App\Repositories\PointTransaction\IPointTransactionRepository;
+use App\Repositories\Voucher\IVoucherTransactionRepository;
 
 use App\Http\Requests\Voucher\CreateRequest;
 use App\Http\Requests\Voucher\UpdateRequest;
@@ -26,16 +27,19 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class VoucherController extends ApiController {
 
     private $voucherRepository;
+    private $voucherTransactionRepository;
     private $userRepository;
     private $pointTransactionRepository;
 
     public function __construct(IVoucherRepository $iVoucherRepository,
         IUserRepository $iUserRepository,
-        IPointTransactionRepository $iPointTransactionRepository) {
+        IPointTransactionRepository $iPointTransactionRepository,
+        IVoucherTransactionRepository $iVoucherTransactionRepository) {
         $this->middleware('auth:api');
         $this->voucherRepository = $iVoucherRepository;
         $this->userRepository = $iUserRepository;
         $this->pointTransactionRepository = $iPointTransactionRepository;
+        $this->voucherTransactionRepository = $iVoucherTransactionRepository;
     }
 
     public function list(Request $request) {
@@ -79,7 +83,6 @@ class VoucherController extends ApiController {
     }
 
     public function details(Voucher $voucher) {
-        // $this->authorize('view', $voucher);
         $voucher = $this->voucherRepository->find($voucher->id);
         return $this->responseWithData(200, $voucher);
     }
@@ -137,6 +140,19 @@ class VoucherController extends ApiController {
         ];
         $this->pointTransactionRepository->create($user, $data);
         return $this->responseWithMessage(200, 'Voucher redeemed.');
+    }
+
+    public function redemptionHistory(Request $request, Voucher $voucher) {
+        $merchant = auth()->user()->merchant;
+
+        if (!$merchant)
+            return $this->responseWithMessage(400, 'Invalid merchant account.');
+
+        if ($merchant->id != $voucher->merchant_id)
+            return $this->responseWithMessage(403, 'This voucher does not belong to you.');
+
+        $redemptionHistory = $this->voucherTransactionRepository->listRedemptionHistory($voucher);
+        return $this->responseWithData(200, $redemptionHistory);
     }
 
     public function validateVoucher(User $user, Voucher $voucher) {

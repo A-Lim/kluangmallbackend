@@ -4,22 +4,30 @@ namespace App\Http\Controllers\API\v1\Receipt;
 
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
+use Carbon\Carbon;
 use App\Receipt;
+use App\Merchant;
 use App\PointTransaction;
 use App\Http\Requests\Receipt\UploadRequest;
 use App\Repositories\Receipt\IReceiptRepository;
+use App\Repositories\Merchant\IMerchantRepository;
 use App\Repositories\PointTransaction\IPointTransactionRepository;
 
 class ReceiptController extends ApiController {
 
+    private $merchantRepository;
     private $receiptRepository;
     private $pointTransactionRepository;
 
     public function __construct(IReceiptRepository $iReceiptRepository,
-        IPointTransactionRepository $iPointTransactionRepository) {
+        IPointTransactionRepository $iPointTransactionRepository,
+        IMerchantRepository $iMerchantRepository) {
         $this->middleware('auth:api');
         $this->receiptRepository = $iReceiptRepository;
+        $this->merchantRepository = $iMerchantRepository;
         $this->pointTransactionRepository = $iPointTransactionRepository;
     }
 
@@ -36,16 +44,37 @@ class ReceiptController extends ApiController {
 
     public function upload(UploadRequest $request) {
         $user = auth()->user();
+        $merchant = $this->merchantRepository->find($request->merchant_id);
+
+        // format date
+        $date = Carbon::createFromFormat(env('DATE_FORMAT'), $request->date);
+        // upload receipt to s3
+        $saveDirectory = 'receipts/'.$date->format('d-m-Y');
+        $path = Storage::disk('s3')->putFile($saveDirectory, $request->image, 'public');
+        $url = Storage::disk('s3')->url($path);
 
         // upload to other service
+        $response = $this->checkValidity($merchant, $path, $request->amount, $date->format('d-m-Y'));
 
-        $invoice_no = null;
+        if (!$response['is_valid']) {
+            Storage::disk('s3')->delete($path);
+            return $this->responseWithMessage(400, $response['message']);
+        }
 
-        if ($this->receiptRepository->exists($invoice_no))
+        if ($this->receiptRepository->exists($response['invoice_no']))
             return $this->responseWithMessage(400, 'Receipt has already been used.');
 
+        $receiptData = [
+            'invoice_no' => $response['invoice_no'],
+            'merchant_id' => $request->merchant_id,
+            'user_id' => $user->id,
+            'image' => $url,
+            'amount' => $request->amount,
+            'date' => $date
+        ];
 
-        $receipt = $this->receiptRepository->upload($user, $request->all(), $request->file('image'));
+        $receipt = $this->receiptRepository->create($receiptData);
+
         $data = [
             'type' => PointTransaction::TYPE_PENDING,
             'amount' => $receipt->points,
@@ -54,5 +83,17 @@ class ReceiptController extends ApiController {
         $this->pointTransactionRepository->create($user, $data, $receipt);
 
         return $this->responseWithMessage(200, 'Receipt upload successful.');
+    }
+
+    private function checkValidity(Merchant $merchant, $path, $amount, $date) {
+        return Http::withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json'
+        ])->post(env('RECEIPTSERVICEURL'), [
+            'path' => $path,
+            'keywords' => json_encode([$merchant->name, 'Kluang Mall']),
+            'amount' => $amount, 
+            'date' => $date
+        ]);
     }
 }

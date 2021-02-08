@@ -14,9 +14,25 @@ interface IVoucherTransactionRepository {
     public function list($data, $paginate = false);
 
     /**
+     * List all vouchers users' voucher transactions
+     * @param User $user
+     * @param boolean $paginate
+     * @return array [VoucherTransaction]
+     */
+    public function listMy(User $user, $paginate = false);
+
+    /**
      * Count number of redeemed vouchers by merchant
-     * @param Merchant
+     * @param Merchant $merchant
      * @return integer
      */
     public function redeemCount(Merchant $merchant);
+
+    /**
+     * Redemption History of voucher
+     * @param Voucher $voucher
+     * @param boolean $paginate
+     * @return integer
+     */
+    public function listRedemptionHistory(Voucher $voucher, $paginate = false);
 }
