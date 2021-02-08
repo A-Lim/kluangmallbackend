@@ -61,11 +61,11 @@ class ReceiptController extends ApiController {
             return $this->responseWithMessage(400, $response['message']);
         }
 
-        if ($this->receiptRepository->exists($response['invoice_no']))
+        if ($this->receiptRepository->exists($response['invoice_number']))
             return $this->responseWithMessage(400, 'Receipt has already been used.');
 
         $receiptData = [
-            'invoice_no' => $response['invoice_no'],
+            'invoice_no' => $response['invoice_number'],
             'merchant_id' => $request->merchant_id,
             'user_id' => $user->id,
             'image' => $url,
