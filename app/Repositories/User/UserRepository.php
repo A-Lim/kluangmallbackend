@@ -15,6 +15,9 @@ use App\Helpers\ImageProcessor;
 
 class UserRepository implements IUserRepository {
 
+    /**
+     * {@inheritdoc}
+     */
     public function permissions(User $user) {
         $userGroups = UserGroup::whereHas('users', function($query) use ($user) {
             $query->where('user_id', '=', $user->id);

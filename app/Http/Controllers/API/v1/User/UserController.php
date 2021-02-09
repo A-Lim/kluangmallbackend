@@ -33,7 +33,10 @@ class UserController extends ApiController {
     }
 
     public function profile() {
-        return $this->responseWithData(200, auth()->user()); 
+        $user = auth()->user();
+        $merchant = auth()->user()->merchant;
+        $user->merchant_name = @$merchant->name;
+        return $this->responseWithData(200, $user); 
     }
 
     public function updateProfile(UpdateProfileRequest $request) {
