@@ -107,7 +107,7 @@ class VoucherRepository implements IVoucherRepository {
             ->select('vouchers.*', 
                 DB::raw('(select count(*) FROM voucher_transactions where voucher_transactions.voucher_id = vouchers.id AND voucher_transactions.type = \''.VoucherTransaction::TYPE_REDEEM.'\') as redeemed_count'),
                 DB::raw('(select voucher_limits.value FROM voucher_limits where voucher_limits.voucher_id = vouchers.id AND voucher_limits.type = \''.VoucherLimit::TYPE_TOTAL.'\') as limit_count')
-            );;
+            );
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
@@ -123,7 +123,10 @@ class VoucherRepository implements IVoucherRepository {
     public function find($id) {
         return Voucher::with('limits')
             ->where('id', $id)
-            ->first();
+            ->select('vouchers.*', 
+                DB::raw('(select count(*) FROM voucher_transactions where voucher_transactions.voucher_id = vouchers.id AND voucher_transactions.type = \''.VoucherTransaction::TYPE_REDEEM.'\') as redeemed_count'),
+                DB::raw('(select voucher_limits.value FROM voucher_limits where voucher_limits.voucher_id = vouchers.id AND voucher_limits.type = \''.VoucherLimit::TYPE_TOTAL.'\') as limit_count')
+            )->first();
     }
 
     public function rewardDetail(Voucher $voucher) {
