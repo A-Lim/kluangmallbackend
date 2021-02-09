@@ -80,9 +80,14 @@ class VoucherRepository implements IVoucherRepository {
      */
     public function listMerchantsActive(Merchant $merchant, $paginate = false) {
         $today = Carbon::today();
-        $query = Voucher::where('merchant_id', $merchant->id)
-            ->where('status', Voucher::STATUS_ACTIVE)
-            ->whereDate('toDate', '>=', $today);
+        $query = DB::table('vouchers')
+            ->where('vouchers.merchant_id', $merchant->id)
+            ->where('vouchers.status', Voucher::STATUS_ACTIVE)
+            ->whereDate('vouchers.toDate', '>=', $today)
+            ->select('vouchers.*', 
+                DB::raw('(select count(*) FROM voucher_transactions where voucher_transactions.voucher_id = vouchers.id AND voucher_transactions.type = \''.VoucherTransaction::TYPE_REDEEM.'\') as redeemed_count'),
+                DB::raw('(select voucher_limits.value FROM voucher_limits where voucher_limits.voucher_id = vouchers.id AND voucher_limits.type = \''.VoucherLimit::TYPE_TOTAL.'\') as limit_count')
+            );
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
@@ -97,9 +102,14 @@ class VoucherRepository implements IVoucherRepository {
      */
     public function listMerchantsInactive(Merchant $merchant, $paginate = false) {
         $today = Carbon::today();
-        $query = Voucher::where('merchant_id', $merchant->id)
+        $query = DB::table('vouchers')
+            ->where('merchant_id', $merchant->id)
             ->where('status', Voucher::STATUS_ACTIVE)
-            ->whereDate('toDate', '<', $today);
+            ->whereDate('toDate', '<', $today)
+            ->select('vouchers.*', 
+                DB::raw('(select count(*) FROM voucher_transactions where voucher_transactions.voucher_id = vouchers.id AND voucher_transactions.type = \''.VoucherTransaction::TYPE_REDEEM.'\') as redeemed_count'),
+                DB::raw('(select voucher_limits.value FROM voucher_limits where voucher_limits.voucher_id = vouchers.id AND voucher_limits.type = \''.VoucherLimit::TYPE_TOTAL.'\') as limit_count')
+            );;
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
