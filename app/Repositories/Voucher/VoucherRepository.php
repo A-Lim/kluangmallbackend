@@ -80,8 +80,7 @@ class VoucherRepository implements IVoucherRepository {
      */
     public function listMerchantsActive(Merchant $merchant, $paginate = false) {
         $today = Carbon::today();
-        $query = DB::table('vouchers')
-            ->where('vouchers.merchant_id', $merchant->id)
+        $query = Voucher::where('vouchers.merchant_id', $merchant->id)
             ->where('vouchers.status', Voucher::STATUS_ACTIVE)
             ->whereDate('vouchers.toDate', '>=', $today)
             ->select('vouchers.*', 
@@ -102,8 +101,7 @@ class VoucherRepository implements IVoucherRepository {
      */
     public function listMerchantsInactive(Merchant $merchant, $paginate = false) {
         $today = Carbon::today();
-        $query = DB::table('vouchers')
-            ->where('merchant_id', $merchant->id)
+        $query = Voucher::where('merchant_id', $merchant->id)
             ->where('status', Voucher::STATUS_ACTIVE)
             ->whereDate('toDate', '<', $today)
             ->select('vouchers.*', 
