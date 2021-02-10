@@ -16,6 +16,13 @@ interface INotificationRepository
     public function list(User $user, $data, $paginate = false);
 
     /**
+     * Count unread notification for user
+     * @param User $user 
+     * @return integer 
+     */
+    public function countUnread(User $user);
+
+    /**
      * Create notification for users
      * @param [User] $users
      * @param integer $notification_log_id

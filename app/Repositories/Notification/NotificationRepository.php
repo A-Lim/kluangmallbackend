@@ -14,14 +14,7 @@ class NotificationRepository implements INotificationRepository {
      * {@inheritdoc}
      */
     public function list(User $user, $data, $paginate = false) {
-        $query = null;
-        
-        if ($data)
-            $query = Notification::buildQuery($data);
-        else 
-            $query = Notification::query()->orderBy('id', 'desc');
-
-        $query->where('user_id', $user->id)
+        $query = Notification::where('user_id', $user->id)
             ->orderBy('id', 'desc');
         
         if ($paginate) {
@@ -30,6 +23,15 @@ class NotificationRepository implements INotificationRepository {
         }
 
         return $query->get();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function countUnread(User $user) {
+        return Notification::where('user_id', $user->id)
+            ->where('read', false)
+            ->count();
     }
     
     /**

@@ -23,6 +23,12 @@ class NotificationController extends ApiController {
         return $this->responseWithData(200, $notifications);
     }
 
+    public function unreadCount() {
+        $user = auth()->user();
+        $count = $this->notificationRepository->countUnread($user);
+        return $this->responseWithData(200, $count);
+    }
+
     public function read(Request $request, Notification $notification) {
         $user = auth()->user();
         if ($notification->user_id != $user->id)

@@ -157,6 +157,7 @@ Route::prefix('v1')->group(function () {
         /**** Notifications ****/
         Route::namespace('API\v1\Notification')->group(function () {
             Route::get('notifications', 'NotificationController@list');
+            Route::get('notifications/unreadcount', 'NotificationController@unreadCount');
             Route::post('notifications/{notification}/read', 'NotificationController@read');
             Route::post('notifications/all', 'NotificationController@readAll');
             Route::delete('notifications/{notification}', 'NotificationController@delete');
