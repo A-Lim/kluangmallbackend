@@ -46,6 +46,9 @@ class ReceiptController extends ApiController {
         $user = auth()->user();
         $merchant = $this->merchantRepository->find($request->merchant_id);
 
+        if ($merchant == null)
+            return $this->responseWithMessage(400, 'Invalid merchant.');
+
         // format date
         $date = Carbon::createFromFormat(env('DATE_FORMAT'), $request->date);
         // upload receipt to s3
