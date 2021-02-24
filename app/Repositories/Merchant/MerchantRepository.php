@@ -66,8 +66,11 @@ class MerchantRepository implements IMerchantRepository {
      * {@inheritdoc}
      */
     public function listSimilar(Merchant $merchant) {
-        return Merchant::where('merchant_category_id', $merchant->merchant_category_id)
-            ->where('id', '<>', $merchant->id)
+        return Merchant::join('merchant_categories', 'merchant_categories.id', '=', 'merchants.merchant_category_id')
+            ->where('merchants.merchant_category_id', $merchant->merchant_category_id)
+            ->where('merchants.id', '<>', $merchant->id)
+            ->select('merchants.id', 'merchants.name', 'merchant_categories.name as category', 'merchants.unit', 'merchants.floor',
+                'merchants.logo')
             ->orderByRaw('RAND()')
             ->limit(10)
             ->get();
