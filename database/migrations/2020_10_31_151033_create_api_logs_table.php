@@ -22,7 +22,7 @@ class CreateApiLogsTable extends Migration
             $table->string('user_agent');
             $table->text('header');
             $table->text('request_data')->nullable();
-            $table->text('response_data');
+            $table->longText('response_data');
             $table->text('status');
             $table->timestamps();
         });

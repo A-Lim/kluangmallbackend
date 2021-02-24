@@ -21,11 +21,11 @@ class CreateMerchantsTable extends Migration
             $table->string('status', 20);
             $table->string('floor', 2);
             $table->string('unit', 10);
-            $table->string('business_reg_no');
-            $table->string('website');
-            $table->string('email');
-            $table->string('phone');
-            $table->text('description');
+            $table->string('business_reg_no')->nullable();
+            $table->string('website')->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->text('description')->nullable();
             $table->text('terms_and_conditions')->nullable();
             $table->text('privacy_policy')->nullable();
             $table->bigInteger('created_by')->unsigned();
