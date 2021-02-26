@@ -16,13 +16,13 @@ class UploadAvatarRequest extends CustomFormRequest {
 
     public function rules() {
         return [
-            'avatar' => 'required|image|max:2000',
+            'avatar' => 'required|image',
         ];
     }
 
     public function messages() {
         return [
-            'avatar.max' => 'Maximum limit allowed for :attribute is 1mb.'
+            // 'avatar.max' => 'Maximum limit allowed for :attribute is 1mb.'
         ];
     }
 }

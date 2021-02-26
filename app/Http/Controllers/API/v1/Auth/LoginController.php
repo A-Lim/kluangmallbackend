@@ -27,8 +27,8 @@ class LoginController extends ApiController {
     public function __construct(IOAuthRepository $iOAuthRepository,
         IUserRepository $iUserRepository,
         ISystemSettingRepository $iSystemSettingRepository) {
-        $this->middleware('guest')->except('logout');
-        $this->middleware('auth:api')->except(['login', 'refresh']);
+        $this->middleware('guest')->only(['login', 'fbLogin']);
+        $this->middleware('auth:api')->only('logout');
 
         $this->oAuthRepository = $iOAuthRepository;
         $this->userRepository = $iUserRepository;
@@ -78,6 +78,27 @@ class LoginController extends ApiController {
         return $this->responseWithMessage(401, 'Invalid login credentials.');
     }
 
+    public function fbLogin(Request $request) {
+        // check token valid
+        $result = $this->validateFbAccessToken($request->token);
+
+        if ($result->error)
+            return $this->responseWithMessage(401, 'Invalid token.');
+
+        if ($result->data->app_id != env('FACEBOOK_APP_ID'))
+            return $this->responseWithMessage(401, 'Invalid app id.');
+
+        if ($result->data->is_valid)
+            return $this->responseWithMessage(401, 'Invalid token.');
+
+        // check if account exists
+        // if ()
+
+        // yes - login
+
+        // no - register with status active, populated with facebook profile picture, random generated password
+    }
+
     public function logout(Request $request) {
         $accessToken = auth()->user()->token();
         // revoke refresh token
@@ -86,5 +107,19 @@ class LoginController extends ApiController {
         $accessToken->revoke();
 
         return $this->responseWithMessage(200, "Successfully logged out.");
+    }
+
+    private function validateFbAccessToken($token) {
+        $url = "https://graph.facebook.com/v10.0/debug_token?input_token=".$token;
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = curl_exec($ch);
+        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        return $result;
     }
 }
