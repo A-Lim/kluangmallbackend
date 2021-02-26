@@ -221,6 +221,16 @@ class VoucherRepository implements IVoucherRepository {
     /**
      * {@inheritdoc}
      */
+    public function updateExpired() {
+        $today = Carbon::today();
+        Voucher::whereDate('toDate', '<', $today)
+            ->where('status', Voucher::STATUS_ACTIVE)
+            ->update(['status' => Voucher::STATUS_EXPIRED]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function delete(Voucher $voucher, $forceDelete = false) {
         if ($forceDelete) {
             $voucher->forceDelete();
