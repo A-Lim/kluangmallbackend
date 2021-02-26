@@ -79,10 +79,12 @@ class ReceiptController extends ApiController {
         $receipt = $this->receiptRepository->create($receiptData);
 
         $data = [
-            'type' => PointTransaction::TYPE_PENDING,
+            // 'type' => PointTransaction::TYPE_PENDING,
+            'type' => PointTransaction::TYPE_ADD,
             'amount' => $receipt->points,
             'description' => 'Earned '.$receipt->points.' points from '.$receipt->merchant->name.'.'
         ];
+
         $this->pointTransactionRepository->create($user, $data, $receipt);
 
         return $this->responseWithMessage(200, 'Receipt upload successful.');

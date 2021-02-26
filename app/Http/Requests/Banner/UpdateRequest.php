@@ -15,6 +15,12 @@ class UpdateRequest extends CustomFormRequest {
         return true;
     }
 
+    protected function prepareForValidation()   {
+        $this->merge([
+            'is_clickable' => filter_var($this->is_clickable, FILTER_VALIDATE_BOOLEAN),
+        ]);
+    }
+
     public function rules() {
         return [
             'title' => 'required|string',

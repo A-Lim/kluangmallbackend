@@ -29,6 +29,13 @@ interface IBannerRepository {
      */
     public function update(Banner $banner, $data, $files);
 
+    /**
+     * Remove isClickable
+     * @param $type
+     * @param $type_id
+     * @return null
+     */
+    public function removeIsClickable($type, $type_id);
 
     /**
      * Delete Banner

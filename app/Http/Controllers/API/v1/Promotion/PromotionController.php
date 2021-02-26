@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 
 use Carbon\Carbon;
 use App\Promotion;
+use App\Banner;
 use App\Repositories\Promotion\IPromotionRepository;
+use App\Repositories\Banner\IBannerRepository;
 
 use App\Http\Requests\Promotion\CreateRequest;
 use App\Http\Requests\Promotion\UpdateRequest;
@@ -15,10 +17,13 @@ use App\Http\Requests\Promotion\UpdateRequest;
 class PromotionController extends ApiController {
 
     private $promotionRepository;
+    private $bannerRepository;
 
-    public function __construct(IPromotionRepository $iPromotionRepository) {
+    public function __construct(IPromotionRepository $iPromotionRepository,
+        IBannerRepository $iBannerRepository) {
         $this->middleware('auth:api')->except(['list', 'details']);
         $this->promotionRepository = $iPromotionRepository;
+        $this->bannerRepository = $iBannerRepository;
     }
 
     public function list(Request $request) {
@@ -47,6 +52,7 @@ class PromotionController extends ApiController {
     public function delete(Promotion $promotion) {
         $this->authorize('delete', $promotion);
         $this->promotionRepository->delete($promotion);
+        $this->bannerRepository->removeIsClickable(Banner::TYPE_PROMOTION, $promotion->id);
         return $this->responseWithMessage(200, 'Promotion deleted.');
     }
 }

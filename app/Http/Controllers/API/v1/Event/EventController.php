@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 
 use Carbon\Carbon;
 use App\Event;
+use App\Banner;
 use App\Repositories\Event\IEventRepository;
+use App\Repositories\Banner\IBannerRepository;
 
 use App\Http\Requests\Event\CreateRequest;
 use App\Http\Requests\Event\UpdateRequest;
@@ -15,10 +17,13 @@ use App\Http\Requests\Event\UpdateRequest;
 class EventController extends ApiController {
 
     private $eventRepository;
+    private $bannerRepository;
 
-    public function __construct(IEventRepository $iEventRepository) {
+    public function __construct(IEventRepository $iEventRepository,
+        IBannerRepository $iBannerRepository) {
         $this->middleware('auth:api')->except(['list', 'details']);
         $this->eventRepository = $iEventRepository;
+        $this->bannerRepository = $iBannerRepository;
     }
 
     public function list(Request $request) {
@@ -47,6 +52,7 @@ class EventController extends ApiController {
     public function delete(Event $event) {
         $this->authorize('delete', $event);
         $this->eventRepository->delete($event);
+        $this->bannerRepository->removeIsClickable(Banner::TYPE_EVENT, $event->id);
         return $this->responseWithMessage(200, 'Event deleted.');
     }
 }

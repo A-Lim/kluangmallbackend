@@ -80,6 +80,19 @@ class BannerRepository implements IBannerRepository {
         $banner->delete();
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function removeIsClickable($type, $type_id) {
+        Banner::where('type', $type)
+            ->where('type_id', $type_id)
+            ->update([
+                'is_clickable' => false,
+                'type' => null,
+                'type_id' => null
+            ]);
+    }
+
     private function saveImage(Banner $banner, UploadedFile $file) {
         $saveDirectory = 'banners/'.$banner->id.'/';
 

@@ -24,6 +24,9 @@ class Banner extends Model {
     const APP_USER = 'user';
     const APP_MERCHANT = 'merchant';
 
+    const TYPE_EVENT = 'event';
+    const TYPE_PROMOTION = 'promotion';
+
     const STATUSES = [
         self::STATUS_ACTIVE,
         self::STATUS_INACTIVE,

@@ -84,26 +84,6 @@ class ReceiptRepository implements IReceiptRepository {
         return Receipt::create($data);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    // public function upload(User $user, $data) {
-    //     $date = Carbon::createFromFormat(env('DATE_FORMAT'), $data['date']);
-    //     $systemSettings = SystemSetting::where('code', 'points_rate')
-    //         ->first();
-
-    //     $points_rate = @$systemSettings->value ?? 1;
-
-    //     return Receipt::create([
-    //         'merchant_id' => $data['merchant_id'],
-    //         'user_id' => $user->id, 
-    //         'image' => $data['image'],
-    //         'date' => $date,
-    //         'amount' => $data['amount'],
-    //         'points' => round($data['amount'], 0) * $points_rate
-    //     ]);
-    // }
-
     private function queryWhere(Builder $query, $data, $key, $isDate = false) {
         $filterData = explode(':', $data);
 
