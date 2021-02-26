@@ -102,7 +102,6 @@ class VoucherRepository implements IVoucherRepository {
     public function listMerchantsInactive(Merchant $merchant, $paginate = false) {
         $today = Carbon::today();
         $query = Voucher::where('merchant_id', $merchant->id)
-            ->where('status', Voucher::STATUS_ACTIVE)
             ->whereDate('toDate', '<', $today)
             ->select('vouchers.*', 
                 DB::raw('(select count(*) FROM voucher_transactions where voucher_transactions.voucher_id = vouchers.id AND voucher_transactions.type = \''.VoucherTransaction::TYPE_REDEEM.'\') as redeemed_count'),
