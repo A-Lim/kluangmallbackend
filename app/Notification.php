@@ -3,6 +3,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Casts\DateFormat;
 
 use App\Http\Traits\CustomQuery;
 
@@ -13,7 +14,7 @@ class Notification extends Model {
     protected $hidden = ['user_id', 'notification_log_id'];
     protected $casts = [
         'read' => 'boolean',
-        'created_at' => 'datetime:d M Y',
+        'created_at' => DateFormat::class,
     ];
 
     // list of properties queryable for datatable

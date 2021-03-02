@@ -24,7 +24,9 @@ class VoucherUsed extends Notification {
         $notification_data = [
             'title' => 'Voucher successfully used.',
             'body' => 'You have used your ['.$this->myVoucher->merchant->name.'] '.$this->myVoucher->voucher->name.' voucher.',
-            'redirect' => false
+            'redirect' => true,
+            'type' => 'myvouchers',
+            'type_id' => $this->myVoucher->id,
         ];
 
         return [

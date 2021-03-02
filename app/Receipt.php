@@ -1,6 +1,7 @@
 <?php
 namespace App;
 
+use App\Casts\DateFormat;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\URL;
 
@@ -8,11 +9,11 @@ class Receipt extends Model {
 
     protected $fillable = ['merchant_id', 'user_id', 'invoice_no', 'date', 'image', 'amount', 'points'];
     protected $hidden = [
-        'created_at',
-        'updated_at'
+        'created_at' => DateFormat::class,
+        'updated_at' => DateFormat::class
     ];
     protected $casts = [
-        'date' => 'datetime:d M Y',
+        'date' => DateFormat::class,
     ];
 
     public function merchant() {

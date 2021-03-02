@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Traits\CustomQuery;
+use App\Casts\DateFormat;
 
 class MyVoucher extends Model {
     use CustomQuery;
@@ -13,7 +14,7 @@ class MyVoucher extends Model {
     protected $hidden = [];
     protected $casts = [
         'custom' => 'bool',
-        'expiry_date' => 'datetime:d M Y'
+        'expiry_date' => DateFormat::class
     ];
 
     public static $queryable = ['voucher_id', 'user_id', 'merchant_id', 'expiry_date', 'status'];

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\URL;
 
 use App\Event;
 use Carbon\Carbon;
+use App\Casts\DateFormat;
 use App\Http\Traits\CustomQuery;
 
 class Event extends Model {
@@ -14,8 +15,8 @@ class Event extends Model {
     protected $fillable = ['title', 'thumbnail', 'images', 'fromDate', 'toDate', 'caption', 'content', 'externalLink', 'status', 'created_by', 'updated_by'];
     protected $hidden = [];
     protected $casts = [
-        'fromDate' => 'datetime:d M Y',
-        'toDate' => 'datetime:d M Y',
+        'fromDate' => DateFormat::class,
+        'toDate' => DateFormat::class,
     ];
 
     // list of properties queryable for datatable

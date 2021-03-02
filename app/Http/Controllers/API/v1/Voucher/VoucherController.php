@@ -151,7 +151,7 @@ class VoucherController extends ApiController {
         if ($merchant->id != $voucher->merchant_id)
             return $this->responseWithMessage(403, 'This voucher does not belong to you.');
 
-        $redemptionHistory = $this->voucherTransactionRepository->listRedemptionHistory($voucher);
+        $redemptionHistory = $this->voucherTransactionRepository->listRedemptionHistory($voucher, true);
         return $this->responseWithData(200, $redemptionHistory);
     }
 

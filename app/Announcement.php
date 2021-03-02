@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\URL;
 
 use Carbon\Carbon;
+use App\Casts\DateFormat;
 use App\Http\Traits\CustomQuery;
 
 class Announcement extends Model {
@@ -14,9 +15,9 @@ class Announcement extends Model {
     protected $hidden = [];
     protected $casts = [
         'has_content' => 'boolean',
-        'publish_at' => 'datetime:d M Y',
-        'created_at' => 'datetime:d M Y',
-        'updated_at' => 'datetime:d M Y',
+        'publish_at' => DateFormat::class,
+        'created_at' => DateFormat::class,
+        'updated_at' => DateFormat::class,
     ];
 
     // list of properties queryable for datatable

@@ -59,6 +59,7 @@ class MerchantRepository implements IMerchantRepository {
         return Merchant::join('merchant_categories', 'merchant_categories.id', '=', 'merchants.merchant_category_id')
             ->select('merchants.id', 'merchants.name', 'merchant_categories.name as category', 'merchants.unit', 'merchants.floor',
                     'merchants.logo')
+            ->orderBy('merchants.name')
             ->get();
     }
 

@@ -38,7 +38,8 @@ class CustomVerifyEmail extends VerifyEmail {
 
         return (new MailMessage)
             ->subject(Lang::get('Verify Email Address'))
-            ->line(Lang::get('Please click the button below to verify your email address.'))
+            ->line('Thank you for signing up!')
+            ->line('Now just one more step to the exclusive rewards for your better shopping experience!')
             ->action(Lang::get('Verify Email Address'), $url)
             ->line(Lang::get('If you did not create an account, no further action is required.'));
     }

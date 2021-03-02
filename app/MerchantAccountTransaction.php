@@ -3,6 +3,7 @@ namespace App;
 
 use App\Merchant;
 use App\Http\Traits\CustomQuery;
+use App\Casts\DateTimeFormat;
 use Illuminate\Database\Eloquent\Model;
 
 class MerchantAccountTransaction extends Model {
@@ -11,7 +12,9 @@ class MerchantAccountTransaction extends Model {
     protected $table = 'merchant_account_transactions';
     protected $fillable = ['merchant_id', 'title', 'type', 'credit', 'remark', 'refunded', 'refund_transaction_id', 'created_by'];
     protected $hidden = [];
-    protected $casts = ['created_at' => 'datetime:d M Y H:i:s',];
+    protected $casts = [
+        'created_at' => DateTimeFormat::class,
+    ];
 
     // list of properties queryable for datatable
     public static $queryable = ['type', 'credit'];

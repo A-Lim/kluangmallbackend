@@ -4,7 +4,7 @@ namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\CustomFormRequest;
 
-class LoginRequest extends CustomFormRequest {
+class FbLoginRequest extends CustomFormRequest {
 
     public function __construct() {
         parent::__construct();

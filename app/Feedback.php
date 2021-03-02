@@ -3,7 +3,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-use Carbon\Carbon;
+use App\Casts\DateTimeFormat;
 use App\Http\Traits\CustomQuery;
 
 class Feedback extends Model {
@@ -13,7 +13,8 @@ class Feedback extends Model {
     protected $fillable = ['name', 'email', 'subject', 'message'];
     protected $hidden = [];
     protected $casts = [
-        'created_at' => 'datetime:d M Y H:i:s',
+        'created_at' => DateTimeFormat::class,
+        'updated_at' => DateTimeFormat::class
     ];
 
     // list of properties queryable for datatable

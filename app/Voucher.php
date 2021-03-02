@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Http\Traits\CustomQuery;
+use App\Casts\DateFormat;
 
 class Voucher extends Model {
     use CustomQuery, SoftDeletes;
@@ -12,8 +13,8 @@ class Voucher extends Model {
     protected $fillable = ['name', 'image', 'description', 'merchant_id', 'points', 'status', 'qr', 'data', 'terms_and_conditions', 'has_redemption_limit', 'fromDate', 'toDate', 'deleted_at', 'created_at', 'updated_at', 'created_by', 'updated_by'];
     protected $hidden = [];
     protected $casts = [
-        'fromDate' => 'datetime:d M Y',
-        'toDate' => 'datetime:d M Y'
+        'fromDate' => DateFormat::class,
+        'toDate' => DateFormat::class
     ];
 
     // list of properties queryable for datatable

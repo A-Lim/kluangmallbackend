@@ -2,6 +2,7 @@
 namespace App;
 
 use App\Merchant;
+use App\Casts\DateFormat;
 use Illuminate\Database\Eloquent\Model;
 
 class MerchantAccount extends Model {
@@ -10,8 +11,8 @@ class MerchantAccount extends Model {
     protected $fillable = ['merchant_id', 'credit'];
     protected $hidden = [];
     protected $casts = [
-        'created_at' => 'datetime:d M Y',
-        'updated_at' => 'datetime:d M Y',
+        'created_at' => DateFormat::class,
+        'updated_at' => DateFormat::class,
     ];
 
     public function merchant() {
