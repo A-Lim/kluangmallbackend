@@ -4,17 +4,17 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Traits\CustomQuery;
-use App\Casts\DateFormat;
+use App\Http\Traits\EnvTimezone;
 
 class MyVoucher extends Model {
-    use CustomQuery;
+    use CustomQuery, EnvTimezone;
 
     protected $table = 'myvouchers';
     protected $fillable = ['voucher_id', 'user_id', 'merchant_id', 'expiry_date', 'status'];
     protected $hidden = [];
     protected $casts = [
         'custom' => 'bool',
-        'expiry_date' => DateFormat::class
+        'expiry_date' => 'datetime:d M Y'
     ];
 
     public static $queryable = ['voucher_id', 'user_id', 'merchant_id', 'expiry_date', 'status'];

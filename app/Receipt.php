@@ -1,19 +1,17 @@
 <?php
 namespace App;
 
-use App\Casts\DateFormat;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\URL;
+use App\Http\Traits\EnvTimezone;
 
 class Receipt extends Model {
+    use EnvTimezone;
 
     protected $fillable = ['merchant_id', 'user_id', 'invoice_no', 'date', 'image', 'amount', 'points'];
-    protected $hidden = [
-        'created_at' => DateFormat::class,
-        'updated_at' => DateFormat::class
-    ];
+    protected $hidden = [];
     protected $casts = [
-        'date' => DateFormat::class,
+        'date' => 'datetime:d M Y',
     ];
 
     public function merchant() {

@@ -157,6 +157,7 @@ class VoucherController extends ApiController {
 
     public function validateVoucher(User $user, Voucher $voucher) {
         $today = Carbon::today();
+        
         // check if enough points
         if ($user->points < $voucher->points)
             return $this->responseWithMessage(400, 'Insufficient points to redeem voucher.');
@@ -168,6 +169,7 @@ class VoucherController extends ApiController {
         if ($today->lessThan($voucher->fromDate)) 
             return $this->responseWithMessage(400, 'Voucher period has not started.');
 
+        
         if ($today->greaterThan($voucher->toDate))
             return $this->responseWithMessage(400, 'Voucher has expired.');
 

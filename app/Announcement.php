@@ -5,19 +5,19 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\URL;
 
 use Carbon\Carbon;
-use App\Casts\DateFormat;
 use App\Http\Traits\CustomQuery;
+use App\Http\Traits\EnvTimezone;
 
 class Announcement extends Model {
-    use CustomQuery;
+    use CustomQuery, EnvTimezone;
 
     protected $fillable = ['title', 'description', 'credit_paid', 'content', 'has_content', 'image', 'remark', 'audience', 'status', 'merchant_id', 'publish_at', 'requested_by', 'actioned_by'];
     protected $hidden = [];
     protected $casts = [
         'has_content' => 'boolean',
-        'publish_at' => DateFormat::class,
-        'created_at' => DateFormat::class,
-        'updated_at' => DateFormat::class,
+        'publish_at' => 'datetime:d M Y H:i:s',
+        'created_at' => 'datetime:d M Y H:i:s',
+        'updated_at' => 'datetime:d M Y H:i:s',
     ];
 
     // list of properties queryable for datatable

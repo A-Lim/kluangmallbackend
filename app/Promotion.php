@@ -6,17 +6,17 @@ use Illuminate\Support\Facades\URL;
 
 use App\Promotion;
 use Carbon\Carbon;
-use App\Casts\DateFormat;
 use App\Http\Traits\CustomQuery;
+use App\Http\Traits\EnvTimezone;
 
 class Promotion extends Model {
-    use CustomQuery;
+    use CustomQuery, EnvTimezone;
 
     protected $fillable = ['title', 'thumbnail', 'images', 'fromDate', 'toDate', 'caption', 'content', 'externalLink', 'status', 'created_by', 'updated_by'];
     protected $hidden = [];
     protected $casts = [
-        'fromDate' => DateFormat::class,
-        'toDate' => DateFormat::class,
+        'fromDate' => 'datetime:d M Y',
+        'toDate' => 'datetime:d M Y',
     ];
 
     // list of properties queryable for datatable
