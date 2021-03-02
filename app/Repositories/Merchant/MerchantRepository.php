@@ -26,7 +26,7 @@ class MerchantRepository implements IMerchantRepository {
             $query = Merchant::with('account')->buildQuery($data);
         else 
             $query = Merchant::query()->orderBy('id', 'desc');
-
+        
         $query->leftJoin('merchant_categories', 'merchant_categories.id', '=', 'merchants.merchant_category_id')
             ->select('merchants.*', 'merchant_categories.name as category');
 
@@ -55,10 +55,19 @@ class MerchantRepository implements IMerchantRepository {
     /**
      * {@inheritdoc}
      */
-    public function listAllShops() {
-        return Merchant::join('merchant_categories', 'merchant_categories.id', '=', 'merchants.merchant_category_id')
+    public function listAllShops($data) {
+        $query = null;
+
+        if ($data)
+            $query = Merchant::buildQuery($data);
+        else 
+            $query = Merchant::query();
+
+        return Merchant::buildQuery($data)
+            ->join('merchant_categories', 'merchant_categories.id', '=', 'merchants.merchant_category_id')
             ->select('merchants.id', 'merchants.name', 'merchant_categories.name as category', 'merchants.unit', 'merchants.floor',
                     'merchants.logo')
+            ->where('status', Merchant::STATUS_ACTIVE)
             ->orderBy('merchants.name')
             ->get();
     }
