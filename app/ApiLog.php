@@ -12,7 +12,7 @@ class ApiLog extends Model {
     protected $fillable = ['user_id', 'method', 'url', 'ip', 'user_agent', 'header', 'request_data', 'response_data', 'status'];
     protected $hidden = [];
     protected $casts = [
-        'created_at' => 'datetime:d M Y H:i:s',
+        'created_at' => 'datetime:d M Y H:i a',
     ];
 
     public static $queryable = ['method', 'url', 'status', 'created_at'];

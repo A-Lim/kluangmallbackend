@@ -12,8 +12,8 @@ class MerchantAccount extends Model {
     protected $fillable = ['merchant_id', 'credit'];
     protected $hidden = [];
     protected $casts = [
-        'created_at' => 'datetime:d M Y H:i:s',
-        'updated_at' => 'datetime:d M Y H:i:s',
+        'created_at' => 'datetime:d M Y H:i a',
+        'updated_at' => 'datetime:d M Y H:i a',
     ];
 
     public function merchant() {

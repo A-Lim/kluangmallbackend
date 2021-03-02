@@ -15,9 +15,9 @@ class Announcement extends Model {
     protected $hidden = [];
     protected $casts = [
         'has_content' => 'boolean',
-        'publish_at' => 'datetime:d M Y H:i:s',
-        'created_at' => 'datetime:d M Y H:i:s',
-        'updated_at' => 'datetime:d M Y H:i:s',
+        'publish_at' => 'datetime:d M Y H:i a',
+        'created_at' => 'datetime:d M Y H:i a',
+        'updated_at' => 'datetime:d M Y H:i a',
     ];
 
     // list of properties queryable for datatable

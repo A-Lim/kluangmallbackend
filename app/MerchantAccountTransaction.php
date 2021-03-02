@@ -13,7 +13,7 @@ class MerchantAccountTransaction extends Model {
     protected $fillable = ['merchant_id', 'title', 'type', 'credit', 'remark', 'refunded', 'refund_transaction_id', 'created_by'];
     protected $hidden = [];
     protected $casts = [
-        'created_at' => 'datetime:d M Y H:i:s',
+        'created_at' => 'datetime:d M Y H:i a',
     ];
 
     // list of properties queryable for datatable

@@ -3,8 +3,10 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Http\Traits\EnvTimezone;
 
 class VoucherTransaction extends Model {
+    use EnvTimezone;
 
     protected $fillable = ['myvoucher_id', 'merchant_id', 'user_id', 'voucher_id', 'type'];
     protected $hidden = [];

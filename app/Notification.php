@@ -14,7 +14,7 @@ class Notification extends Model {
     protected $hidden = ['user_id', 'notification_log_id'];
     protected $casts = [
         'read' => 'boolean',
-        'created_at' => 'datetime:d M Y H:i:s',
+        'created_at' => 'datetime:d M Y H:i a',
     ];
 
     // list of properties queryable for datatable
