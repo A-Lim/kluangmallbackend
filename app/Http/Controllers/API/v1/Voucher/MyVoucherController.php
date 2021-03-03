@@ -83,6 +83,7 @@ class MyVoucherController extends ApiController {
             return $this->responseWithMessage(400, 'This voucher is invalid.');
 
         $this->myVoucherRepository->use($user, $myVoucher);
+        $user->notify(new VoucherUsed($myVoucher));
         return $this->responseWithMessage(200, 'Voucher successfully used.');
     }
 

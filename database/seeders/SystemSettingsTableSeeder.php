@@ -24,6 +24,9 @@ class SystemSettingsTableSeeder extends Seeder {
         $redemptionCategory = SystemSettingCategory::create(['name' => 'Redemption']);
         
         $systemsettings = [
+            ['systemsettingcategory_id' => $generalCategory->id, 'name' => 'Email', 'code' => 'email', 'description' => '', 'value' => ''],
+            ['systemsettingcategory_id' => $generalCategory->id, 'name' => 'Phone', 'code' => 'phone', 'description' => '', 'value' => ''],
+            ['systemsettingcategory_id' => $generalCategory->id, 'name' => 'Address', 'code' => 'address', 'description' => '', 'value' => ''],
             ['systemsettingcategory_id' => $generalCategory->id, 'name' => 'About Us', 'code' => 'about_us', 'description' => '', 'value' => ''],
             ['systemsettingcategory_id' => $generalCategory->id, 'name' => 'Contact Us', 'code' => '', 'contact_us' => '', 'value' => ''],
             ['systemsettingcategory_id' => $generalCategory->id, 'name' => 'Terms & Conditions', 'code' => 'terms_and_conditions', 'description' => '', 'value' => ''],
