@@ -100,8 +100,10 @@ class VoucherTransactionRepository implements IVoucherTransactionRepository {
      * {@inheritdoc}
      */
     public function redeemCount(Merchant $merchant) {
-        return VoucherTransaction::where('merchant_id', $merchant->id)
-            ->where('type', VoucherTransaction::TYPE_REDEEM)
+        return VoucherTransaction::join('vouchers', 'vouchers.id', '=', 'voucher_transactions.voucher_id')
+            ->where('voucher_transactions.merchant_id', $merchant->id)
+            ->where('voucher_transactions.type', VoucherTransaction::TYPE_REDEEM)
+            ->where('vouchers.deleted', null)
             ->count();
     }
 
