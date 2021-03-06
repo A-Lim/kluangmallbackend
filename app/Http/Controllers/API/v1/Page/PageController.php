@@ -63,14 +63,18 @@ class PageController extends ApiController {
     }
 
     public function aboutUs(Request $request) {
-        $aboutUsSetting = $this->systemSettingRepository->findByCode('about_us');
-        return $this->responseWithData(200, $aboutUsSetting->value);
+        $systemsettings = $this->systemSettingRepository->findByCodes(['facebook', 'instagram', 'whatsapp', 'about_us']);
+        $result = [];
+        foreach ($systemsettings as $systemsetting) {
+            $result[$systemsetting->code] = $systemsetting->value;
+        }
+        return $this->responseWithData(200, $result);
     }
 
     public function contactUs(Request $request) {
-        $data = $this->systemSettingRepository->findByCodes(['email', 'phone', 'address']);
+        $systemsettings = $this->systemSettingRepository->findByCodes(['email', 'phone', 'address']);
         $result = [];
-        foreach ($data as $systemsetting) {
+        foreach ($systemsettings as $systemsetting) {
             $result[$systemsetting->code] = $systemsetting->value;
         }
         return $this->responseWithData(200, $result);
