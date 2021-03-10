@@ -44,10 +44,8 @@ class RegistrationController extends ApiController {
         // verification type
         $verification_type = $this->systemSettingRepository->findByCode('verification_type');
         // no verification
-        if ($verification_type->value == SystemSetting::VTYPE_NONE) {
+        if ($verification_type->value == SystemSetting::VTYPE_NONE)
             $registration_data['status'] = User::STATUS_ACTIVE;
-            $registration_data['email_verified_at'] = Carbon::now();
-        }
 
         $user = $this->userRepository->create($registration_data);
 

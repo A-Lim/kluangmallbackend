@@ -30,6 +30,7 @@ class CreateUsersTable extends Migration
             $table->dateTime('otp_expiry')->nullable();
             $table->string('device_token')->nullable();
             $table->string('status', 20);
+            $table->boolean('is_social')->default(false);
             $table->rememberToken();
             $table->timestamps();
 

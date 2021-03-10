@@ -18,7 +18,8 @@ class FbLoginRequest extends CustomFormRequest {
 
     public function rules() {
         return [
-            'token' => 'required|string',
+            'fb_id' => 'required|string',
+            'fb_access_token' => 'required|string',
             'device_token' => 'required|string'
         ];
     }

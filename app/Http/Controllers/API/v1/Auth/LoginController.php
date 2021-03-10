@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\v1\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Str;
 use Laravel\Passport\Passport;
 
 use App\Http\Controllers\ApiController;
@@ -46,29 +47,7 @@ class LoginController extends ApiController {
             $this->clearLoginAttempts($request);
             
             $user = auth()->user();
-            switch ($user->status) {
-                case User::STATUS_LOCKED:
-                    return $this->responseWithMessage(401, 'This account is locked. Please contact administrator.');
-                    break;
-                
-                case User::STATUS_UNVERIFIED:
-                    return $this->responseWithMessage(401, 'This account is unverified. Please verify your email');
-                    break;
-            }
-
-            $tokenResult = $user->createToken('accesstoken');
-            
-            // update device token
-            if ($request->filled('device_token'))
-                $this->userRepository->updateDeviceToken($user, $request->device_token);
-
-            if ($user->status == User::STATUS_INACTIVE)
-                $permissions = $this->systemRepository->findByCode('inactive_permissions')->value;
-            else
-                $permissions = $this->userRepository->permissions($user);
-            
-            // dd($user->toArray());
-            return $this->responseWithLoginData(200, $tokenResult, $user, $permissions);
+            return $this->logUserIn($user, $request->device_token);
         }
 
         // if unsuccessful, increase login attempt count
@@ -80,23 +59,41 @@ class LoginController extends ApiController {
 
     public function fbLogin(Request $request) {
         // check token valid
-        $result = $this->validateFbAccessToken($request->token);
+        $result = $this->validateFbAccessToken($request->fb_access_token);
 
-        if ($result->error)
+        if (@$result->error)
             return $this->responseWithMessage(401, 'Invalid token.');
 
-        if ($result->data->app_id != env('FACEBOOK_APP_ID'))
-            return $this->responseWithMessage(401, 'Invalid app id.');
+        
+        if (@$result->email) {
+            // check if account exists
+            $user = $this->userRepository->searchForOne(['email' => $result->email]);
 
-        if ($result->data->is_valid)
-            return $this->responseWithMessage(401, 'Invalid token.');
+            if ($user)
+                return $this->logUserIn($user, $request->device_token);
+            
+            // create new user from fb details
+            $new_user = [
+                'email' => $result->email,
+                'password' => Str::random(10),
+                'status' => User::STATUS_ACTIVE,
+                'is_social' => true,
+            ];
 
-        // check if account exists
-        // if ()
+            $user = $this->userRepository->create($new_user);
+            // assign default usergroup
+            $default_usergroup = $this->systemSettingRepository->findByCode('default_usergroups');
+            if (!empty($default_usergroup->value))
+                $user->assignUserGroupsByIds($default_usergroup->value);
 
-        // yes - login
+            return $this->logUserIn($user, $request->device_token);
+        }
 
-        // no - register with status active, populated with facebook profile picture, random generated password
+        if (@$result->phone) {
+            
+        }
+
+        return $this->responseWithMessage(401, 'Facebook login failed. Please contact administrator.');
     }
 
     public function logout(Request $request) {
@@ -109,8 +106,34 @@ class LoginController extends ApiController {
         return $this->responseWithMessage(200, "Successfully logged out.");
     }
 
+    private function logUserIn(User $user, $device_token) {
+        switch ($user->status) {
+            case User::STATUS_LOCKED:
+                return $this->responseWithMessage(401, 'This account is locked. Please contact administrator.');
+                break;
+            
+            case User::STATUS_UNVERIFIED:
+                return $this->responseWithMessage(401, 'This account is unverified. Please verify your email');
+                break;
+        }
+
+        $tokenResult = $user->createToken('accesstoken');
+
+        // update device token
+        if ($device_token)
+            $this->userRepository->updateDeviceToken($user, $device_token);
+
+        if ($user->status == User::STATUS_INACTIVE)
+            $permissions = $this->systemRepository->findByCode('inactive_permissions')->value;
+        else
+            $permissions = $this->userRepository->permissions($user);
+        
+        return $this->responseWithLoginData(200, $tokenResult, $user, $permissions);
+    }
+
     private function validateFbAccessToken($token) {
-        $url = "https://graph.facebook.com/v10.0/debug_token?input_token=".$token;
+        $url = "https://graph.facebook.com/me?fields=name,email&access_token=".$token;
+        $headers = ['Content-Type: application/json'];
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -120,6 +143,6 @@ class LoginController extends ApiController {
         $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        return $result;
+        return json_decode($result);
     }
 }
