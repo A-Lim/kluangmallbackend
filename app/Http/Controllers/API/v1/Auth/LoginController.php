@@ -23,7 +23,7 @@ class LoginController extends ApiController {
 
     private $oAuthRepository;
     private $userRepository;
-    private $systemRepository;
+    private $systemSettingRepository;
 
     public function __construct(IOAuthRepository $iOAuthRepository,
         IUserRepository $iUserRepository,
@@ -33,7 +33,7 @@ class LoginController extends ApiController {
 
         $this->oAuthRepository = $iOAuthRepository;
         $this->userRepository = $iUserRepository;
-        $this->systemRepository = $iSystemSettingRepository;
+        $this->systemSettingRepository = $iSystemSettingRepository;
     }
 
     public function login(LoginRequest $request) {
@@ -74,13 +74,17 @@ class LoginController extends ApiController {
             
             // create new user from fb details
             $new_user = [
+                'name' => $result->name,
                 'email' => $result->email,
                 'password' => Str::random(10),
                 'status' => User::STATUS_ACTIVE,
-                'is_social' => true,
             ];
 
             $user = $this->userRepository->create($new_user);
+            
+            if (isset($request->fb_avatar))
+                $this->userRepository->saveAvatarBasic($user, $request->fb_avatar);
+
             // assign default usergroup
             $default_usergroup = $this->systemSettingRepository->findByCode('default_usergroups');
             if (!empty($default_usergroup->value))
@@ -89,10 +93,9 @@ class LoginController extends ApiController {
             return $this->logUserIn($user, $request->device_token);
         }
 
-        if (@$result->phone) {
-            
-        }
-
+        if (!isset($result->phone))
+            return $this->responseWithMessage(401, 'Facebook account is not linked to an email.');
+        
         return $this->responseWithMessage(401, 'Facebook login failed. Please contact administrator.');
     }
 
@@ -124,7 +127,7 @@ class LoginController extends ApiController {
             $this->userRepository->updateDeviceToken($user, $device_token);
 
         if ($user->status == User::STATUS_INACTIVE)
-            $permissions = $this->systemRepository->findByCode('inactive_permissions')->value;
+            $permissions = $this->systemSettingRepository->findByCode('inactive_permissions')->value;
         else
             $permissions = $this->userRepository->permissions($user);
         

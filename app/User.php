@@ -18,9 +18,9 @@ use App\Http\Traits\CustomQuery;
 use App\Http\Traits\EnvTimezone;
 
 class User extends Authenticatable {
-    use Notifiable, HasApiTokens, HasUserGroups, HasSocial, CustomQuery, EnvTimezone;
+    use Notifiable, HasApiTokens, HasUserGroups, CustomQuery, EnvTimezone;
 
-    protected $fillable = ['name', 'email', 'password', 'member_no', 'phone', 'gender', 'date_of_birth', 'points', 'avatar', 'device_token', 'email_verified_at', 'is_social', 'status', 'otp', 'otp_token', 'otp_expiry'];
+    protected $fillable = ['name', 'email', 'password', 'member_no', 'phone', 'gender', 'date_of_birth', 'points', 'avatar', 'device_token', 'email_verified_at', 'status', 'otp', 'otp_token', 'otp_expiry'];
     protected $hidden = ['password', 'device_token', 'otp', 'otp_token', 'otp_expiry', 'remember_token', 'created_at', 'updated_at'];
     protected $casts = [
         'email_verified_at' => 'datetime:d M Y',

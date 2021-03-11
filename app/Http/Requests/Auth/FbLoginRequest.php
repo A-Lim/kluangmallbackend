@@ -20,6 +20,7 @@ class FbLoginRequest extends CustomFormRequest {
         return [
             'fb_id' => 'required|string',
             'fb_access_token' => 'required|string',
+            'fb_avatar' => 'nullable|image',
             'device_token' => 'required|string'
         ];
     }
