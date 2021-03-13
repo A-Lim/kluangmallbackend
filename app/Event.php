@@ -16,7 +16,7 @@ class Event extends Model {
     protected $hidden = [];
     protected $casts = [
         'fromDate' => 'datetime:d M Y',
-        'toDate' => 'datetime:d M Y H',
+        'toDate' => 'datetime:d M Y',
     ];
 
     // list of properties queryable for datatable
