@@ -3,7 +3,7 @@
 namespace App\Http\Resources\User;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\UserGroups\UserGroupCollection;
+use App\Http\Resources\UserGroup\UserGroupCollection;
 
 class UserResource extends JsonResource
 {
