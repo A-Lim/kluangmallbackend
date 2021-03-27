@@ -141,10 +141,10 @@ class User extends Authenticatable {
 
     /******** Accessors and Mutators ********/
     
-    public function getAvatarAttribute($value) {
-        if ($value != '' || $value != null)
-            return asset($value);
-        else 
-            return $value;
-    }
+    // public function getAvatarAttribute($value) {
+    //     if ($value != '' || $value != null)
+    //         return asset($value);
+    //     else 
+    //         return $value;
+    // }
 }

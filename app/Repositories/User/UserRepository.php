@@ -12,6 +12,7 @@ use Illuminate\Http\UploadedFile;
 use Carbon\Carbon;
 
 use App\Helpers\ImageProcessor;
+use Illuminate\Support\Facades\Storage;
 
 class UserRepository implements IUserRepository {
 
@@ -222,10 +223,11 @@ class UserRepository implements IUserRepository {
      * {@inheritdoc}
      */
     public function saveAvatarBasic(User $user, UploadedFile $file) {
-        $image = new ImageProcessor($file, 'users/avatar', $user->id);
-        $imagePath = $image->saveBasic();
+        $saveDirectory = 'users/'.$user->id.'/avatar/';
+        $fileName = $file->getClientOriginalName();
+        Storage::disk('s3')->putFileAs($saveDirectory, $file, $fileName, 'public');
 
-        $user->avatar = $imagePath;
+        $user->avatar = Storage::disk('s3')->url($saveDirectory.$fileName);;
         $user->save();
 
         return $user->avatar;

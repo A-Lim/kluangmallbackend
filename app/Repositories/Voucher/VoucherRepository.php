@@ -136,6 +136,9 @@ class VoucherRepository implements IVoucherRepository {
         return $voucher;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function rewardDetail(Voucher $voucher) {
         return Voucher::with('merchants', 'merchants.category')
             ->where('vouchers.id', $voucher->id)
