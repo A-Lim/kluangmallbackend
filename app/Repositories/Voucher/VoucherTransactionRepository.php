@@ -16,6 +16,7 @@ class VoucherTransactionRepository implements IVoucherTransactionRepository {
         $query = VoucherTransaction::join('merchants', 'merchants.id', '=', 'voucher_transactions.merchant_id')
             ->join('vouchers', 'vouchers.id', '=', 'voucher_transactions.voucher_id')
             ->join('users', 'users.id', '=', 'voucher_transactions.user_id')
+            ->where('vouchers.deleted_at', null)
             ->select('voucher_transactions.id', 'users.name as user', 'merchants.name as merchant', 'vouchers.name as voucher', 'voucher_transactions.type', 'voucher_transactions.created_at');
 
         // filter by user
@@ -71,6 +72,7 @@ class VoucherTransactionRepository implements IVoucherTransactionRepository {
         $query = VoucherTransaction::join('merchants', 'merchants.id', '=', 'voucher_transactions.merchant_id')
             ->join('vouchers', 'vouchers.id', '=', 'voucher_transactions.voucher_id')
             ->where('voucher_transactions.user_id', $user->id)
+            ->where('vouchers.deleted_at', null)
             ->select('voucher_transactions.id', 'merchants.name as merchant', 'vouchers.name as voucher', 'voucher_transactions.type', 'voucher_transactions.created_at');
 
         if ($paginate) {
@@ -86,7 +88,10 @@ class VoucherTransactionRepository implements IVoucherTransactionRepository {
      */
     public function listRedemptionHistory(Voucher $voucher, $paginate = false) {
         $query = VoucherTransaction::where('voucher_id', $voucher->id)
-            ->where('type', VoucherTransaction::TYPE_REDEEM);
+            ->join('vouchers', 'vouchers.id', '=', 'voucher_transactions.voucher_id')
+            ->where('vouchers.deleted_at', null)
+            ->where('type', VoucherTransaction::TYPE_REDEEM)
+            ->select('voucher_transactions.*');
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;

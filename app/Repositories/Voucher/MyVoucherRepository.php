@@ -15,9 +15,9 @@ class MyVoucherRepository implements IMyVoucherRepository {
      * {@inheritdoc}
      */
     public function list($data, $paginate = false) {
-        $query = MyVoucher::with(['voucher' => function ($q) {
+        $query = MyVoucher::with('voucher')->whereHas('voucher', function ($q) {
             $q->where('deleted_at', null);
-        }]);
+        });
 
         if (isset($data['name']))
             $query->whereHas('voucher', function ($q) use ($data) {
@@ -71,6 +71,9 @@ class MyVoucherRepository implements IMyVoucherRepository {
      */
     public function listActive(User $user, $paginate = false) {
         $query = MyVoucher::with('voucher', 'voucher.merchants')
+            ->whereHas('voucher', function ($q) {
+                $q->where('deleted_at', null);
+            })
             ->where('myvouchers.user_id', $user->id)
             ->where('myvouchers.status', MyVoucher::STATUS_ACTIVE)
             ->orderBy('id', 'desc');
@@ -88,6 +91,9 @@ class MyVoucherRepository implements IMyVoucherRepository {
      */
     public function listInactive(User $user, $paginate = false) {
         $query = MyVoucher::with('voucher', 'voucher.merchants')
+            ->whereHas('voucher', function ($q) {
+                $q->where('deleted_at', null);
+            })
             ->where('myvouchers.user_id', $user->id)
             ->whereIn('myvouchers.status', [MyVoucher::STATUS_USED, MyVoucher::STATUS_EXPIRED])
             ->orderBy('myvouchers.id', 'desc');
