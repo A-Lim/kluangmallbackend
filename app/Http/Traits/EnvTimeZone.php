@@ -9,5 +9,6 @@ trait EnvTimezone {
     protected function serializeDate(DateTimeInterface $date) {
         return Carbon::instance($date)
             ->setTimezone(env('APP_TIMEZONE', 'UTC'));
+    
     }
 }
