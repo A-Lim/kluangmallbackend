@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Casts;
+namespace App\Cast;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
