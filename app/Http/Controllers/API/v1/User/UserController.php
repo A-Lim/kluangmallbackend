@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use App\User;
-use App\Http\Resources\Users\UserResource;
+use App\Http\Resources\User\UserResource;
 use App\Repositories\User\IUserRepository;
 
 use App\Http\Requests\User\UpdateRequest;
