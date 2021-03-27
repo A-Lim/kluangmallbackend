@@ -15,7 +15,9 @@ class MyVoucherRepository implements IMyVoucherRepository {
      * {@inheritdoc}
      */
     public function list($data, $paginate = false) {
-        $query = MyVoucher::with('voucher');
+        $query = MyVoucher::with(['voucher' => function ($q) {
+            $q->where('deleted_at', null);
+        }]);
 
         if (isset($data['name']))
             $query->whereHas('voucher', function ($q) use ($data) {
