@@ -4,7 +4,7 @@ namespace App\Http\Requests\Voucher;
 
 use App\Http\Requests\CustomFormRequest;
 
-class UserScanMerchantRequest extends CustomFormRequest {
+class UpdateMerchantRequest extends CustomFormRequest {
 
     public function __construct() {
         parent::__construct();
@@ -16,8 +16,8 @@ class UserScanMerchantRequest extends CustomFormRequest {
 
     public function rules() {
         return [
-            'data' => 'required',
-            'merchant_id' => 'required|integer'
+            'merchant_ids' => 'required|array',
+            'merchant_ids.*' => 'integer',
         ];
     }
 }

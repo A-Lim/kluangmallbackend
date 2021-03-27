@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Http\Traits\CustomQuery;
 use App\Http\Traits\EnvTimezone;
+use App\Merchant;
 
 class Voucher extends Model {
     use CustomQuery, EnvTimezone, SoftDeletes;
 
-    protected $fillable = ['name', 'image', 'description', 'merchant_id', 'points', 'status', 'qr', 'data', 'terms_and_conditions', 'has_redemption_limit', 'fromDate', 'toDate', 'deleted_at', 'created_at', 'updated_at', 'created_by', 'updated_by'];
+    protected $fillable = ['name', 'image', 'description', 'points', 'status', 'qr', 'data', 'terms_and_conditions', 'has_redemption_limit', 'fromDate', 'toDate', 'deleted_at', 'created_at', 'updated_at', 'created_by', 'updated_by'];
     protected $hidden = [];
     protected $casts = [
         'fromDate' => 'datetime:d M Y',
@@ -29,8 +30,8 @@ class Voucher extends Model {
         self::STATUS_INACTIVE
     ];
 
-    public function merchant() {
-        return $this->belongsTo(Merchant::class);
+    public function merchants() {
+        return $this->belongsToMany(Merchant::class);
     }
 
     public function limits() {
@@ -39,6 +40,10 @@ class Voucher extends Model {
 
     public function transactions() {
         return $this->hasMany(VoucherTransaction::class);
+    }
+
+    public function belongsToMerchant(Merchant $merchant) {
+        return $this->merchants()->where('merchant_id', $merchant->id)->exists();
     }
 
     public function getQrAttribute($value) {

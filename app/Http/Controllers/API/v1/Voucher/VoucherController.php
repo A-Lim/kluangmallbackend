@@ -18,11 +18,18 @@ use App\Repositories\Voucher\IVoucherTransactionRepository;
 use App\Http\Requests\Voucher\CreateRequest;
 use App\Http\Requests\Voucher\UpdateRequest;
 use App\Http\Requests\Voucher\UseUserVoucher;
+use App\Http\Requests\Voucher\UpdateMerchantRequest;
 
 use App\Notifications\Voucher\VoucherUsed;
 
 use Libern\QRCodeReader\QRCodeReader;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+
+use App\Http\Resources\Vouchers\VoucherCollection;
+use App\Http\Resources\Vouchers\VoucherResourceDetail;
+use App\Http\Resources\Vouchers\RewardResource;
+use App\Http\Resources\Vouchers\RewardCollection;
+use App\Http\Resources\Vouchers\RewardResourceDetail;
 
 class VoucherController extends ApiController {
 
@@ -45,19 +52,19 @@ class VoucherController extends ApiController {
     public function list(Request $request) {
         $this->authorize('viewAny', Voucher::class);
         $vouchers = $this->voucherRepository->list($request->all(), true);
-        return $this->responseWithData(200, $vouchers);
+        return $this->responseWithData(200, new VoucherCollection($vouchers));
     }
 
     // list vouchers that are redeemable by users
     public function listRewards(Request $request) {
         $vouchers = $this->voucherRepository->listAvailable($request->all(), true);
-        return $this->responseWithData(200, $vouchers);
+        return $this->responseWithData(200, new RewardCollection($vouchers));
     }
 
     // reward details
     public function rewardDetails(Request $request, Voucher $voucher) {
         $reward = $this->voucherRepository->rewardDetail($voucher);
-        return $this->responseWithData(200, $reward);
+        return $this->responseWithData(200, new RewardResource($reward));
     }
 
     // list merchants active vouchers
@@ -84,7 +91,7 @@ class VoucherController extends ApiController {
 
     public function details(Voucher $voucher) {
         $voucher = $this->voucherRepository->find($voucher->id);
-        return $this->responseWithData(200, $voucher);
+        return $this->responseWithData(200, new VoucherResourceDetail($voucher));
     }
 
     public function create(CreateRequest $request) {
@@ -115,6 +122,12 @@ class VoucherController extends ApiController {
 
         $voucher = $this->voucherRepository->update($voucher, $data, $request->files->all());
         return $this->responseWithMessageAndData(200, $voucher, 'Voucher updated.'); 
+    }
+
+    public function updateMerchant(UpdateMerchantRequest $request, Voucher $voucher) {
+        $this->authorize('update', $voucher);
+        $this->voucherRepository->updateMerchants($voucher, $request->all());
+        return $this->responseWithMessage(200, 'Merchants updated.');
     }
 
     public function delete(Request $request, Voucher $voucher) {
@@ -148,7 +161,7 @@ class VoucherController extends ApiController {
         if (!$merchant)
             return $this->responseWithMessage(400, 'Invalid merchant account.');
 
-        if ($merchant->id != $voucher->merchant_id)
+        if ($voucher->belongsToMerchant($merchant))
             return $this->responseWithMessage(403, 'This voucher does not belong to you.');
 
         $redemptionHistory = $this->voucherTransactionRepository->listRedemptionHistory($voucher, true);

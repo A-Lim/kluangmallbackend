@@ -54,6 +54,14 @@ interface IVoucherRepository {
     public function update(Voucher $voucher, $data, $files);
 
     /**
+     * Update voucher merchants
+     * @param Voucher $voucher
+     * @param array $data
+     * @return void
+     */
+    public function updateMerchants(Voucher $voucher, $data);
+
+    /**
      * Delete Voucher
      * @param Voucher $voucher
      * @param boolean $forceDelete

@@ -10,14 +10,14 @@ class MyVoucher extends Model {
     use CustomQuery, EnvTimezone;
 
     protected $table = 'myvouchers';
-    protected $fillable = ['voucher_id', 'user_id', 'merchant_id', 'expiry_date', 'status'];
+    protected $fillable = ['voucher_id', 'user_id', 'expiry_date', 'status'];
     protected $hidden = [];
     protected $casts = [
         'custom' => 'bool',
         'expiry_date' => 'datetime:d M Y'
     ];
 
-    public static $queryable = ['voucher_id', 'user_id', 'merchant_id', 'expiry_date', 'status'];
+    public static $queryable = ['voucher_id', 'user_id', 'expiry_date', 'status'];
 
     const STATUS_ACTIVE = 'active';
     const STATUS_USED = 'used';
@@ -33,9 +33,9 @@ class MyVoucher extends Model {
         return $this->belongsTo(User::class);
     }
 
-    public function merchant() {
-        return $this->belongsTo(Merchant::class);
-    }
+    // public function merchants() {
+    //     return $this->belongsToMany(Merchant::class, 'merchant_myvoucher', 'merchant_id', 'myvoucher_id');
+    // }
 
     public function voucher() {
         return $this->belongsTo(Voucher::class);

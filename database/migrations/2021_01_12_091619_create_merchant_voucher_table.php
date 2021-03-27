@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMyvoucherTable extends Migration
+class CreateMerchantVoucherTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,23 +13,18 @@ class CreateMyvoucherTable extends Migration
      */
     public function up()
     {
-        Schema::create('myvouchers', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        Schema::create('merchant_voucher', function (Blueprint $table) {
+            $table->bigInteger('merchant_id')->unsigned();
             $table->bigInteger('voucher_id')->unsigned();
-            $table->bigInteger('user_id')->unsigned();
-            $table->date('expiry_date');
-            $table->string('status');
-            $table->timestamps();
-
-            $table->foreign('user_id')
+            $table->foreign('merchant_id')
                   ->references('id')
-                  ->on('users')
+                  ->on('merchants')
                   ->onDelete('cascade');
-
             $table->foreign('voucher_id')
                   ->references('id')
                   ->on('vouchers')
                   ->onDelete('cascade');
+            $table->primary(['merchant_id', 'voucher_id']);
         });
     }
 
@@ -40,6 +35,6 @@ class CreateMyvoucherTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_voucher');
+        Schema::dropIfExists('merchant_voucher');
     }
 }

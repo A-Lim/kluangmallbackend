@@ -177,8 +177,20 @@ Route::prefix('v1')->group(function () {
 
         /**** Vouchers ****/
         Route::namespace('API\v1\Voucher')->group(function () {
+            // transactions 
             Route::get('vouchers/transactions', 'VoucherTransactionController@list');
+
+            // MyVouchers
+            Route::get('vouchers/my/transactions', 'VoucherTransactionController@listMy');
+            Route::get('vouchers/my', 'MyVoucherController@list');
+            Route::get('vouchers/my/active', 'MyVoucherController@listMyActive');
+            Route::get('vouchers/my/inactive', 'MyVoucherController@listMyInactive');
+            Route::get('vouchers/my/{myVoucher}', 'MyVoucherController@details');
+            Route::post('vouchers/my/{myVoucher}/swipetouse', 'MyVoucherController@swipetouse');
+            Route::post('vouchers/my/{myVoucher}/userscanmerchant', 'MyVoucherController@userscanmerchant');
+            Route::post('vouchers/my/{myVoucher}/merchantscanuser', 'MyVoucherController@merchantscanuser');
         
+            // vouchers
             Route::get('vouchers', 'VoucherController@list');
             Route::get('vouchers/merchant/active', 'VoucherController@listMerchantsActive');
             Route::get('vouchers/merchant/inactive', 'VoucherController@listMerchantsInactive');
@@ -187,17 +199,8 @@ Route::prefix('v1')->group(function () {
             Route::post('vouchers', 'VoucherController@create');
             Route::post('vouchers/{voucher}/redeem', 'VoucherController@redeem');
             Route::patch('vouchers/{voucher}', 'VoucherController@update');
+            Route::patch('vouchers/{voucher}/merchants', 'VoucherController@updateMerchant');
             Route::delete('vouchers/{voucher}', 'VoucherController@delete');
-
-            // MyVouchers
-            Route::get('vouchers/my/transactions', 'VoucherTransactionController@listMy');
-            Route::get('vouchers/my/all', 'MyVoucherController@list');
-            Route::get('vouchers/my/active', 'MyVoucherController@listMyActive');
-            Route::get('vouchers/my/inactive', 'MyVoucherController@listMyInactive');
-            Route::get('vouchers/my/{myVoucher}', 'MyVoucherController@details');
-            Route::post('vouchers/my/{myVoucher}/swipetouse', 'MyVoucherController@swipetouse');
-            Route::post('vouchers/my/{myVoucher}/userscanmerchant', 'MyVoucherController@userscanmerchant');
-            Route::post('vouchers/my/{myVoucher}/merchantscanuser', 'MyVoucherController@merchantscanuser');
         });
 
         /**** Rewards ****/

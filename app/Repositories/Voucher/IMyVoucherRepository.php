@@ -2,6 +2,7 @@
 namespace App\Repositories\Voucher;
 
 use App\User;
+use App\Merchant;
 use App\MyVoucher;
 
 interface IMyVoucherRepository {
@@ -39,10 +40,11 @@ interface IMyVoucherRepository {
     /**
      * Consume user's voucher
      * @param User $user
+     * @param Merchant $merchant
      * @param MyVoucher $myVoucher
      * @return MyVoucher
      */
-    public function use(User $user, MyVoucher $myVoucher);
+    public function use(User $user, MyVoucher $myVoucher, Merchant $merchant = null);
 
     /**
      * Update expired users' voucher

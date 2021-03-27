@@ -38,7 +38,7 @@ class Merchant extends Model {
     }
 
     public function category() {
-        return $this->belongsTo(MerchantCategory::class);
+        return $this->belongsTo(MerchantCategory::class, 'merchant_category_id');
     }
 
     public function account() {

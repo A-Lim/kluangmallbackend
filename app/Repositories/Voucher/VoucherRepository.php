@@ -22,27 +22,28 @@ class VoucherRepository implements IVoucherRepository {
         $query = null;
         
         if ($data)
-            $query = Voucher::with('limits')->buildQuery($data);
+            $query = Voucher::with(['merchants'])->buildQuery($data);
         else 
             $query = Voucher::query()->orderBy('id', 'desc');
-
-        $query = $query->join('merchants' , 'merchants.id', '=', 'vouchers.merchant_id')
-            ->select('vouchers.*', 'merchants.name as merchant_name');
 
         // searching in join table
         if (isset($data['merchant_name'])) {
             $filterData = explode(':', $data['merchant_name']);
             $filterType = strtolower($filterData[0]);
             $filterVal  = $filterData[1];
-
+            
             if ($filterType == 'contains')
-                $query->where('merchants.name', 'LIKE', '%'.$filterVal.'%');
+                $query->whereHas('merchants', function ($q) use ($filterVal) {
+                    $q->where('name', 'LIKE', '%'.$filterVal.'%');
+                });
             
             if ($filterType == 'equals')
-                $query->where('merchants.name', $filterVal);
+                $query->whereHas('merchants', function ($q) use ($filterVal) {
+                    $query->where('merchants.name', $filterVal);
+                });
         }
         
-        $query->orderBy('id', 'desc');
+        $query->orderBy('vouchers.id', 'desc');
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
             return $query->paginate($limit);
@@ -56,16 +57,16 @@ class VoucherRepository implements IVoucherRepository {
      */
     public function listAvailable($data, $paginate = false) {
         $today = Carbon::today();
-        $query = Voucher::join('merchants', 'merchants.id', '=', 'vouchers.merchant_id')
-            ->join('merchant_categories', 'merchant_categories.id', '=', 'merchants.merchant_category_id')
+        $query = Voucher::with('merchants', 'merchants.category')
             ->whereDate('vouchers.fromDate', '<=', $today)
             ->whereDate('vouchers.toDate', '>=', $today)
-            ->select('vouchers.id', 'vouchers.name', 'merchants.id as merchant_id', 'merchants.name as merchant_name', 
-                'merchant_categories.name as category', 'merchant_categories.id as category_id',
-                'vouchers.image', 'vouchers.points', 'vouchers.description', 'vouchers.terms_and_conditions');
+            ->where('status', Voucher::STATUS_ACTIVE);
 
-        if (isset($data['category_id']))
-            $query->where('merchant_categories.id', $data['category_id']);
+        if (isset($data['category_id'])) {
+            $query->whereHas('merchants', function ($q) use ($data) {
+                $q->where('merchant_category_id', $data['category_id']);
+            });
+        }
         
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
@@ -80,7 +81,9 @@ class VoucherRepository implements IVoucherRepository {
      */
     public function listMerchantsActive(Merchant $merchant, $paginate = false) {
         $today = Carbon::today();
-        $query = Voucher::where('vouchers.merchant_id', $merchant->id)
+        $query = Voucher::whereHas('merchants', function ($q) use ($merchant) {
+                $q->where('id', $merchant->id);
+            })
             ->where('vouchers.status', Voucher::STATUS_ACTIVE)
             ->whereDate('vouchers.toDate', '>=', $today)
             ->select('vouchers.*', 
@@ -101,7 +104,9 @@ class VoucherRepository implements IVoucherRepository {
      */
     public function listMerchantsInactive(Merchant $merchant, $paginate = false) {
         $today = Carbon::today();
-        $query = Voucher::where('merchant_id', $merchant->id)
+        $query = Voucher::whereHas('merchants', function ($q) use ($merchant) {
+                $q->where('id', $merchant->id);
+            })
             ->whereDate('toDate', '<', $today)
             ->select('vouchers.*', 
                 DB::raw('(select count(*) FROM voucher_transactions where voucher_transactions.voucher_id = vouchers.id AND voucher_transactions.type = \''.VoucherTransaction::TYPE_REDEEM.'\') as redeemed_count'),
@@ -120,19 +125,20 @@ class VoucherRepository implements IVoucherRepository {
      * {@inheritdoc}
      */
     public function find($id) {
-        return Voucher::with('limits')
+        $voucher = Voucher::with(['limits'])
             ->where('id', $id)
             ->select('vouchers.*', 
                 DB::raw('(select count(*) FROM voucher_transactions where voucher_transactions.voucher_id = vouchers.id AND voucher_transactions.type = \''.VoucherTransaction::TYPE_REDEEM.'\') as redeemed_count'),
                 DB::raw('(select voucher_limits.value FROM voucher_limits where voucher_limits.voucher_id = vouchers.id AND voucher_limits.type = \''.VoucherLimit::TYPE_TOTAL.'\') as limit_count')
             )->first();
+
+        $voucher->merchant_ids = $voucher->merchants()->pluck('id');
+        return $voucher;
     }
 
     public function rewardDetail(Voucher $voucher) {
-        return Voucher::join('merchants', 'merchants.id', '=', 'vouchers.merchant_id')
+        return Voucher::with('merchants', 'merchants.category')
             ->where('vouchers.id', $voucher->id)
-            ->select('vouchers.id', 'vouchers.name', 'merchants.id as merchant_id', 'merchants.name as merchant_name', 'vouchers.image', 
-                'vouchers.points', 'vouchers.description', 'vouchers.terms_and_conditions')
             ->first();
     }
 
@@ -163,6 +169,13 @@ class VoucherRepository implements IVoucherRepository {
         DB::commit();
         
         return $voucher;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function updateMerchants(Voucher $voucher, $data) {
+        $voucher->merchants()->sync($data['merchant_ids']);
     }
 
     /**
@@ -248,18 +261,23 @@ class VoucherRepository implements IVoucherRepository {
      * {@inheritdoc}
      */
     public function redeem(Voucher $voucher, User $user) {
-        // add to user's voucher
+        $merchants = $voucher->merchants;
+        $merchant_id = 0;
+
+        if (count($merchants) == 1)
+            $merchant_id = $merchants->first()->id;
+
         $myVoucher = MyVoucher::create([
             'voucher_id' => $voucher->id,
             'user_id' => $user->id,
-            'merchant_id' => $voucher->merchant_id,
+            'merchant_id' => $merchant_id,
             'expiry_date' => $voucher->toDate,
             'status' => MyVoucher::STATUS_ACTIVE
         ]);
 
         $transaction = VoucherTransaction::create([
             'myvoucher_id' => $myVoucher->id,
-            'merchant_id' => $voucher->merchant_id,
+            'merchant_id' => $merchant_id,
             'user_id' => $user->id,
             'voucher_id' => $voucher->id,
             'type' => VoucherTransaction::TYPE_REDEEM

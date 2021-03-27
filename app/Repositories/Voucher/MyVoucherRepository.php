@@ -3,6 +3,7 @@ namespace App\Repositories\Voucher;
 
 use DB;
 use App\User;
+use App\Merchant;
 use App\MyVoucher;
 use App\VoucherTransaction;
 use Carbon\Carbon;
@@ -14,25 +15,27 @@ class MyVoucherRepository implements IMyVoucherRepository {
      * {@inheritdoc}
      */
     public function list($data, $paginate = false) {
-        $query = MyVoucher::join('vouchers', 'vouchers.id', '=', 'myvouchers.voucher_id')
-            ->join('merchants', 'merchants.id', '=', 'myvouchers.merchant_id')
-            ->select('myvouchers.id', 'myvouchers.user_id', 'myvouchers.expiry_date', 'myvouchers.status',
-                'vouchers.name', 'merchants.name as merchant');
+        $query = MyVoucher::with('voucher');
 
         if (isset($data['name']))
-            $this->queryWhere($query, $data['name'], 'vouchers.name');
+            $query->whereHas('voucher', function ($q) use ($data) {
+                $this->queryWhere($q, $data['name'], 'name');
+            });
+            
 
         if (isset($data['user_id']))
-            $this->queryWhere($query, $data['user_id'], 'myvouchers.user_id');
+            $this->queryWhere($query, $data['user_id'], 'user_id');
     
-        if (isset($data['merchant']))
-            $this->queryWhere($query, $data['merchant'], 'merchants.name');
+        if (isset($data['merchant_name']))
+            $query->whereHas('voucher.merchants', function ($q) use ($data) {
+                $this->queryWhere($q, $data['merchant_name'], 'name');
+            });
 
         if (isset($data['expiry_date']))
-            $this->queryWhere($query, $data['expiry_date'], 'myvouchers.expiry_date', true);
+            $this->queryWhere($query, $data['expiry_date'], 'expiry_date', true);
         
         if (isset($data['status']))
-            $this->queryWhere($query, $data['status'], 'myvouchers.status');
+            $this->queryWhere($query, $data['status'], 'status');
 
         // sort
         if (isset($data['sort'])) {
@@ -65,16 +68,10 @@ class MyVoucherRepository implements IMyVoucherRepository {
      * {@inheritdoc}
      */
     public function listActive(User $user, $paginate = false) {
-        $query = MyVoucher::join('merchants', 'merchants.id', '=', 'myvouchers.merchant_id')
-            ->join('vouchers', 'vouchers.id', '=', 'myvouchers.voucher_id')
+        $query = MyVoucher::with('voucher', 'voucher.merchants')
             ->where('myvouchers.user_id', $user->id)
             ->where('myvouchers.status', MyVoucher::STATUS_ACTIVE)
-            ->select('myvouchers.id', 'myvouchers.expiry_date', 'myvouchers.status',
-                'merchants.name as merchant_name', 'merchants.id as merchant_id',
-                'vouchers.name', 'vouchers.description', 'vouchers.image', 'vouchers.terms_and_conditions',
-                DB::raw('(CASE WHEN vouchers.data IS NOT NULL THEN 1 ELSE 0 END) AS custom'))
-            ->orderBy('myvouchers.id', 'desc');
-
+            ->orderBy('id', 'desc');
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
@@ -88,16 +85,10 @@ class MyVoucherRepository implements IMyVoucherRepository {
      * {@inheritdoc}
      */
     public function listInactive(User $user, $paginate = false) {
-        $query = MyVoucher::join('merchants', 'merchants.id', '=', 'myvouchers.merchant_id')
-            ->join('vouchers', 'vouchers.id', '=', 'myvouchers.voucher_id')
+        $query = MyVoucher::with('voucher', 'voucher.merchants')
             ->where('myvouchers.user_id', $user->id)
             ->whereIn('myvouchers.status', [MyVoucher::STATUS_USED, MyVoucher::STATUS_EXPIRED])
-            ->select('myvouchers.id', 'myvouchers.expiry_date', 'myvouchers.status',
-                'merchants.name as merchant_name', 'merchants.id as merchant_id',
-                'vouchers.name', 'vouchers.description', 'vouchers.image', 'vouchers.terms_and_conditions',
-                DB::raw('(CASE WHEN vouchers.data IS NOT NULL THEN 1 ELSE 0 END) AS custom'))
             ->orderBy('myvouchers.id', 'desc');
-
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
@@ -118,28 +109,26 @@ class MyVoucherRepository implements IMyVoucherRepository {
      * {@inheritdoc}
      */
     public function details($id) {
-        return MyVoucher::join('merchants', 'merchants.id', '=', 'myvouchers.merchant_id')
-            ->join('vouchers', 'vouchers.id', '=', 'myvouchers.voucher_id')
+        return MyVoucher::with('voucher', 'voucher.merchants')
             ->where('myvouchers.id', $id)
-            ->select('myvouchers.id', 'myvouchers.expiry_date', 'myvouchers.status',
-                'merchants.name as merchant_name', 'merchants.id as merchant_id',
-                'vouchers.name', 'vouchers.description', 'vouchers.image', 'vouchers.terms_and_conditions',
-                'vouchers.data',
-                DB::raw('(CASE WHEN vouchers.data IS NOT NULL THEN 1 ELSE 0 END) AS custom'))
             ->first();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function use(User $user, MyVoucher $myVoucher) {
+    public function use(User $user, MyVoucher $myVoucher, Merchant $merchant = null) {
         $myVoucher->status = MyVoucher::STATUS_USED;
         $myVoucher->save();
+
+        // take the first merchant from myVoucher
+        if ($merchant == null)
+            $merchant = $myVoucher->voucher->merchants->first();
 
         // add transaction
         $transaction = VoucherTransaction::create([
             'myvoucher_id' => $myVoucher->id,
-            'merchant_id' => $myVoucher->merchant_id,
+            'merchant_id' => $merchant->id,
             'user_id' => $myVoucher->user_id,
             'voucher_id' => $myVoucher->voucher_id,
             'type' => VoucherTransaction::TYPE_USE
@@ -160,7 +149,7 @@ class MyVoucherRepository implements IMyVoucherRepository {
 
     private function queryWhere(Builder $query, $data, $key, $isDate = false) {
         $filterData = explode(':', $data);
-
+        
         if (count($filterData) > 1 && $filterData[0] == 'contains' && $isDate)
             $query = $query->whereDate($key, 'LIKE', '%'.$filterData[1].'%');
         else if (count($filterData) > 1 && $filterData[0] == 'contains' && !$isDate)
@@ -177,12 +166,6 @@ class MyVoucherRepository implements IMyVoucherRepository {
 
     private function getSortKey($column) {
         switch ($column) {
-            case 'name':
-                return 'vouchers.name';
-            
-            case 'merchant':
-                return 'merchants.name';
-
             case 'expiry_date':
                 return 'myvouchers.expiry_date';
 

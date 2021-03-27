@@ -25,7 +25,6 @@ class UpdateRequest extends CustomFormRequest {
 
     public function rules() {
         return [
-            'merchant_id' => 'required|exists:merchants,id',
             'name' => 'required|string',
             'description' => 'required|string',
             'points' => 'required|integer',
