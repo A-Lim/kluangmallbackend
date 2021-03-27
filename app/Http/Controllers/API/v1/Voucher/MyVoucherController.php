@@ -16,8 +16,8 @@ use App\Http\Requests\Voucher\UserScanMerchantRequest;
 use App\Http\Requests\Voucher\MerchantScanUserRequest;
 use App\Notifications\Voucher\VoucherUsed;
 
-use App\Http\Resources\Vouchers\MyVoucherResource;
-use App\Http\Resources\Vouchers\MyVoucherCollection;
+use App\Http\Resources\Voucher\MyVoucherResource;
+use App\Http\Resources\Voucher\MyVoucherCollection;
 
 class MyVoucherController extends ApiController {
 

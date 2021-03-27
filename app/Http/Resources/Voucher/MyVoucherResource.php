@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Resources\Vouchers;
+namespace App\Http\Resources\Voucher;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\UserGroups\UserGroupCollection;
+use App\Http\Resources\UserGroup\UserGroupCollection;
 
 class MyVoucherResource extends JsonResource
 {

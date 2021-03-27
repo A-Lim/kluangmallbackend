@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Resources\Vouchers;
+namespace App\Http\Resources\Voucher;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class MyVoucherCollection extends ResourceCollection
+class RewardCollection extends ResourceCollection
 {
-    public $collects = MyVoucherResource::class;
+    public $collects = RewardResource::class;
 
     /**
      * Transform the resource collection into an array.

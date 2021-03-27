@@ -25,11 +25,11 @@ use App\Notifications\Voucher\VoucherUsed;
 use Libern\QRCodeReader\QRCodeReader;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-use App\Http\Resources\Vouchers\VoucherCollection;
-use App\Http\Resources\Vouchers\VoucherResourceDetail;
-use App\Http\Resources\Vouchers\RewardResource;
-use App\Http\Resources\Vouchers\RewardCollection;
-use App\Http\Resources\Vouchers\RewardResourceDetail;
+use App\Http\Resources\Voucher\VoucherCollection;
+use App\Http\Resources\Voucher\VoucherResourceDetail;
+use App\Http\Resources\Voucher\RewardResource;
+use App\Http\Resources\Voucher\RewardCollection;
+use App\Http\Resources\Voucher\RewardResourceDetail;
 
 class VoucherController extends ApiController {
 

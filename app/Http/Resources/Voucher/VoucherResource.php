@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Vouchers;
+namespace App\Http\Resources\Voucher;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\UserGroups\UserGroupCollection;
+use App\Http\Resources\UserGroup\UserGroupCollection;
 
-class RewardResource extends JsonResource
+class VoucherResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,17 +16,17 @@ class RewardResource extends JsonResource
     public function toArray($request) {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'status' => $this->status,
             'image' => $this->image,
-            'points' => $this->points,
+            'name' => $this->name,
             'description' => $this->description,
-            'terms_and_conditions' => $this->terms_and_conditions,
+            'points' => $this->points,
+            'fromDate' => $this->fromDate->format(env('APP_DATE_FORMAT')),
+            'toDate' => $this->toDate->format(env('APP_DATE_FORMAT')),
             'merchants' => $this->merchants->map(function ($merchant) {
                 return [
                     'id' => $merchant->id,
-                    'name' => $merchant->name,
-                    'category' => $merchant->category->name,
-                    'category_id' => $merchant->category->id,
+                    'name' => $merchant->name
                 ];
             })
         ];
