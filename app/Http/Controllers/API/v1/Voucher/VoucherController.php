@@ -170,6 +170,9 @@ class VoucherController extends ApiController {
 
     public function validateVoucher(User $user, Voucher $voucher) {
         $today = Carbon::today();
+
+        if ($voucher->merchants->count() == 0)
+            return $this->responseWithMessage(400, 'Invalid voucher.');
         
         // check if enough points
         if ($user->points < $voucher->points)
