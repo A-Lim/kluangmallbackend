@@ -23,7 +23,7 @@ class MyVoucherResource extends JsonResource
             'description' => $this->voucher->description,
             'image' => $this->voucher->image,
             'terms_and_conditions' => $this->voucher->terms_and_conditions,
-            'custom' => $this->voucher->data != null ? 1 : 0,
+            'custom' => $this->voucher->data != null ? true : false,
             'merchants' => $this->voucher->merchants->map(function ($merchant) {
                 return [
                     'id' => $merchant->id,

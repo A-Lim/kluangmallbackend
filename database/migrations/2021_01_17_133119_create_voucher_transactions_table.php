@@ -27,11 +27,6 @@ class CreateVoucherTransactionsTable extends Migration
                   ->on('users')
                   ->onDelete('cascade');
 
-            $table->foreign('merchant_id')
-                  ->references('id')
-                  ->on('merchants')
-                  ->onDelete('cascade');
-
             $table->foreign('voucher_id')
                   ->references('id')
                   ->on('vouchers')
