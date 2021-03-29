@@ -160,8 +160,8 @@ class VoucherController extends ApiController {
 
         if (!$merchant)
             return $this->responseWithMessage(400, 'Invalid merchant account.');
-
-        if ($voucher->belongsToMerchant($merchant))
+        
+        if (!$voucher->belongsToMerchant($merchant))
             return $this->responseWithMessage(403, 'This voucher does not belong to you.');
 
         $redemptionHistory = $this->voucherTransactionRepository->listRedemptionHistory($voucher, true);

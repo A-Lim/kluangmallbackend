@@ -43,7 +43,7 @@ class Voucher extends Model {
     }
 
     public function belongsToMerchant(Merchant $merchant) {
-        return $this->merchants()->where('merchant_id', $merchant->id)->exists();
+        return $this->merchants()->where('merchants.id', $merchant->id)->exists();
     }
 
     public function getQrAttribute($value) {
