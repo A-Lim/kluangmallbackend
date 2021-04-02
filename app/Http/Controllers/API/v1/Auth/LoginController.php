@@ -12,6 +12,7 @@ use App\Http\Controllers\ApiController;
 use Carbon\Carbon;
 use App\User;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\FbLoginRequest;
 
 use App\Repositories\Auth\IOAuthRepository;
 use App\Repositories\User\IUserRepository;
@@ -57,13 +58,15 @@ class LoginController extends ApiController {
         return $this->responseWithMessage(401, 'Invalid login credentials.');
     }
 
-    public function fbLogin(Request $request) {
+    public function fbLogin(FbLoginRequest $request) {
         // check token valid
         $result = $this->validateFbAccessToken($request->fb_access_token);
 
         if (@$result->error)
             return $this->responseWithMessage(401, 'Invalid token.');
 
+        if (!@$result->email)
+            return $this->responseWithMessage(401, 'Unable to retrieve facebook email.');
         
         if (@$result->email) {
             // check if account exists
@@ -92,9 +95,6 @@ class LoginController extends ApiController {
 
             return $this->logUserIn($user, $request->device_token);
         }
-
-        if (!isset($result->phone))
-            return $this->responseWithMessage(401, 'Facebook account is not linked to an email.');
         
         return $this->responseWithMessage(401, 'Facebook login failed. Please contact administrator.');
     }
