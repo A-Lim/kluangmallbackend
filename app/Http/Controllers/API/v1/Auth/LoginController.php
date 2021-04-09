@@ -81,6 +81,8 @@ class LoginController extends ApiController {
                 'email' => $result->email,
                 'password' => Str::random(10),
                 'status' => User::STATUS_ACTIVE,
+                'date_of_birth' => $result->birthday ? Carbon::createFromFormat('d/m/Y', $result->birthday) : null,
+                'gender' => $result->gender
             ];
 
             $user = $this->userRepository->create($new_user);

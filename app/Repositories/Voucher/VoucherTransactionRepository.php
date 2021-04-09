@@ -91,7 +91,8 @@ class VoucherTransactionRepository implements IVoucherTransactionRepository {
             ->join('vouchers', 'vouchers.id', '=', 'voucher_transactions.voucher_id')
             ->where('vouchers.deleted_at', null)
             ->where('type', VoucherTransaction::TYPE_REDEEM)
-            ->select('voucher_transactions.*');
+            ->select('voucher_transactions.*')
+            ->orderBy('id', 'desc');
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
