@@ -27,6 +27,7 @@ class PointTransactionRepository implements IPointTransactionRepository {
         if ($data['type'] == PointTransaction::TYPE_DEDUCT)
             $user->update(['points' => $user->points - $pointTransaction->amount]);
 
+        return $user->points;
     }
 
     /**

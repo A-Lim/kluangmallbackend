@@ -227,6 +227,7 @@ Route::prefix('v1')->group(function () {
         Route::namespace('API\v1\Point')->group(function () {
             Route::get('points', 'PointController@list');
             Route::get('points/my', 'PointController@listMy');
+            Route::post('points', 'PointController@addDeductPoints');
         });
     });
 });
