@@ -4,9 +4,10 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\URL;
 use App\Http\Traits\CustomQuery;
+use App\Http\Traits\EnvTimezone;
 
 class PointTransaction extends Model {
-    use CustomQuery;
+    use CustomQuery, EnvTimezone;
 
     protected $fillable = ['merchant_id', 'user_id', 'receipt_id', 'type', 'amount', 'description'];
     protected $hidden = ['updated_at', 'receipt_id'];
