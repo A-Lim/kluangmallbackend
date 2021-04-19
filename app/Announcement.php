@@ -15,7 +15,7 @@ class Announcement extends Model {
     protected $hidden = [];
     protected $casts = [
         'has_content' => 'boolean',
-        'publish_at' => 'datetime:d M Y H:i a',
+        'publish_at' => 'datetime:d M Y',
         'created_at' => 'datetime:d M Y H:i a',
         'updated_at' => 'datetime:d M Y H:i a',
     ];

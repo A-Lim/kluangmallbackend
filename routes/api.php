@@ -229,5 +229,10 @@ Route::prefix('v1')->group(function () {
             Route::get('points/my', 'PointController@listMy');
             Route::post('points', 'PointController@addDeductPoints');
         });
+
+        /**** FileUpload ****/
+        Route::namespace('API\v1\FileUpload')->group(function () {
+            Route::post('fileupload', 'FileUploadController@upload');
+        });
     });
 });

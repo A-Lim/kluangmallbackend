@@ -32,7 +32,6 @@ class CreateRequest extends CustomFormRequest {
             'content' => 'required_if:has_content,true',
             'uploadImage' => 'image|nullable',
             'audience' => 'nullable|in:'.implode(',', Announcement::AUDIENCES),
-            'status' => 'nullable|in:'.implode(',', Announcement::STATUSES),
         ];
     }
 

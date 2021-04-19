@@ -73,6 +73,7 @@ class AnnouncementRepository implements IAnnouncementRepository {
             $data['status'] = Announcement::STATUS_PUBLISHED;
         }
         else {
+            $data['status'] = Announcement::STATUS_PENDING;
             $data['publish_at'] = Carbon::createFromFormat(env('DATE_FORMAT'), $data['publish_at']);
         }
 
