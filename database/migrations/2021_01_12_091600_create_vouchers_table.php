@@ -15,6 +15,7 @@ class CreateVouchersTable extends Migration
     {
         Schema::create('vouchers', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->bigInteger('merchant_id')->unsigned();
             $table->string('status', 100);
             $table->text('image');
             $table->string('name', 100);

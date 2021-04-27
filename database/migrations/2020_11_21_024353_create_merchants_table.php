@@ -15,7 +15,7 @@ class CreateMerchantsTable extends Migration
     {
         Schema::create('merchants', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('merchant_category_id')->unsigned();
+            $table->bigInteger('merchant_category_id')->unsigned();
             $table->string('name');
             $table->text('logo')->nullable();
             $table->string('status', 20);
