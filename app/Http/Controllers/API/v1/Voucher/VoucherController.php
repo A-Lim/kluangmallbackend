@@ -106,6 +106,25 @@ class VoucherController extends ApiController {
         }
 
         $voucher = $this->voucherRepository->create($data, $request->files->all());
+
+        if ($request->assign_to_user_now && $voucher->type === Voucher::TYPE_ADD_POINT)
+        {
+            $users = $this->userRepository->listAllNormalUsers();
+            foreach ($users as $user)
+            {
+                if ($this->validateVoucher($user, $voucher))
+                {
+                    $this->voucherRepository->redeem($voucher, $user);
+                    $data = [
+                        'type' => PointTransaction::TYPE_DEDUCT,
+                        'amount' => $voucher->points,
+                        'description' => 'Deducted '.$voucher->points.' points from redeeming voucher '.$voucher->name.'.'
+                    ];
+                    $this->pointTransactionRepository->create($user, $data);
+                }
+            }
+        }
+
         return $this->responseWithMessageAndData(201, $voucher, 'Voucher created.');
     }
 

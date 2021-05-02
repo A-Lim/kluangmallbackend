@@ -9,8 +9,11 @@ use App\Repositories\Voucher\IMyVoucherRepository;
 use App\Repositories\Voucher\IVoucherRepository;
 use App\Repositories\User\IUserRepository;
 use App\Repositories\Merchant\IMerchantRepository;
+use App\Repositories\PointTransaction\IPointTransactionRepository;
 
 use App\MyVoucher;
+use App\Voucher;
+use App\PointTransaction;
 
 use App\Http\Requests\Voucher\UserScanMerchantRequest;
 use App\Http\Requests\Voucher\MerchantScanUserRequest;
@@ -25,16 +28,19 @@ class MyVoucherController extends ApiController {
     private $merchantRepository;
     private $voucherRepository;
     private $myVoucherRepository;
+    private $pointTransactionRepository;
 
     public function __construct(IUserRepository $iUserRepository,
         IMerchantRepository $iMerchantRepository,
         IVoucherRepository $iVoucherRepository,
-        IMyVoucherRepository $iMyVoucherRepository) {
+        IMyVoucherRepository $iMyVoucherRepository,
+        IPointTransactionRepository $iPointTransactionRepository) {
         $this->middleware('auth:api');
         $this->userRepository = $iUserRepository;
         $this->merchantRepository = $iMerchantRepository;
         $this->voucherRepository = $iVoucherRepository;
         $this->myVoucherRepository = $iMyVoucherRepository;
+        $this->pointTransactionRepository = $iPointTransactionRepository;
     }
 
     public function list(Request $request) {
@@ -67,12 +73,15 @@ class MyVoucherController extends ApiController {
     public function swipetouse(Request $request, MyVoucher $myVoucher) {
         $user = auth()->user();
 
-        if ($myVoucher->voucher->merchants->count() == 0)
+        if ($myVoucher->voucher->type === Voucher::TYPE_DEDUCT_CASH)
+        {
+            if ($myVoucher->voucher->merchants->count() == 0)
             return $this->responseWithMessage(400, 'This voucher is invalid.');
 
-        if ($myVoucher->voucher->merchants->count() > 1)
-            return $this->responseWithMessage(400, 'This voucher is not redeemable this way.');
-
+            if ($myVoucher->voucher->merchants->count() > 1)
+                return $this->responseWithMessage(400, 'This voucher is not redeemable this way.');
+        }
+        
         if ($myVoucher->user_id != $user->id)
             return $this->responseWithMessage(400, 'This voucher does not belong to you.');
 
@@ -80,6 +89,17 @@ class MyVoucherController extends ApiController {
             return $this->responseWithMessage(400, 'This voucher is invalid.'); 
 
         $this->myVoucherRepository->use($user, $myVoucher);
+
+        if ($myVoucher->voucher->type == Voucher::TYPE_ADD_POINT)
+        {
+            $data = [
+                'type' => PointTransaction::TYPE_ADD,
+                'amount' => $myVoucher->voucher->free_points,
+                'description' => 'Credited '.$myVoucher->voucher->free_points.' points from using voucher '.$myVoucher->voucher->name.'.'
+            ];
+            $this->pointTransactionRepository->create($user, $data);
+        }
+
         return $this->responseWithMessage(200, 'Voucher successfully used.');
     }
 
@@ -110,6 +130,9 @@ class MyVoucherController extends ApiController {
 
         if ($myVoucher->status != MyVoucher::STATUS_ACTIVE)
             return $this->responseWithMessage(400, 'This voucher is invalid.'); 
+
+        if ($myVoucher->voucher->type != Voucher::TYPE_DEDUCT_CASH)
+            return $this->responseWithMessage(400, 'This voucher can redeem points only.');
 
         $user = $this->userRepository->find($request->user_id);
         $this->myVoucherRepository->use($user, $myVoucher, $merchant);

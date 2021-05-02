@@ -16,10 +16,12 @@ class VoucherResourceDetail extends JsonResource
     public function toArray($request) {
         return [
             'id' => $this->id,
+            'type' => $this->type,
             'status' => $this->status,
             'name' => $this->name,
             'description' => $this->description,
             'points' => $this->points,
+            'free_points' => $this->free_points,
             'data' => $this->data,
             'image' => $this->image,
             'qr' => $this->qr,

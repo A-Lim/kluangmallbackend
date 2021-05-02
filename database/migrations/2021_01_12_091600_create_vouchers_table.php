@@ -15,12 +15,14 @@ class CreateVouchersTable extends Migration
     {
         Schema::create('vouchers', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('merchant_id')->unsigned();
+            $table->bigInteger('merchant_id')->unsigned()->nullable();
+            $table->string('type', 20)->index();
             $table->string('status', 100);
-            $table->text('image');
+            $table->text('image')->nullable();
             $table->string('name', 100);
             $table->text('description');
             $table->integer('points');
+            $table->integer('free_points')->nullable();
             $table->text('data')->nullable();
             $table->text('qr')->nullable();
             $table->boolean('has_redemption_limit')->default(false);

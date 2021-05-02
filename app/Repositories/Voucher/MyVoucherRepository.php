@@ -136,7 +136,7 @@ class MyVoucherRepository implements IMyVoucherRepository {
         // add transaction
         $transaction = VoucherTransaction::create([
             'myvoucher_id' => $myVoucher->id,
-            'merchant_id' => $merchant->id,
+            'merchant_id' => $merchant ? $merchant->id : 0,
             'user_id' => $myVoucher->user_id,
             'voucher_id' => $myVoucher->voucher_id,
             'type' => VoucherTransaction::TYPE_USE

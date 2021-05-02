@@ -11,7 +11,7 @@ use App\Merchant;
 class Voucher extends Model {
     use CustomQuery, EnvTimezone, SoftDeletes;
 
-    protected $fillable = ['name', 'image', 'description', 'points', 'status', 'qr', 'data', 'terms_and_conditions', 'has_redemption_limit', 'fromDate', 'toDate', 'deleted_at', 'created_at', 'updated_at', 'created_by', 'updated_by'];
+    protected $fillable = ['merchant_id', 'type', 'name', 'image', 'description', 'points', 'free_points', 'status', 'qr', 'data', 'terms_and_conditions', 'has_redemption_limit', 'fromDate', 'toDate', 'deleted_at', 'created_at', 'updated_at', 'created_by', 'updated_by'];
     protected $hidden = [];
     protected $casts = [
         'fromDate' => 'datetime:d M Y',
@@ -19,7 +19,10 @@ class Voucher extends Model {
     ];
 
     // list of properties queryable for datatable
-    public static $queryable = ['name', 'status', 'points', 'fromDate', 'toDate'];
+    public static $queryable = ['type', 'name', 'status', 'points', 'fromDate', 'toDate'];
+
+    const TYPE_DEDUCT_CASH = 'deduct cash';
+    const TYPE_ADD_POINT = 'add point';
 
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
@@ -28,6 +31,11 @@ class Voucher extends Model {
     const STATUSES = [
         self::STATUS_ACTIVE,
         self::STATUS_INACTIVE
+    ];
+
+    const TYPES = [
+        self::TYPE_DEDUCT_CASH,
+        self::TYPE_ADD_POINT
     ];
 
     public function merchants() {

@@ -25,11 +25,14 @@ class UpdateRequest extends CustomFormRequest {
 
     public function rules() {
         return [
+            'type' => 'required|in:'.implode(',', Voucher::TYPES),
             'name' => 'required|string',
             'description' => 'required|string',
             'points' => 'required|integer',
+            'free_points' => 'nullable|required_if:type,'.Voucher::TYPE_ADD_POINT.'|integer',
             'fromDate' => 'required|date_format:d M Y',
             'toDate' => 'required|date_format:d M Y|after_or_equal:fromDate',
+            'uploadImage' => 'nullable|mimes:jpg,jpeg,png|max:5120',
             'has_redemption_limit' => 'required|boolean',
             'limits' => 'required_if:has_redemption_limit,true',
             'terms_and_conditions' => 'required|string',
