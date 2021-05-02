@@ -18,6 +18,7 @@ class MyVoucherResource extends JsonResource
             'id' => $this->id,
             'user_id' => $this->user_id,
             'expiry_date' => $this->expiry_date->format(env('APP_DATE_FORMAT')),
+            'type' => $this->voucher->type,
             'status' => $this->status,
             'name' => $this->voucher->name,
             'description' => $this->voucher->description,

@@ -16,11 +16,13 @@ class VoucherResource extends JsonResource
     public function toArray($request) {
         return [
             'id' => $this->id,
+            'type' => $this->type,
             'status' => $this->status,
             'image' => $this->image,
             'name' => $this->name,
             'description' => $this->description,
             'points' => $this->points,
+            'free_points' => $this->free_points,
             'fromDate' => $this->fromDate->format(env('APP_DATE_FORMAT')),
             'toDate' => $this->toDate->format(env('APP_DATE_FORMAT')),
             'merchants' => $this->merchants->map(function ($merchant) {
