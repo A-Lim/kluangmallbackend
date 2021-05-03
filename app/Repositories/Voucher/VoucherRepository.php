@@ -60,7 +60,11 @@ class VoucherRepository implements IVoucherRepository {
         $query = Voucher::with('merchants', 'merchants.category')
             ->whereDate('vouchers.fromDate', '<=', $today)
             ->whereDate('vouchers.toDate', '>=', $today)
-            ->where('status', Voucher::STATUS_ACTIVE);
+            ->where('status', Voucher::STATUS_ACTIVE)
+            ->where(function ($query) {
+                $query->whereNull('type')
+                    ->orWhere('type', Voucher::TYPE_DEDUCT_CASH);
+            });
 
         if (isset($data['category_id'])) {
             $query->whereHas('merchants', function ($q) use ($data) {
