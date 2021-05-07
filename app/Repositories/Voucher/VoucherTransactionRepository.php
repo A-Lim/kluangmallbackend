@@ -90,7 +90,7 @@ class VoucherTransactionRepository implements IVoucherTransactionRepository {
         $query = VoucherTransaction::where('voucher_id', $voucher->id)
             ->join('vouchers', 'vouchers.id', '=', 'voucher_transactions.voucher_id')
             ->where('vouchers.deleted_at', null)
-            ->where('type', VoucherTransaction::TYPE_REDEEM)
+            ->where('voucher_transactions.type', VoucherTransaction::TYPE_REDEEM)
             ->select('voucher_transactions.*')
             ->orderBy('id', 'desc');
 
