@@ -123,8 +123,8 @@ class UserGroupRepository implements IUserGroupRepository {
 
         // if isAdmin, dont save permissions, cause it's gonna be full access
         // save permissions if not admin
-        if ($data['is_admin'] == false && !empty($data['permissions'])) 
-            $userGroup->givePermissions($data['permissions']);
+        if ($data['is_admin'] == false) 
+            $userGroup->givePermissions($data['permissions'] ?? []);
 
         $userGroup->fill($data);
         $userGroup->save();
