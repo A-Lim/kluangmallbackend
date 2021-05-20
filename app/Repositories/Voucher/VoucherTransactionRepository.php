@@ -89,9 +89,10 @@ class VoucherTransactionRepository implements IVoucherTransactionRepository {
     public function listRedemptionHistory(Voucher $voucher, $paginate = false) {
         $query = VoucherTransaction::where('voucher_id', $voucher->id)
             ->join('vouchers', 'vouchers.id', '=', 'voucher_transactions.voucher_id')
+            ->join('users', 'users.id', '=', 'voucher_transactions.user_id')
             ->where('vouchers.deleted_at', null)
             ->where('voucher_transactions.type', VoucherTransaction::TYPE_REDEEM)
-            ->select('voucher_transactions.*')
+            ->select('voucher_transactions.*', 'users.name as user_name')
             ->orderBy('id', 'desc');
 
         if ($paginate) {
