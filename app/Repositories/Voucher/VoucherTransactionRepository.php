@@ -5,6 +5,7 @@ use App\User;
 use App\Merchant;
 use App\Voucher;
 use App\VoucherTransaction;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
 class VoucherTransactionRepository implements IVoucherTransactionRepository {
@@ -92,13 +93,31 @@ class VoucherTransactionRepository implements IVoucherTransactionRepository {
             ->join('users', 'users.id', '=', 'voucher_transactions.user_id')
             ->where('vouchers.deleted_at', null)
             ->where('voucher_transactions.type', VoucherTransaction::TYPE_REDEEM)
-            ->select('voucher_transactions.*', 'users.name as user_name')
+            ->select('voucher_transactions.*', 'vouchers.name', 'users.name as user_name')
             ->orderBy('id', 'desc');
 
         if ($paginate) {
             $limit = isset($data['limit']) ? $data['limit'] : 10;
             return $query->paginate($limit);
         }
+
+        return $query->get();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateReportData($merchant_id, Carbon $startDate, Carbon $endDate) {
+        $query = VoucherTransaction::where('merchant_id', $merchant_id)
+            ->join('vouchers', 'vouchers.id', '=', 'voucher_transactions.voucher_id')
+            ->join('users', 'users.id', '=', 'voucher_transactions.user_id')
+            ->where('vouchers.deleted_at', null)
+            ->whereBetween('vouchers.created_at', [$startDate, $endDate])
+            ->select('voucher_transactions.*', 'vouchers.name', 
+                'vouchers.fromDate', 'vouchers.toDate',
+                'vouchers.type as voucher_type', 
+                'users.name as user_name')
+            ->orderBy('id', 'desc');
 
         return $query->get();
     }

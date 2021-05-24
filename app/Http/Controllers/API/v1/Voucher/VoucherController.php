@@ -12,10 +12,12 @@ use App\VoucherLimit;
 use App\PointTransaction;
 use App\Repositories\Voucher\IVoucherRepository;
 use App\Repositories\User\IUserRepository;
+use App\Repositories\Merchant\IMerchantRepository;
 use App\Repositories\PointTransaction\IPointTransactionRepository;
 use App\Repositories\Voucher\IVoucherTransactionRepository;
 
 use App\Http\Requests\Voucher\CreateRequest;
+use App\Http\Requests\Voucher\ReportRequest;
 use App\Http\Requests\Voucher\UpdateRequest;
 use App\Http\Requests\Voucher\UseUserVoucher;
 use App\Http\Requests\Voucher\UpdateMerchantRequest;
@@ -31,20 +33,26 @@ use App\Http\Resources\Voucher\RewardResource;
 use App\Http\Resources\Voucher\RewardCollection;
 use App\Http\Resources\Voucher\RewardResourceDetail;
 
+use App\Exports\RedemptionHistoryExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class VoucherController extends ApiController {
 
     private $voucherRepository;
     private $voucherTransactionRepository;
     private $userRepository;
+    private $merchantRepository;
     private $pointTransactionRepository;
 
     public function __construct(IVoucherRepository $iVoucherRepository,
         IUserRepository $iUserRepository,
+        IMerchantRepository $iMerchantRepository,
         IPointTransactionRepository $iPointTransactionRepository,
         IVoucherTransactionRepository $iVoucherTransactionRepository) {
         $this->middleware('auth:api');
         $this->voucherRepository = $iVoucherRepository;
         $this->userRepository = $iUserRepository;
+        $this->merchantRepository = $iMerchantRepository;
         $this->pointTransactionRepository = $iPointTransactionRepository;
         $this->voucherTransactionRepository = $iVoucherTransactionRepository;
     }
@@ -243,6 +251,20 @@ class VoucherController extends ApiController {
         if ($totalLimit && $this->voucherRepository->hasReachedTotalLimit($totalLimit))
             return $this->responseWithMessage(400, 'Voucher total limit reached.');
 
+    }
+
+    public function reportDownload(ReportRequest $request) {
+        $merchant = $this->merchantRepository->find($request->merchant_id);
+        $transactionHistory = $this->voucherTransactionRepository->generateReportData(
+            $request->merchant_id, 
+            Carbon::createFromFormat(env('DATE_FORMAT'),$request->fromDate),
+            Carbon::createFromFormat(env('DATE_FORMAT'),$request->toDate)
+        );
+        
+        return Excel::download(new RedemptionHistoryExport(
+            $transactionHistory), 
+            $merchant->name.' '.$request->fromDate.' - '.$request->toDate.'.xlsx'
+        );
     }
 
     private function decodeQr(UploadedFile $file) {
