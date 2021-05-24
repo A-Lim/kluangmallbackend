@@ -17,6 +17,7 @@ class VoucherResource extends JsonResource
         return [
             'id' => $this->id,
             'type' => $this->type,
+            'display_to_all' => $this->display_to_all,
             'status' => $this->status,
             'image' => $this->image,
             'name' => $this->name,
