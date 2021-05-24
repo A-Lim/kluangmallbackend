@@ -20,12 +20,14 @@ class CreateRequest extends CustomFormRequest {
     protected function prepareForValidation()   {
         $this->merge([
             'has_redemption_limit' => filter_var($this->has_redemption_limit, FILTER_VALIDATE_BOOLEAN),
+            'display_to_all' => filter_var($this->display_to_all, FILTER_VALIDATE_BOOLEAN)
         ]);
     }
 
     public function rules() {
         return [
             'type' => 'required|in:'.implode(',', Voucher::TYPES),
+            'display_to_all' => 'nullable|boolean',
             'name' => 'required|string',
             'description' => 'required|string',
             'points' => 'required|integer',

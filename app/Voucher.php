@@ -11,7 +11,7 @@ use App\Merchant;
 class Voucher extends Model {
     use CustomQuery, EnvTimezone, SoftDeletes;
 
-    protected $fillable = ['merchant_id', 'type', 'name', 'image', 'description', 'points', 'free_points', 'status', 'qr', 'data', 'terms_and_conditions', 'has_redemption_limit', 'fromDate', 'toDate', 'deleted_at', 'created_at', 'updated_at', 'created_by', 'updated_by'];
+    protected $fillable = ['merchant_id', 'type', 'display_to_all', 'name', 'image', 'description', 'points', 'free_points', 'status', 'qr', 'data', 'terms_and_conditions', 'has_redemption_limit', 'fromDate', 'toDate', 'deleted_at', 'created_at', 'updated_at', 'created_by', 'updated_by'];
     protected $hidden = [];
     protected $casts = [
         'fromDate' => 'datetime:d M Y',

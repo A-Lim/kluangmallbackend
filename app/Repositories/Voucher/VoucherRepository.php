@@ -63,7 +63,10 @@ class VoucherRepository implements IVoucherRepository {
             ->where('status', Voucher::STATUS_ACTIVE)
             ->where(function ($query) {
                 $query->whereNull('type')
-                    ->orWhere('type', Voucher::TYPE_DEDUCT_CASH);
+                    ->orWhere('type', Voucher::TYPE_DEDUCT_CASH)
+                    ->orWhere(function ($query) {
+                        $query->where(['type' => Voucher::TYPE_ADD_POINT, 'display_to_all' => 1]);
+                    });
             });
 
         if (isset($data['category_id'])) {

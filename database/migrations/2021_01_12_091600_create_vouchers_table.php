@@ -17,6 +17,7 @@ class CreateVouchersTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('merchant_id')->unsigned()->nullable();
             $table->string('type', 20)->index();
+            $table->boolean('display_to_all')->default(false);
             $table->string('status', 100);
             $table->text('image')->nullable();
             $table->string('name', 100);
