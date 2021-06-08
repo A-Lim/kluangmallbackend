@@ -43,14 +43,10 @@ class AnnouncementController extends ApiController {
         $user = auth()->user();
         $data = $request->all();
 
-        // if not admin
+        // if user is merchant
         // only return merchant's announcement
-        if (!$user->isAdmin()) {
-            if ($user->merchant != null)
-                $data['merchant_id'] = 'equals:'.$user->merchant->id;
-            else 
-                return $this->responseWithMessage(400, 'This is not a merchant account.');
-        }
+        if ($user->merchant != null)
+            $data['merchant_id'] = 'equals:'.$user->merchant->id;
 
         $announcements = $this->announcementRepository->list($data, true);
         return $this->responseWithData(200, $announcements);
