@@ -5,6 +5,9 @@ Route::prefix('v1')->group(function () {
     /**** Auth ****/
     Route::namespace('API\v1\Auth')->group(function () {
         Route::post('login', 'LoginController@login');
+        Route::post('login/user', 'LoginController@userLogin');
+        Route::post('login/merchant', 'LoginController@merchantLogin');
+        
         Route::post('fb/login', 'LoginController@fbLogin');
         Route::post('logout', 'LoginController@logout');
 

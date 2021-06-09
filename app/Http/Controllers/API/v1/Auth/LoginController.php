@@ -58,6 +58,54 @@ class LoginController extends ApiController {
         return $this->responseWithMessage(401, 'Invalid login credentials.');
     }
 
+    public function userLogin(LoginRequest $request) {
+        // if too many login attemps
+        if ($this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+            return $this->sendLockoutResponse($request);
+        }
+        
+        if ($this->attemptLogin($request)) {
+            $this->clearLoginAttempts($request);
+            
+            $user = auth()->user();
+            if ($user->merchant != null)
+                return $this->responseWithMessage(401, 'Invalid user account.');
+
+            return $this->logUserIn($user, $request->device_token);
+        }
+
+        // if unsuccessful, increase login attempt count
+        // lock user count limit reached
+        $this->incrementLoginAttempts($request);
+
+        return $this->responseWithMessage(401, 'Invalid login credentials.');
+    }
+
+    public function merchantLogin(LoginRequest $request) {
+        // if too many login attemps
+        if ($this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+            return $this->sendLockoutResponse($request);
+        }
+        
+        if ($this->attemptLogin($request)) {
+            $this->clearLoginAttempts($request);
+            
+            $user = auth()->user();
+            if ($user->merchant == null)
+                return $this->responseWithMessage(401, 'Invalid merchant account.'); 
+            
+            return $this->logUserIn($user, $request->device_token);
+        }
+
+        // if unsuccessful, increase login attempt count
+        // lock user count limit reached
+        $this->incrementLoginAttempts($request);
+
+        return $this->responseWithMessage(401, 'Invalid login credentials.');
+    }
+
     public function fbLogin(FbLoginRequest $request) {
         // check token valid
         $result = $this->validateFbAccessToken($request->fb_access_token);
@@ -72,8 +120,12 @@ class LoginController extends ApiController {
             // check if account exists
             $user = $this->userRepository->searchForOne(['email' => $result->email]);
 
-            if ($user)
-                return $this->logUserIn($user, $request->device_token);
+            if ($user) {
+                if ($user->merchant != null)
+                    return $this->responseWithMessage(401, 'Invalid user account.');
+                else 
+                    return $this->logUserIn($user, $request->device_token);
+            }
             
             // create new user from fb details
             $new_user = [
