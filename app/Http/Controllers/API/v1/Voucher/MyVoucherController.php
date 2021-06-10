@@ -135,6 +135,11 @@ class MyVoucherController extends ApiController {
             return $this->responseWithMessage(400, 'This voucher can redeem points only.');
 
         $user = $this->userRepository->find($request->user_id);
+        
+        // if user does not own this voucher
+        if ($myVoucher->user_id != $user->id)
+            return $this->responseWithMessage(400, 'This voucher is invalid.');
+
         $this->myVoucherRepository->use($user, $myVoucher, $merchant);
 
         $user->notify(new VoucherUsed($myVoucher, $merchant));
