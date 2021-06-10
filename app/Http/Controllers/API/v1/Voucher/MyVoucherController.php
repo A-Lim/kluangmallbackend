@@ -139,8 +139,12 @@ class MyVoucherController extends ApiController {
         if ($myVoucher->status != MyVoucher::STATUS_ACTIVE)
             return $this->responseWithMessage(400, 'This voucher is invalid.'); 
 
+        $voucher = $myVoucher->voucher;
         if ($myVoucher->voucher->type != Voucher::TYPE_DEDUCT_CASH)
             return $this->responseWithMessage(400, 'This voucher can redeem points only.');
+
+        if (!$voucher->belongsToMerchant($merchant))
+            return $this->responseWithMessage(400, 'Unable to scan voucher of other merchant.');
 
         $user = $this->userRepository->find($request->user_id);
         
