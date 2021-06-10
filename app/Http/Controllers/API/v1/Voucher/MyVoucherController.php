@@ -88,6 +88,10 @@ class MyVoucherController extends ApiController {
         if ($myVoucher->status != MyVoucher::STATUS_ACTIVE)
             return $this->responseWithMessage(400, 'This voucher is invalid.'); 
 
+        // if user does not own this voucher
+        if ($myVoucher->user_id != $user->id)
+            return $this->responseWithMessage(400, 'This voucher is invalid.');
+
         $this->myVoucherRepository->use($user, $myVoucher);
 
         if ($myVoucher->voucher->type == Voucher::TYPE_ADD_POINT)
@@ -114,6 +118,10 @@ class MyVoucherController extends ApiController {
         $voucher = $this->voucherRepository->find($myVoucher->voucher_id);
 
         if ($voucher->data != $request->data)
+            return $this->responseWithMessage(400, 'This voucher is invalid.');
+        
+        // if user does not own this voucher
+        if ($myVoucher->user_id != $user->id)
             return $this->responseWithMessage(400, 'This voucher is invalid.');
 
         $this->myVoucherRepository->use($user, $myVoucher, $merchant);
