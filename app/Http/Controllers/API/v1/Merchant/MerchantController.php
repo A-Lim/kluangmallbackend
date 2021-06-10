@@ -36,7 +36,7 @@ class MerchantController extends ApiController {
     }
 
     public function listUsers(Request $request, Merchant $merchant) {
-        $this->authorize('view', Merchant::class);
+        $this->authorize('view', $merchant);
         $users = $this->userRepository->listMerchantUsers($merchant, $request->all(), true);
         return $this->responseWithData(200, $users);
     }
