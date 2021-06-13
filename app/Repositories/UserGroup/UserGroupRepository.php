@@ -60,9 +60,7 @@ class UserGroupRepository implements IUserGroupRepository {
      */
     public function listNotUsers(UserGroup $userGroup, $data, $paginate = false) {
         $query = User::buildQuery($data)
-            ->select('users.*')
-            ->leftjoin('user_usergroup', 'user_usergroup.user_id', 'users.id')
-            ->whereNotIn('user_usergroup.user_id', $userGroup->users->pluck('id')->toArray())
+            ->whereNotIn('id', $userGroup->users->pluck('id')->toArray())
             ->orderBy('id', 'desc');
 
         if ($paginate) {
