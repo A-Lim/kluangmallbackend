@@ -267,6 +267,19 @@ class VoucherController extends ApiController {
         );
     }
 
+    public function reportPreview(ReportRequest $request) {
+        $merchant = $this->merchantRepository->find($request->merchant_id);
+        $transactionHistory = $this->voucherTransactionRepository->generateReportData(
+            $request->merchant_id, 
+            Carbon::createFromFormat(env('DATE_FORMAT'),$request->fromDate),
+            Carbon::createFromFormat(env('DATE_FORMAT'),$request->toDate)
+        );
+
+        return view('exports.redemptionhistory', [
+            'voucher_transactions' => $transactionHistory
+        ]);
+    }
+
     private function decodeQr(UploadedFile $file) {
         $qrCodeReader = new QRCodeReader();
         return $qrCodeReader->decode($file->getPathName());

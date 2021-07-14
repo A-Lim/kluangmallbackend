@@ -199,6 +199,7 @@ Route::prefix('v1')->group(function () {
             Route::get('vouchers/merchant/inactive', 'VoucherController@listMerchantsInactive');
             Route::get('vouchers/{voucher}', 'VoucherController@details');
             Route::get('vouchers/{voucher}/redemptionhistory', 'VoucherController@redemptionHistory');
+            Route::get('vouchers/report/preview', 'VoucherController@reportPreview');
             Route::post('vouchers', 'VoucherController@create');
             Route::post('vouchers/report/download', 'VoucherController@reportDownload');
             Route::post('vouchers/{voucher}/redeem', 'VoucherController@redeem');
