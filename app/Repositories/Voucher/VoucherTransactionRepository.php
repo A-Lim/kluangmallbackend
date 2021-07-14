@@ -112,7 +112,7 @@ class VoucherTransactionRepository implements IVoucherTransactionRepository {
             ->join('vouchers', 'vouchers.id', '=', 'voucher_transactions.voucher_id')
             ->join('users', 'users.id', '=', 'voucher_transactions.user_id')
             ->where('vouchers.deleted_at', null)
-            ->whereBetween('vouchers.created_at', [$startDate, $endDate])
+            ->whereBetween('voucher_transactions.created_at', [$startDate, $endDate])
             ->select('voucher_transactions.*', 'vouchers.name', 
                 'vouchers.fromDate', 'vouchers.toDate',
                 'vouchers.type as voucher_type', 
